@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    #container {
+        width: 400px;
+        height: 400px;
+        position: relative;
+        background: #83BC3F;
+    }
+    #animate {
+        /*margin-top: 200px;*/
+        width: 120px;
+        height: 120px;
+        position: absolute;
+        background: #97843A;
+    }
+  </style>
+
+    <!-- <p> -->
+      <!-- <button onclick="myMove()">Click Me</button> -->
+    <!-- </p>  -->
+
+  <body onload="myMove()">
+  <h1>Ba;ls</h1>
+    <div id ="container">
+      <div id ="animate">Balls</div>
+    </div>
+
+    <script>
+      function incr(pos, sig) {
+        return ((pos > 280) ? -1 : (pos < 0) ? 1 : sig)
+      }
+
+      function myMove() {
+        var elem = document.getElementById("animate");   
+        var id = setInterval(frame, 5);
+        let pos = 0;
+        var sig = 1
+
+        function frame() {
+          sig = incr(pos, sig)
+          pos += sig
+
+          elem.style.top = pos + 'px'; 
+          elem.style.left = pos + 'px'; 
+        }
+      }
+    </script>
+  </body>
+</html>
+
