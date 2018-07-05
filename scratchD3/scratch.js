@@ -14,7 +14,7 @@ var p = d3.select("body").selectAll("p")
   .data(theData)
   .enter()
   .append("p")
-  .text("hello ");
+  .text("here ");
 
 function drawCircle(context, radius) {
   context.moveTo(radius, 0);
@@ -22,7 +22,7 @@ function drawCircle(context, radius) {
 }
 
 function rando(){
-	return Math.floor(Math.random() * 100);
+	return Math.floor(Math.random() * 150);
 }
 
 function incr(pos, sig) {
@@ -40,8 +40,7 @@ function myMove() {
     pos += sig
 
     data = [[rando(), rando()], [rando(), rando()],
-    				[rando(), rando()], [rando(), rando()],
-    				[rando(), rando()]];
+    				[rando(), rando()], [rando(), rando()]];
 
     var lineGenerator = d3.line();
     var pathString = lineGenerator(data);

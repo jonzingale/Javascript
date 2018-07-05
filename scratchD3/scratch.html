@@ -2,32 +2,33 @@
 <html lang="en-us">
 	<style>
 	   path {
-	      fill: green;
-	      stroke: #aaa;
+	      fill: black;
+	      /*stroke: #aaa;*/
+	   }
+	   body {
+	   	background: #5B4D49;
 	   }
 	   #animate {
-	       /*margin-top: 200px;*/
-	       width: 120px;
-	       height: 120px;
+	       width: 90px;
+	       height: 90px;
 	       position: absolute;
 	       background: #97843A;
 	   }
 	</style>
   <head>
-        <script type="text/javascript" src="./d3.v4.min.js"></script>               
+    <script type="text/javascript" src="./d3.v4.min.js"></script>               
   </head>
 
   <body onload="myMove()">
 	  <main class="pb7" role="main">
-	  	<div id ="animate">Balls</div>
+	  	<div id ="animate">Boxy</div>
 	    <div class="flex-l mt2 mw8 center">
 	    	<svg width = "600" height = "200">
 	    	   <path transform = "translate(200, 50)" />
-	    	   <path transform = "translate(100, 50)" />
 	    	</svg>
 	    </div>
 	  </main>
-	 </body>
+	</body>
 
 <script  src="./scratch.js" ></script>
 </html>
