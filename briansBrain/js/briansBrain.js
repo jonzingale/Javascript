@@ -1,6 +1,6 @@
 (function(){
 
-  var cellSize = 3,
+  var cellSize = 4, // better would be squares i think
       Board = 60,
       L = 61
 
@@ -69,7 +69,7 @@
     .attr("d",celldata)
     .style("opacity",0)
     .transition().duration(1000)
-    .style("opacity",0.6)
+    .style("opacity",1)
 
   function celldata() {
     var M = 30;
@@ -129,9 +129,12 @@
 
     cell.data(newboard).attr("fill", function(d) {
         switch (d.state){
-          case 0: return "lightgray" 
+          case 0: return "black" 
           case 1: return "red"
           case 2: return "orange"
+          // case 0: return "lightgray" 
+          // case 1: return "red"
+          // case 2: return "orange"
         }
     })
 
