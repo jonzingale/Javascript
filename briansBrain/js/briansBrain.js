@@ -1,8 +1,7 @@
 (function(){
 
-  var cellSize = 4, // better would be squares i think
-      Board = 60,
-      L = 61
+  var Board = 70,
+      L = 71
 
   var world_width = 400,
       world_height = 400,
@@ -50,8 +49,11 @@
           .symbolSize(0.6*g.x(7)).update(runpause)
   ]
 
-  controls.selectAll(".button .playbutton").data(playbutton).enter().append(widget.buttonElement)
-    .attr("transform",function(d,i){return "translate("+playblock.x(0)+","+playblock.y(i)+")"});  
+  controls.selectAll(".button .playbutton").data(playbutton).enter()
+    .append(widget.buttonElement)
+    .attr("transform", function(d,i){
+      return "translate("+playblock.x(0)+","+playblock.y(i)+")"
+    });
 
   function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
 
@@ -60,35 +62,18 @@
   cell = world.selectAll(".cell").data(board).enter().append("g")
     .attr("class","cell")
     .attr("transform",function(d){
-      return "translate("+X(d.x + 1)+","+Y(d.y + 1)+")rotate("+0+")"
+      return "translate("+X(d.x + 0.5)+","+Y(d.y + 1.5)+")rotate("+0+")"
     })
 
-  // elaborate board
-  cell.append("path")
-    .attr("class","drop")
-    .attr("d",celldata)
-    .style("opacity",0)
-    .transition().duration(1000)
-    .style("opacity",1)
+  cell.append("svg") // draws board
+    .attr("width", 100).attr("height", 100)
+    .append("rect").attr("x", 0).attr("y", 0)
+    .attr("width", 7).attr("height", 7)
 
-  function celldata() {
-    var M = 30;
-    var line = d3.line()
-                 .x(function(d) { return cellSize*d.x; })
-                 .y(function(d) { return cellSize*d.y; })
-
-    var drop = d3.range(M).map(function(d,i){
-        return {
-          x: Math.cos(i/M*Math.PI*2),
-          y: Math.sin(i/M*Math.PI*2)
-        };
-      })
-    return line(drop);
-  } 
-
+  // Cellular Automata
   function modB(n) {
     return(n < 0 ? Board + (n % Board) : n % Board)
-  } 
+  }
 
   function neigh(c) {
     var i = c.id % Board,
@@ -96,8 +81,6 @@
 
     var ns = moore.map(x =>
       board[modB(i+x[0]) + modB(j+x[1]) * Board].state)
-
-    console.log(ns)
 
     // only sum if state is a 1
     result = ns.reduce((a,d) => a += (d == 1 ? 1 : 0), 0)
@@ -130,8 +113,8 @@
     cell.data(newboard).attr("fill", function(d) {
         switch (d.state){
           case 0: return "black" 
-          case 1: return "red"
-          case 2: return "orange"
+          case 1: return "orange"
+          case 2: return "red"
           // case 0: return "lightgray" 
           // case 1: return "red"
           // case 2: return "orange"
