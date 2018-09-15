@@ -1,14 +1,12 @@
 (function(){
 
-  var Board = 70,
-      L = 71
-
   var world_width = 400,
       world_height = 400,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
-      n_grid_y = 24;
+      n_grid_y = 24,
+      L = 80
 
   // moore neighborhood
   var moore = [[-1,-1],[-1, 0],[-1, 1],
@@ -16,13 +14,11 @@
               [ 1, -1],[ 1, 0],[ 1, 1]]
 
   // create board
-  var board = d3.range(Board**2).map(function(d,i){
+  var newboard = []
+  var board = d3.range(L**2).map(function(d,i){
     return {
       id: i,
-      x: i % Board,
-      y: Math.floor(i/Board),
-      state: Math.floor(Math.random() + 0.3)
-      // good for brians, 70% for conways?
+      state: Math.floor(Math.random() + 0.08)
     }
   })
 
@@ -61,26 +57,28 @@
 
   cell = world.selectAll(".cell").data(board).enter().append("g")
     .attr("class","cell")
-    .attr("transform",function(d){
-      return "translate("+X(d.x + 0.5)+","+Y(d.y + 1.5)+")rotate("+0+")"
-    })
+
 
   cell.append("svg") // draws board
-    .attr("width", 100).attr("height", 100)
     .append("rect").attr("x", 0).attr("y", 0)
     .attr("width", 7).attr("height", 7)
+    .attr("transform",function(d){
+      var x = d.id % L,
+          y = Math.floor(d.id/L)  + 1.5
+      return "translate("+X(x)+","+Y(y)+")rotate("+0+")"
+    })
 
   // Cellular Automata
   function modB(n) {
-    return(n < 0 ? Board + (n % Board) : n % Board)
+    return(n < 0 ? L + (n % L) : n % L)
   }
 
   function neigh(c) {
-    var i = c.id % Board,
-        j = Math.floor(c.id/Board)
+    var i = c.id % L,
+        j = Math.floor(c.id/L)
 
     var ns = moore.map(x =>
-      board[modB(i+x[0]) + modB(j+x[1]) * Board].state)
+      board[modB(i+ x[0]) + modB(j+x[1]) * L].state)
 
     // only sum if state is a 1
     result = ns.reduce((a,d) => a += (d == 1 ? 1 : 0), 0)
@@ -105,12 +103,10 @@
   }
 
   function runBlink() {
-    var newboard = []
-    board.forEach(function(c){
-      newboard[c.id] = brians(c)
-    })
+    newboard = board.map(x => brians(x))
+    board = newboard
 
-    cell.data(newboard).attr("fill", function(d) {
+    cell.data(board).attr("fill", function(d) {
         switch (d.state){
           case 0: return "black" 
           case 1: return "orange"
@@ -120,8 +116,8 @@
           // case 2: return "orange"
         }
     })
-
-    board = newboard
   }
+
+  runBlink() // loads board effectively
 
 })()
