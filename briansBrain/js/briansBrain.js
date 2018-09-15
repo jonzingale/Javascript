@@ -6,7 +6,7 @@
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      L = 80
+      L = 90
 
   // moore neighborhood
   var moore = [[-1,-1],[-1, 0],[-1, 1],
