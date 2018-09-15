@@ -29,7 +29,19 @@
     .attr("width",world_width)
     .attr("height",world_height)
     .attr("class","explorable_display")
-    
+
+  var cell = world.selectAll(".cell").data(board).enter().append("g")
+    .attr("class","cell")
+
+  cell.append("svg") // draws board
+    .append("rect").attr("x", 0).attr("y", 0)
+    .attr("width", 7).attr("height", 7)
+    .attr("transform",function(d){
+      var x = d.id % L,
+          y = Math.floor(d.id/L)  + 1.5
+      return "translate("+X(x)+","+Y(y)+")rotate("+0+")"
+    })
+
   var controls = d3.selectAll("#brians_brain_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
@@ -53,20 +65,6 @@
 
   function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
 
-/////////////////
-
-  cell = world.selectAll(".cell").data(board).enter().append("g")
-    .attr("class","cell")
-
-
-  cell.append("svg") // draws board
-    .append("rect").attr("x", 0).attr("y", 0)
-    .attr("width", 7).attr("height", 7)
-    .attr("transform",function(d){
-      var x = d.id % L,
-          y = Math.floor(d.id/L)  + 1.5
-      return "translate("+X(x)+","+Y(y)+")rotate("+0+")"
-    })
 
   // Cellular Automata
   function modB(n) {
