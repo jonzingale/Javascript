@@ -33,7 +33,7 @@
   var cell = world.selectAll(".cell").data(board).enter().append("g")
     .attr("class","cell")
 
-  cell.append("svg") // draws board
+  cell.append("svg") // draws cells on board
     .append("rect").attr("x", 0).attr("y", 0)
     .attr("width", 7).attr("height", 7)
     .attr("transform",function(d){
