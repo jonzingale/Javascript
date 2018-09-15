@@ -106,7 +106,7 @@
 
     cell.data(board).attr("fill", function(d) {
         switch (d.state){
-          case 0: return "black" 
+          case 0: return "#202020"
           case 1: return "orange"
           case 2: return "red"
           // case 0: return "lightgray" 
