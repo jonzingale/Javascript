@@ -18,7 +18,7 @@
   var board = d3.range(L**2).map(function(d,i){
     return {
       id: i,
-      state: Math.floor(Math.random() + 0.08)
+      state: Math.floor(Math.random() + 0.02)
     }
   })
 
@@ -76,10 +76,11 @@
         j = Math.floor(c.id/L)
 
     var ns = moore.map(x =>
-      board[modB(i+ x[0]) + modB(j+x[1]) * L].state)
+      board[modB(i + x[0]) + modB(j + x[1]) * L].state)
 
     // only sum if state is a 1
     result = ns.reduce((a,d) => a += (d == 1 ? 1 : 0), 0)
+
     return(result)
   }
 
