@@ -6,7 +6,8 @@
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      L = 90
+      L = 150,
+      k = world_width/L
 
   // moore neighborhood
   var moore = [[-1,-1],[-1, 0],[-1, 1],
@@ -17,30 +18,22 @@
   var newboard = []
   var board = d3.range(L**2).map(function(d,i){
     return {
-      id: i,
+      x: i % L,
+      y: Math.floor(i/L),
       state: Math.floor(Math.random() + 0.02) // sparse randomness
     }
   })
 
   var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
-  var Y = d3.scaleLinear().domain([0,L]).range([world_height,0]);
+  var Y = d3.scaleLinear().domain([0,L]).range([world_height,-3]);
 
-  var world = d3.selectAll("#brians_brain_display").append("svg")
+  var world = d3.selectAll("#brians_brain_display")
+    .append('canvas')
     .attr("width",world_width)
     .attr("height",world_height)
     .attr("class","explorable_display")
 
-  var cell = world.selectAll(".cell").data(board).enter().append("g")
-    .attr("class","cell")
-
-  cell.append("svg") // draws cells on board
-    .append("rect").attr("x", 0).attr("y", 0)
-    .attr("width", 7).attr("height", 7)
-    .attr("transform",function(d){
-      var x = d.id % L,
-          y = Math.floor(d.id/L)  + 1.5
-      return "translate("+X(x)+","+Y(y)+")rotate("+0+")"
-    })
+  var context = world.node().getContext('2d')
 
   var controls = d3.selectAll("#brians_brain_controls").append("svg")
     .attr("width",controlbox_width)
@@ -70,52 +63,46 @@
     return(n < 0 ? L + (n % L) : n % L)
   }
 
-  function neigh(c) {
-    var i = c.id % L,
-        j = Math.floor(c.id/L)
-
+  function neigh(d) {
     var ns = moore.map(x =>
-      board[modB(i + x[0]) + modB(j + x[1]) * L].state
-    )
+      board[modB(d.x + x[0]) + modB(d.y + x[1]) * L].state)
 
     // only sum if state is a 1
-    result = ns.reduce((a,d) => a += (d == 1 ? 1 : 0), 0)
-
+    result = ns.reduce((a,s) => a += s % 2, 0)
     return(result)
   }
 
-  function conways(c) { // conway's blink
-    if (c.state == 0 && neigh(c) == 3)
-      { return {id: c.id, state: 1} }
-    else if (c.state == 1 && (neigh(c) == 3 || neigh(c) == 2))
-      { return {id: c.id, state: 1} }
-    else { return {id: c.id, state: 0} }
+  function conways(d) { // conway's blink
+    if (d.state == 0 && neigh(c) == 3)
+      { return {x: d.x, y: d.y, state: 1} }
+    else if (d.state == 1 && (neigh(d) == 3 || neigh(d) == 2))
+      { return {x: d.x, y: d.y, state: 1} }
+    else { return {x: d.x, y: d.y, state: 0} }
   }
 
   // https://en.wikipedia.org/wiki/Brian%27s_Brain
-  function brians(c) { // brian's blink
-    if (c.state == 0 && neigh(c) == 2)
-      { return {id: c.id, state: 1} }
-    else if (c.state == 1)
-      { return {id: c.id, state: 2} }
-    else { return {id: c.id, state: 0} }
+  function brians(d) { // brian's blink
+    if (d.state == 0 && neigh(d) == 2)
+      { return {x: d.x, y: d.y, state: 1} }
+    else if (d.state == 1)
+      { return {x: d.x, y: d.y, state: 2} }
+    else { return {x: d.x, y: d.y, state: 0} }
+  }
+
+  function updateDisplay() {
+    board.forEach(function(d) {
+      if (d.state == 0) { context.fillStyle = "black"}
+      else if (d.state == 1) { context.fillStyle = "orange" }
+      else { context.fillStyle = "red" }
+
+      context.fillRect(X(d.x), Y(d.y),3.5,3.5);
+    })
   }
 
   function runBlink() {
     newboard = board.map(x => brians(x))
     board = newboard
-
-    cell.data(board).attr("fill", function(d) {
-        switch (d.state){
-          case 0: return "#202020"
-          case 1: return "orange"
-          case 2: return "red"
-          // case 0: return "lightgray" 
-          // case 1: return "red"
-          // case 2: return "orange"
-        }
-    })
-
+    updateDisplay()
   }
   
   runBlink() // loads board effectively
