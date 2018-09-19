@@ -97,8 +97,8 @@
 
   var points = d3.range(N).map(function(d,i){
     return {id:i,
-            x: Math.random() * L,
-            y: Math.random() * L,
+            x: Math.random() * L - 30,
+            y: Math.random() * L - 30,
             z: Math.random() * L,
     }
   })
