@@ -11,8 +11,9 @@
 
   var world = d3.selectAll("#lorenz_display").select("canvas")
   var context = world.node().getContext('2d')
-  context.fillStyle = "black" 
-  
+  context.fillStyle = "black"
+  // context.attr('border', '1px solid black')
+
   var controls = d3.selectAll("#lorenz_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
@@ -99,7 +100,7 @@
     return {id:i,
             x: Math.random() * L - 30,
             y: Math.random() * L - 30,
-            z: Math.random() * L,
+            z: Math.random() * L - 3,
     }
   })
 
@@ -115,7 +116,7 @@
     points.forEach(function(d){
       d.x = Math.random() * L - 30;
       d.y = Math.random() * L - 30;
-      d.z = Math.random() * L;
+      d.z = Math.random() * L - 3;
     })
 
     runsim()
@@ -157,7 +158,7 @@
   }
 
   function clearCanvas() {
-    context.fillStyle = "white"
+    context.fillStyle = "#e6e6e6"
     context.fillRect(0,0, world_width, world_height)
   }
 
