@@ -1,5 +1,5 @@
 
-.explorable_display {
+.lorenz_display {
 	border:1px solid black;
 	background:rgb(230,230,230);
 	display: block;
@@ -7,8 +7,8 @@
 	margin-bottom: 10px;
 }
 
-.explorable_widgets {
-	display: block;
-	display: block;
-	margin: auto;
+.lorenz_widgets {
+  display: block;
+  display: block;
+  margin: auto;
 }

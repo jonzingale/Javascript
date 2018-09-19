@@ -113,16 +113,12 @@
     if (typeof(t) === "object") {t.stop()};
     
     points.forEach(function(d){
-      d.x = Math.random() * L;
-      d.y = Math.random() * L;
-      d.theta = Math.random() * 360;
+      d.x = Math.random() * L - 30;
+      d.y = Math.random() * L - 30;
+      d.z = Math.random() * L;
     })
 
-    d3.selectAll(".agent").transition().duration(1000).attr("transform",function(d){
-      return "translate("+X(d.x)+","+Y(d.y)+")rotate("+(-d.theta)+")"
-    }).call(function(){
-      if (typeof(t) === "object" && playpause.value == 1 ) {t = d3.timer(runsim,0)}
-    })
+    runsim()
   }
 
   function resetparameters(){
