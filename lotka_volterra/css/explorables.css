@@ -1,0 +1,8 @@
+
+canvas {
+  border:1px solid black;
+  background:rgb(230,230,230);
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+}
