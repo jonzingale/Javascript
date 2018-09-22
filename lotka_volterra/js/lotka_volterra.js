@@ -21,8 +21,8 @@
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
 
   // fixed parameters
-  var dt = 0.01, // euler step size
-      N = 7000, // # of points
+  var dt = 0.005, // euler step size
+      N = 9000, // # of points
       L = 20, // world size
       ptSize = 2
 
@@ -101,7 +101,7 @@
   var points = d3.range(N).map(function(d,i){
     return {id:i,
             x: Math.random() * L,
-            y: Math.random() * L,
+            y: 0.01, //Math.random() * L,
             z: 1,
     }
   })
@@ -163,6 +163,7 @@
 
   function clearCanvas() {
     context.fillStyle = "#e6e6e6"
+    context.fillStyle =  "rgb(200,200,200,0.1)"
     context.fillRect(0,0, world_width, world_height)
   }
 
