@@ -21,7 +21,7 @@
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
 
   // fixed parameters
-  var dt = 0.005, // euler step size
+  var dt = 0.01, // euler step size
       N = 9000, // # of points
       L = 20, // world size
       ptSize = 2
@@ -64,7 +64,7 @@
   var alpha = {id:"alpha", name: "Alpha", range: [0,2], value: def_alpha_param};
   var beta = {id:"beta", name: "Beta", range: [0,2], value: def_beta_param};
   var delta = {id:"delta", name: "Delta", range: [0,2], value: def_delta_param};
-  var gamma = {id:"gamma", name: "Gamma", range: [0,2], value: def_gamma_param};
+  var gamma = {id:"gamma", name: "Gamma", range: [0,10], value: def_gamma_param};
   var ptsSize = {id:"ptsSize", name: "size of points", range: [1,4], value: def_pt_size};
 
   var sliders = [
@@ -94,14 +94,10 @@
   var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
   var Y = d3.scaleLinear().domain([0,L]).range([world_height,0]);
 
-  /////////////////////////
-  // this is the agent data 
-  /////////////////////////
-
   var points = d3.range(N).map(function(d,i){
     return {id:i,
             x: Math.random() * L,
-            y: 0.01, //Math.random() * L,
+            y: 0.01,// Math.random() * L,
             z: 1,
     }
   })
@@ -133,8 +129,8 @@
   }
 
   function lotkaVolterra(x, y, z) {
-      var dx = alpha.value * x - beta.value * x * y
-          dy = delta.value * x * y - gamma.value * y
+      var dx = alpha.value * x - beta.value * x*y
+          dy = delta.value * x*y - gamma.value * y
           dz = 1
       return([dx, dy, dz])
   }
@@ -163,7 +159,7 @@
 
   function clearCanvas() {
     context.fillStyle = "#e6e6e6"
-    context.fillStyle =  "rgb(200,200,200,0.1)"
+    context.fillStyle =  "rgb(220,220,220,0.1)"
     context.fillRect(0,0, world_width, world_height)
   }
 
