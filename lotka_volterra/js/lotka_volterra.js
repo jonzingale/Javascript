@@ -158,7 +158,6 @@
   }
 
   function clearCanvas() {
-    context.fillStyle = "#e6e6e6"
     context.fillStyle =  "rgb(220,220,220,0.1)"
     context.fillRect(0,0, world_width, world_height)
   }
