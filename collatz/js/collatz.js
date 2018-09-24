@@ -10,6 +10,7 @@
 
   var world_width = 600,
       world_height = 600,
+      center = world_width / 2,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
@@ -89,21 +90,39 @@
     })
   }
 
-  var pairs = []
-  function ulamsNapkin() {
+  function ulamsNapkin(pairs) {
     var j = 0
-    for (j = 0; j < 3; j ++) {
+    for (j = 0; j < 5; j ++) {
       var k = 8 * j
       for (i = 0; i < k; i++) { 
-        var x = j*Math.round(Math.cos(2*Math.PI*(i-j+1)/(j*8)))
-        var y = j*Math.round(Math.sin(2*Math.PI*(i-j+1)/(j*8)))
+        var x = j * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
+        var y = j * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
         pairs.push([x,y])
       }
     }
   }
 
-  ulamsNapkin()
-  console.log(pairs)
+  function rescale(val){
+    return (50*val + center)
+  }
+
+  function displayNapkin() {
+    var pairs = []
+    ulamsNapkin(pairs)
+    context.strokeStyle = 'white'
+    context.fillStyle = 'white'
+    context.font="20px Georgia";
+    context.beginPath();
+
+    for (i=0; i < pairs.length - 1; i++){
+      context.fillText(i+2,rescale(pairs[i][0]),rescale(pairs[i][1]));
+      context.moveTo(rescale(pairs[i][0]), rescale(pairs[i][1]));
+      context.lineTo(rescale(pairs[i+1][0]), rescale(pairs[i+1][1]))
+      context.stroke();
+    }
+  }
+
+  displayNapkin()
 
   function collatz(x) {
     if (x % 2 == 0) { return (x/2) } else { return(x * 3 + 1) }
@@ -145,5 +164,5 @@
       context.stroke();
     })
   }
-  clearCanvas()
+  // clearCanvas()
 })()
