@@ -89,8 +89,21 @@
     })
   }
 
-  function resetparameters(){
+  var pairs = []
+  function ulamsNapkin() {
+    var j = 0
+    for (j = 0; j < 3; j ++) {
+      var k = 8 * j
+      for (i = 0; i < k; i++) { 
+        var x = j*Math.round(Math.cos(2*Math.PI*(i-j+1)/(j*8)))
+        var y = j*Math.round(Math.sin(2*Math.PI*(i-j+1)/(j*8)))
+        pairs.push([x,y])
+      }
+    }
   }
+
+  ulamsNapkin()
+  console.log(pairs)
 
   function collatz(x) {
     if (x % 2 == 0) { return (x/2) } else { return(x * 3 + 1) }
