@@ -8,9 +8,11 @@
   // perhaps rewrite as d3 elems rather than canvas
   // benefit would be clearer lines.
 
-  var world_width = 600,
-      world_height = 600,
-      center = world_width / 2,
+  // fixed parameters
+  var L = 10**8 // world size
+
+  var ctxSize = 600,
+      center = ctxSize / 2,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
@@ -21,7 +23,7 @@
 
   // background color
   context.fillStyle = "black"
-  context.fillRect(0,0, world_width, world_height)
+  context.fillRect(0,0, ctxSize, ctxSize)
 
   var controls = d3.selectAll("#collatz_controls").append("svg")
     .attr("width",controlbox_width)
@@ -29,10 +31,6 @@
     .attr("class","collatz_widgets")
 
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
-
-  // fixed parameters
-  var N = 10**3, // # of points
-      L = 10**3 // world size
 
   var playblock = g.block({x0:20,y0:19,width:0,height:0});
   var buttonblock = g.block({x0:13,y0:18,width:4,height:0}).Nx(2);
@@ -57,30 +55,18 @@
     .attr("transform",function(d,i){return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"});  
 
   // position scales
-  var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
-  var Y = d3.scaleLinear().domain([0,L]).range([world_height,0]);
+  var X = d3.scaleLinear().domain([0,L]).range([0,ctxSize]);
+  var Y = d3.scaleLinear().domain([0,L]).range([ctxSize,0]);
 
   function randCVal() { return (Math.floor(Math.random() * 255)) }
-
-  var points = d3.range(N).map(function(d,i) {
-    x = Math.floor(Math.random() * L)
-    fx = collatz(x)
-    return {
-      a: x, b: fx, c: fx, d: fx,
-      color: "rgb(" + randCVal() + "," + randCVal() + "," + randCVal() + ")"
-    }
-  })
 
   var point = {} ;
   function setPoint() {
     color = "rgb(" + randCVal() + "," + randCVal() + "," + randCVal() + ")"
-    x = Math.floor(Math.random() * L)
+    x = Math.floor(Math.random() * Math.floor(L/10000))
     fx = collatz(x)
     point = {name: x, a: x, b: fx, c: fx, d: fx, color: color}
   }
-
-  setPoint()
-  console.log(point)
 
   // timer variable for the simulation
   var t;
@@ -91,14 +77,6 @@
   function resetpositions(){
     clearCanvas()
     if (typeof(t) === "object") {t.stop()};
-    points.forEach(function(v){
-      x = Math.floor(Math.random() * L)
-      fx = collatz(x)
-      v.a = x
-      v.b = fx
-      v.c = fx
-      v.d = fx
-    })
   }
 
   function traceNapkin(n) {
@@ -162,35 +140,40 @@
   }
 
   function fadeCanvas() {
-    context.fillStyle = "rgb(0,0,0,0.1)"
-    context.fillRect(0,0, world_width, world_height)
+    // overlay fade
+    context.fillStyle = "rgb(0,0,0,0.05)"
+    context.fillRect(0,0, ctxSize, ctxSize)
+
     // display N
     context.fillStyle = 'white'
     context.font="40px Georgia"
-    context.fillText(point.name,world_width-100,30);
+    context.fillText(point.name,ctxSize-100,30);
 
     // orange diagonal
     context.lineWidth = 1
     context.strokeStyle = "orange"
     context.beginPath();
     context.moveTo(0,0);
-    context.lineTo(L,L);
+    context.lineTo(ctxSize, ctxSize);
     context.stroke();
+
+    // restore line width
     context.lineWidth = 3
   }
 
   function clearCanvas() {
     context.fillStyle = "rgb(0,0,0,1)"
-    context.fillRect(0,0, world_width, world_height)
-    context.strokeStyle = "orange"
-    context.beginPath();
-    context.moveTo(0,0);
-    context.lineTo(L,L);
-    context.stroke();
-    displayNapkin()
+    context.fillRect(0,0, ctxSize, ctxSize)
+    // context.strokeStyle = "orange"
+    // context.beginPath();
+    // context.moveTo(0,0);
+    // context.lineTo(ctxSize, ctxSize);
+    // context.stroke();
+    // displayNapkin()
   }
 
   function displayCobweb() {
+      if (point.a == 1) {setPoint()}
       var a = point.a,
           c = point.c
 
@@ -204,8 +187,8 @@
       context.moveTo(point.a, point.b);
       context.lineTo(point.c, point.d);
       context.stroke();
-
-      if (point.a == 1) {setPoint()}
   }
+
   clearCanvas()
+  setPoint()
 })()
