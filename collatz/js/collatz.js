@@ -3,7 +3,7 @@
   // var widget = new widgetModule(); // instantiate widget
 
   // The goal here is to explore the collatz
-  // conjecture via the cobweb method.
+  // conjecture via the cobweb method and Ulam's napkin.
 
   // perhaps rewrite as d3 elems rather than canvas
   // benefit would be clearer lines.
@@ -71,6 +71,17 @@
     }
   })
 
+  var point = {} ;
+  function setPoint() {
+    color = "rgb(" + randCVal() + "," + randCVal() + "," + randCVal() + ")"
+    x = Math.floor(Math.random() * L)
+    fx = collatz(x)
+    point = {name: x, a: x, b: fx, c: fx, d: fx, color: color}
+  }
+
+  setPoint()
+  console.log(point)
+
   // timer variable for the simulation
   var t;
 
@@ -90,11 +101,30 @@
     })
   }
 
+  function traceNapkin(n) {
+    var j = Math.floor(n%8)
+    var i = n % j
+    // var j = 0
+    // for (j = 0; j < 8; j ++) {
+      // for (i = 0; i < k; i++) { 
+        var x = j * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
+        var y = j * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
+        // return([x,y])
+
+        // console.log([x,y])
+        // pairs.push([x,y])
+      // }
+    // }
+  }
+
+  for (j=0; j < 10; j++){
+    traceNapkin(j)
+  }
+
   function ulamsNapkin(pairs) {
     var j = 0
     for (j = 0; j < 8; j ++) {
-      var k = 8 * j
-      for (i = 0; i < k; i++) { 
+      for (i = 0; i < j*8; i++) {
         var x = j * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
         var y = j * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
         pairs.push([x,y])
@@ -111,8 +141,8 @@
     ulamsNapkin(pairs)
     context.strokeStyle = 'white'
     context.fillStyle = 'white'
-    context.font="17px Georgia";
-    context.beginPath();
+    context.font="15px Georgia"
+    context.beginPath()
     for (i=0; i < pairs.length - 1; i++){
       context.fillText(i+1,rescale(pairs[i][0]),rescale(pairs[i][1]));
       context.moveTo(rescale(pairs[i][0]), rescale(pairs[i][1]));
@@ -122,17 +152,31 @@
   }
 
   function collatz(x) {
-    if (x % 2 == 0) { return (x/2) } else { return(x * 3 + 1) }
+    if (x % 2 == 0) { return (x/2) }
+      else { return(x * 3 + 1) }
   }
 
   function runCobweb() {
     fadeCanvas()
-    updateDisplay()
+    displayCobweb()
   }
 
   function fadeCanvas() {
-    context.fillStyle = "rgb(0,0,0,0.01)"
+    context.fillStyle = "rgb(0,0,0,0.1)"
     context.fillRect(0,0, world_width, world_height)
+    // display N
+    context.fillStyle = 'white'
+    context.font="40px Georgia"
+    context.fillText(point.name,world_width-100,30);
+
+    // orange diagonal
+    context.lineWidth = 1
+    context.strokeStyle = "orange"
+    context.beginPath();
+    context.moveTo(0,0);
+    context.lineTo(L,L);
+    context.stroke();
+    context.lineWidth = 3
   }
 
   function clearCanvas() {
@@ -146,21 +190,22 @@
     displayNapkin()
   }
 
-  function updateDisplay() {
-    points.forEach(function(v) {
-      var a = v.a, c = v.c
+  function displayCobweb() {
+      var a = point.a,
+          c = point.c
 
-      v.a = v.c
-      v.b = v.d
-      v.c = collatz(a)
-      v.d = collatz(c)
+      point.a = point.c
+      point.b = point.d
+      point.c = collatz(a)
+      point.d = collatz(c)
 
-      context.strokeStyle = v.color
+      context.strokeStyle = point.color
       context.beginPath();
-      context.moveTo(v.a, v.b);
-      context.lineTo(v.c, v.d);
+      context.moveTo(point.a, point.b);
+      context.lineTo(point.c, point.d);
       context.stroke();
-    })
+
+      if (point.a == 1) {setPoint()}
   }
   clearCanvas()
 })()
