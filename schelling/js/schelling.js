@@ -8,8 +8,10 @@
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      tolerance = 5 // how tolerant are the agents?
+      tolerance = 5, // how tolerant are the agents?
+      sparsity = 1/3
 
+  // Todo: Make template for larger neighborhoods
   // moore neighborhood
   var moore = [[-1,-1],[-1, 0],[-1, 1],
               [ 0, -1],        [ 0, 1],
@@ -56,7 +58,7 @@
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
   var playblock = g.block({x0:5,y0:19,width:0,height:0});
   var buttonblock = g.block({x0:12,y0:19,width:4,height:0}).Nx(2);
-  var sliderBlock = g.block({x0:3,y0:10,width:10,height:3}).Ny(2);
+  var sliderBlock = g.block({x0:3,y0:8,width:10,height:3}).Ny(2);
 
   var sliderwidth = sliderBlock.w();
   var handleSize = 12, trackSize = 8;
@@ -67,7 +69,12 @@
   var tol = {id:"tol", name: "Tolerance towards neighbors",
              range: [1,8], value: tolerance};
 
+  // Todo: Make this a thing, also: clever css for spacing
+  var spar = {id:"sparsity", name: "Rural Urban",
+             range: [1,8], value: sparsity};
+
   var sliders = [
+    widget.slider(spar).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
     widget.slider(tol).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
   ]
 
