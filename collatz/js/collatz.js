@@ -9,7 +9,8 @@
   // benefit would be clearer lines.
 
   // fixed parameters
-  var L = 10**8 // world size
+  // var L = 10**8 // world size for cobweb
+  var L = 300 // world size for ulams napkin
 
   var ctxSize = 600,
       center = ctxSize / 2,
@@ -63,7 +64,8 @@
   var point = {} ;
   function setPoint() {
     color = "rgb(" + randCVal() + "," + randCVal() + "," + randCVal() + ")"
-    x = Math.floor(Math.random() * Math.floor(L/10000))
+    // x = 1 + Math.floor(Math.random() * Math.floor(L/20000))
+    x = 1 + Math.floor(Math.random() * Math.floor(L)) // 1 so as not to 0.
     fx = collatz(x)
     point = {name: x, a: x, b: fx, c: fx, d: fx, color: color}
   }
@@ -79,29 +81,29 @@
     if (typeof(t) === "object") {t.stop()};
   }
 
-  function traceNapkin(n) {
-    var j = Math.floor(n%8)
-    var i = n % j
-    // var j = 0
-    // for (j = 0; j < 8; j ++) {
-      // for (i = 0; i < k; i++) { 
-        var x = j * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
-        var y = j * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
-        // return([x,y])
-
-        // console.log([x,y])
-        // pairs.push([x,y])
-      // }
-    // }
+  function collatz(x) {
+    if (x % 2 == 0) { return (x/2) }
+      else { return(x * 3 + 1) }
   }
 
-  for (j=0; j < 10; j++){
-    traceNapkin(j)
+  function  nToUlam(n) {
+    var jth = Math.ceil((n**0.5 - 1)/2) // jth concentric square
+    var k = jth * 8
+    var i = ((n - 8) % k) - 2
+    var x = jth * Math.cos(2*Math.PI*i/k)
+    var y = jth * Math.sin(2*Math.PI*i/k)
+    return([x,y])
   }
 
   function ulamsNapkin(pairs) {
-    var j = 0
-    for (j = 0; j < 8; j ++) {
+    // for (j = 0; j < 20; j++) {
+    //   for (i = 0; i < j*8; i++) {
+    //     var x = (i/10) * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
+    //     var y = (i/10) * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
+    //     pairs.push([x,y])
+    //   }
+    // }
+    for (j = 0; j < 20; j++) {
       for (i = 0; i < j*8; i++) {
         var x = j * (Math.cos(2*Math.PI*(i-j+1)/(j*8)))
         var y = j * (Math.sin(2*Math.PI*(i-j+1)/(j*8)))
@@ -111,69 +113,57 @@
   }
 
   function rescale(val){
-    return (38*val + center)
+    return (12*val + center)
+    // return (38*val + center)
   }
 
+  var pairs = [[0,0]]
+  ulamsNapkin(pairs)
+
   function displayNapkin() {
-    var pairs = [[0,0]]
-    ulamsNapkin(pairs)
-    context.strokeStyle = 'white'
+    // write numbers
+    context.lineWidth = 0.3
+    // context.strokeStyle = 'rgb(0,0,0,0)'
+    context.strokeStyle = 'rgb(100,100,100)'
     context.fillStyle = 'white'
     context.font="15px Georgia"
     context.beginPath()
+
     for (i=0; i < pairs.length - 1; i++){
-      context.fillText(i+1,rescale(pairs[i][0]),rescale(pairs[i][1]));
+      // context.fillText(i+1,rescale(pairs[i][0]),rescale(pairs[i][1])); display nums
       context.moveTo(rescale(pairs[i][0]), rescale(pairs[i][1]));
       context.lineTo(rescale(pairs[i+1][0]), rescale(pairs[i+1][1]))
       context.stroke();
     }
   }
 
-  function collatz(x) {
-    if (x % 2 == 0) { return (x/2) }
-      else { return(x * 3 + 1) }
+  function displayUlams() {
+    var a = point.a,
+        c = point.c
+
+    point.a = point.c
+    point.b = point.d
+    point.c = collatz(a)
+    point.d = collatz(c)
+
+    var [x1,y1] = nToUlam(point.a)
+    var [x2,y2] = nToUlam(point.c)
+
+    context.strokeStyle = point.color
+    context.beginPath();
+    context.moveTo(rescale(x1),rescale(y1));
+    context.lineTo(rescale(x2),rescale(y2));
+    context.stroke();
+    if (point.a == 1) {setPoint()}
   }
 
   function runCobweb() {
     fadeCanvas()
-    displayCobweb()
-  }
-
-  function fadeCanvas() {
-    // overlay fade
-    context.fillStyle = "rgb(0,0,0,0.05)"
-    context.fillRect(0,0, ctxSize, ctxSize)
-
-    // display N
-    context.fillStyle = 'white'
-    context.font="40px Georgia"
-    context.fillText(point.name,ctxSize-100,30);
-
-    // orange diagonal
-    context.lineWidth = 1
-    context.strokeStyle = "orange"
-    context.beginPath();
-    context.moveTo(0,0);
-    context.lineTo(ctxSize, ctxSize);
-    context.stroke();
-
-    // restore line width
-    context.lineWidth = 3
-  }
-
-  function clearCanvas() {
-    context.fillStyle = "rgb(0,0,0,1)"
-    context.fillRect(0,0, ctxSize, ctxSize)
-    // context.strokeStyle = "orange"
-    // context.beginPath();
-    // context.moveTo(0,0);
-    // context.lineTo(ctxSize, ctxSize);
-    // context.stroke();
-    // displayNapkin()
+    // displayCobweb()
+    displayUlams()
   }
 
   function displayCobweb() {
-      if (point.a == 1) {setPoint()}
       var a = point.a,
           c = point.c
 
@@ -187,6 +177,46 @@
       context.moveTo(point.a, point.b);
       context.lineTo(point.c, point.d);
       context.stroke();
+      if (point.a == 1) {setPoint()}
+  }
+
+  function fadeCanvas() {
+    // overlay fade
+    context.fillStyle = "rgb(0,0,0,0.05)" // black
+    // context.fillStyle = "rgb(200,200,200,0.05)" // grey
+    context.fillRect(0,0, ctxSize, ctxSize)
+
+    // display N
+    context.fillStyle = "rgb(0,0,0,1)"
+    context.fillRect(ctxSize-100,0, ctxSize, 60)
+    context.fillStyle = 'white'
+    context.font="40px Georgia"
+    context.fillText(point.name,ctxSize-100,30);
+
+    // orange diagonal
+    // context.lineWidth = 1
+    // context.strokeStyle = "orange"
+    // context.beginPath();
+    // context.moveTo(0,0);
+    // context.lineTo(ctxSize, ctxSize);
+    // context.stroke();
+
+    // napkin
+    // displayNapkin()
+
+    // restore line width
+    context.lineWidth = 3
+  }
+
+  function clearCanvas() {
+    context.fillStyle = "rgb(0,0,0,1)"
+    context.fillRect(0,0, ctxSize, ctxSize)
+    // context.strokeStyle = "orange"
+    // context.beginPath();
+    // context.moveTo(0,0);
+    // context.lineTo(ctxSize, ctxSize);
+    // context.stroke();
+    displayNapkin()
   }
 
   clearCanvas()
