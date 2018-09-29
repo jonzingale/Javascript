@@ -2,51 +2,51 @@
 (function(){
 
   var L = 50,
-      // k = world_width/L,
       agentSize = 7.6,
       world_width = 400,
-      world_height = 400,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      tolerance = 5 // how intolerant are the agents?
+      tolerance = 5 // how tolerant are the agents?
 
   // moore neighborhood
   var moore = [[-1,-1],[-1, 0],[-1, 1],
               [ 0, -1],        [ 0, 1],
               [ 1, -1],[ 1, 0],[ 1, 1]]
 
-  // create board
   var [freeBoard, occupiedBoard] = [{}, {}]
-  d3.range(L**2).forEach(function(d,i){
-    var id = String(i),
-        x = i % L,
-        y = Math.floor(i/L),
-        state = Math.floor(Math.random() * 3)
 
-    if (state == 0) {
-      freeBoard[id] = {x: x, y: y, c: 'black'}
-    }
-    else if (state == 1) {
-      occupiedBoard[id] = {x: x, y: y, c: 'orange'}
-    }
-    else {
-      occupiedBoard[id] = {x: x, y: y, c: 'red'}
-    }
-  })
+  function createBoard(){
+    d3.range(L**2).forEach(function(d,i){
+      var id = String(i),
+          x = i % L,
+          y = Math.floor(i/L),
+          state = Math.floor(Math.random() * 3)
 
+      if (state == 0) {
+        freeBoard[id] = {x: x, y: y, c: 'black'}
+      }
+      else if (state == 1) {
+        occupiedBoard[id] = {x: x, y: y, c: 'orange'}
+      }
+      else {
+        occupiedBoard[id] = {x: x, y: y, c: 'red'}
+      }
+    })
+  }
 
   var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
-  var Y = d3.scaleLinear().domain([0,L]).range([world_height,-3]);
+  var Y = d3.scaleLinear().domain([0,L]).range([world_width,0]);
 
   var world = d3.selectAll("#schelling_display").append('canvas')
     .attr('width', world_width)
-    .attr('height', world_height)
+    .attr('height', world_width)
     .attr("class",'schelling_display')
 
   var context = world.node().getContext('2d')
-
+  context.fillRect(0, 0, world_width, world_width);
+  
   var controls = d3.selectAll("#schelling_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
@@ -55,16 +55,17 @@
   // Play button.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
   var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:3,y0:10,width:4,height:0}).Nx(2);
-  var paramsblock = g.block({x0:12,y0:10,width:10,height:3}).Ny(2);
+  var buttonblock = g.block({x0:12,y0:19,width:4,height:0}).Nx(2);
+  var sliderBlock = g.block({x0:3,y0:10,width:10,height:3}).Ny(2);
 
-  var sliderwidth = paramsblock.w();
+  var sliderwidth = sliderBlock.w();
   var handleSize = 12, trackSize = 8;
 
   var playpause = { id:"b4", name:"run simulation", actions: ["play","pause"], value: 0};
-  var reset = { id:"b6", name:"new simulation", actions: ["rewind"], value: 0};
+  var reset = { id:"b6", name:"new simulation", actions: ["reload"], value: 0};
 
-  var tol = {id:"tolerance", name: "Tolerance", range: [1,8], value: tolerance};
+  var tol = {id:"tol", name: "Tolerance towards neighbors",
+             range: [1,8], value: tolerance};
 
   var sliders = [
     widget.slider(tol).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
@@ -80,7 +81,7 @@
   ]
 
   controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
-    .attr("transform",function(d,i){return "translate("+paramsblock.x(0)+","+paramsblock.y(i)+")"});  
+    .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
           .append(widget.buttonElement)
@@ -95,15 +96,17 @@
    });
 
   var t; // initialize timer
-  function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
+  function runpause(d){ d.value == 1 ? t = d3.timer(schelling,0) : t.stop(); }
 
   function resetpositions() {
     if (typeof(t) === "object") {t.stop()};
-    board.forEach( d => d.state = Math.floor(Math.random() + 0.02))
-    runBlink()
+    // runpause({value: 0})
+    // Todo: stop play button if clicked
+    createBoard()
+    schelling()
   }
 
-  // Cellular Automata
+  // Schelling Segration Code
   function leastDistance(d){
     var ll = { dist: Infinity, cell: {x: 0, y: 0} }
     for (i=0; i < freeBoard.length; i++){
@@ -114,6 +117,8 @@
     return(ll.cell)
   }
 
+  // TODO: write nearest avail so that first nearest is sufficient
+  // consider a ball about the given agent.
   function nearestAvail(a){
     var dist;
     var rental;
@@ -157,15 +162,13 @@
         // move into new rental and remove rental from market
         delete freeBoard[newRental.id]
         occupiedBoard[newRental.id] = newRental
-        context.fillStyle = agent.c//"orange"
+        context.fillStyle = agent.c
         context.fillRect(X(newRental.x), Y(newRental.y), agentSize, agentSize);
       }
     })
   }
 
-  function runBlink() {
-    schelling()
-  }
-  
-  runBlink() // loads board effectively
+  // loads Initial conditions
+  createBoard()
+  schelling()
 })()
