@@ -2,6 +2,7 @@
 (function(){
 
   var L = 50,
+      satisfied = 0,
       world_width = 400,
       agentSize = world_width/L,
       controlbox_width = 400,
@@ -47,6 +48,8 @@
   var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
   var Y = d3.scaleLinear().domain([0,L]).range([world_width,0]);
 
+  var happiness = d3.select('#percentHappy')
+
   var world = d3.selectAll("#schelling_display").append('canvas')
     .attr('width', world_width)
     .attr('height', world_width)
@@ -59,12 +62,6 @@
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
     .attr("class","schelling_widgets")
-
-  var happiness = d3.select('#percentHappy')
-        .append('text')
-        .attr("x",100)
-        .attr("y",100)
-        .text("ther")
 
   // Buttons and Blocks.
   var g = widget.grid(controlbox_width,controlbox_height,
@@ -148,7 +145,7 @@
   }
 
   function schelling() {
-    var satisfied = 0
+    satisfied = 0
     Object.keys(occupiedBoard).forEach(function(key){
       var agent = occupiedBoard[key]
       if (neigh(agent) < tol.value) {
@@ -170,11 +167,7 @@
       } else { satisfied += 1 }
     })
 
-    displayHappiness(satisfied)
-  }
-
-  function displayHappiness(s) { // make this a simple dom element update
-    percentSatisfied = Math.floor(100 * s / population)
+    percentSatisfied = Math.floor(100 * satisfied / population)
     happiness.text("Percent Happy: "+percentSatisfied+" %")
   }
 
