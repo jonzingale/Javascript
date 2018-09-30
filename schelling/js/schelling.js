@@ -9,13 +9,13 @@
       n_grid_x = 24,
       n_grid_y = 24,
       tolerance = 5, // how tolerant are the agents?
-      sparsity = 1/3
+      sparsity = 3 // how much room is there to spread out?
 
   // Todo: Make template for larger neighborhoods
   // moore neighborhood
-  var moore = [[-1,-1],[-1, 0],[-1, 1],
-              [ 0, -1],        [ 0, 1],
-              [ 1, -1],[ 1, 0],[ 1, 1]]
+  var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
+               [ 0, -1],        [ 0, 1],
+               [-1, -1],[-1, 0],[-1, 1]]
 
   var [freeBoard, occupiedBoard] = [{}, {}]
 
@@ -24,7 +24,7 @@
       var id = String(i),
           x = i % L,
           y = Math.floor(i/L),
-          state = Math.floor(Math.random() * 3)
+          state = Math.floor(Math.random() * spar.value)
 
       if (state == 0) {
         freeBoard[id] = {x: x, y: y, c: 'black'}
@@ -63,18 +63,21 @@
   var sliderwidth = sliderBlock.w();
   var handleSize = 12, trackSize = 8;
 
-  var playpause = { id:"b4", name:"run simulation", actions: ["play","pause"], value: 0};
-  var reset = { id:"b6", name:"new simulation", actions: ["reload"], value: 0};
+  var playpause = { id:"b4", name:"run simulation",
+                    actions: ["play","pause"], value: 0};
 
-  var tol = {id:"tol", name: "Tolerance towards neighbors",
-             range: [1,8], value: tolerance};
+  var reset = { id:"b6", name:"new simulation",
+                actions: ["reload"], value: 0};
+
+  var tol = {id:"tol", name: "dissatisfaction with neighbors",
+             range: [0,8], value: tolerance};
 
   // Todo: Make this a thing, also: clever css for spacing
-  var spar = {id:"sparsity", name: "Rural Urban",
-             range: [1,8], value: sparsity};
+  var spar = {id:"sparsity", name: "Sparsity",
+             range: [0,4], value: sparsity};
 
   var sliders = [
-    widget.slider(spar).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(spar).width(sliderwidth).trackSize(trackSize).handleSize(handleSize).update(createBoard),
     widget.slider(tol).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
   ]
 
@@ -88,7 +91,9 @@
   ]
 
   controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
-    .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
+    .attr("transform",function(d,i){
+      return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"
+    }); 
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
           .append(widget.buttonElement)
@@ -107,7 +112,6 @@
 
   function resetpositions() {
     if (typeof(t) === "object") {t.stop()};
-    // runpause({value: 0})
     // Todo: stop play button if clicked
     createBoard()
     schelling()
@@ -126,6 +130,7 @@
 
   // TODO: write nearest avail so that first nearest is sufficient
   // consider a ball about the given agent.
+  // consider a torus
   function nearestAvail(a){
     var dist;
     var rental;
