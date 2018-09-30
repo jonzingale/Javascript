@@ -78,7 +78,7 @@
                     actions: ["play","pause"], value: 0};
 
   var tol = {id:"tol", name: "satisfied <-------|-------> seeking",
-             range: [2,6], value: tolerance};
+             range: [2.5,6], value: tolerance};
 
   var spar = {id:"sparsity", name: "Sparsity",
              value: sparsity, choices: ['sparse','between','dense']};
