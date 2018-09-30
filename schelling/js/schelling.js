@@ -175,7 +175,7 @@
 
   function displayHappiness(s) { // make this a simple dom element update
     percentSatisfied = Math.floor(100 * s / population)
-    happiness.text("Happiness: "+percentSatisfied+" %")
+    happiness.text("Percent Happy: "+percentSatisfied+" %")
   }
 
   // loads Initial conditions
