@@ -410,9 +410,9 @@ var widget = (function(){
 		buttonInnerSize = 12,
 		fontSize = 12,
 		padding = 5,
-		orientation = "vertical",
+		orientation = "horizontal",
 		shape = "rect",
-		label = "right",
+		label = "top",
 		update = function(x){};
 	
 		var click = function(j){

@@ -8,28 +8,31 @@
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      tolerance = 4, // how tolerant are the agents?
-      sparsity = 3 // how much room is there to spread out?
+      tolerance = 4.3, // how tolerant are the agents?
+      sparsity = 1, // how much room is there to spread out?
+      occupiedBoard,
+      freeBoard
 
-  // Todo: Make template for larger neighborhoods
   // moore neighborhood
   var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
                [ 0, -1],        [ 0, 1],
                [-1, -1],[-1, 0],[-1, 1]]
 
-  var [freeBoard, occupiedBoard] = [{}, {}]
-
   function createBoard(){
+    freeBoard = {}
+    occupiedBoard = {}
+    var stateK = 5/22 * (1 + spar.value**1.6)
     d3.range(L**2).forEach(function(d,i){
       var id = String(i),
           x = i % L,
           y = Math.floor(i/L),
-          state = Math.floor(Math.random() * spar.value)
+          state = Math.floor(Math.random()+ stateK),
+          ptype = Math.floor(Math.random() + 0.5)
 
       if (state == 0) {
         freeBoard[id] = {x: x, y: y, c: 'black'}
       }
-      else if (state == 1) {
+      else if (state == 1 && ptype == 1) {
         occupiedBoard[id] = {x: x, y: y, c: 'orange'}
       }
       else {
@@ -54,11 +57,13 @@
     .attr("height",controlbox_height)
     .attr("class","schelling_widgets")
 
-  // Play button.
-  var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
-  var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:12,y0:19,width:4,height:0}).Nx(2);
-  var sliderBlock = g.block({x0:3,y0:8,width:10,height:3}).Ny(2);
+  // Buttons and Blocks.
+  var g = widget.grid(controlbox_width,controlbox_height,
+                      n_grid_x, n_grid_y);
+  var playblock = g.block({x0:6,y0:19,width:0,height:0});
+  var buttonblock = g.block({x0:12,y0:19,width:4,height:0});
+  var radioBlock = g.block({x0:15,y0:10,width:0,height:0});
+  var sliderBlock = g.block({x0:2,y0:5,width:10,height:3});
 
   var sliderwidth = sliderBlock.w();
   var handleSize = 12, trackSize = 8;
@@ -66,19 +71,19 @@
   var playpause = { id:"b4", name:"run simulation",
                     actions: ["play","pause"], value: 0};
 
-  var reset = { id:"b6", name:"new simulation",
-                actions: ["reload"], value: 0};
+  var tol = {id:"tol", name: "satisfied <-------|-------> seeking",
+             range: [2,6], value: tolerance};
 
-  var tol = {id:"tol", name: "dissatisfaction with neighbors",
-             range: [0,8], value: tolerance};
-
-  // Todo: Make this a thing, also: clever css for spacing
   var spar = {id:"sparsity", name: "Sparsity",
-             range: [0,4], value: sparsity};
+             value: sparsity, choices: ['sparse','between','dense']};
+
+  var radios = [
+    widget.radio(spar).buttonSize(40).update(createBoard),
+  ]
 
   var sliders = [
-    widget.slider(spar).width(sliderwidth).trackSize(trackSize).handleSize(handleSize).update(createBoard),
-    widget.slider(tol).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(tol).width(sliderwidth).trackSize(trackSize)
+      .handleSize(handleSize),
   ]
 
   var playbutton = [
@@ -86,9 +91,10 @@
          .symbolSize(0.6*g.x(7)).update(runpause)
   ]
 
-  var buttons = [
-    widget.button(reset).update(resetpositions),
-  ]
+  controls.selectAll(".radio .block3").data(radios).enter()
+    .append(widget.radioElement).attr("transform",function(d,i){
+      return "translate("+radioBlock.x(0)+","+radioBlock.y(i)+")"
+    });
 
   controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
     .attr("transform",function(d,i){
@@ -101,18 +107,11 @@
      return "translate("+playblock.x(0)+","+playblock.y(i)+")"
    });
 
-  controls.selectAll(".button .others").data(buttons).enter()
-          .append(widget.buttonElement)
-          .attr("transform",function(d,i){
-     return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"
-   });
-
   var t; // initialize timer
   function runpause(d){ d.value == 1 ? t = d3.timer(schelling,0) : t.stop(); }
 
   function resetpositions() {
     if (typeof(t) === "object") {t.stop()};
-    // Todo: stop play button if clicked
     createBoard()
     schelling()
   }
@@ -121,8 +120,7 @@
   // TODO: write nearest avail so that first nearest is sufficient
   // consider a ball about the given agent.
   function nearestAvail(a){
-    var dist;
-    var rental;
+    var dist; var rental;
     Object.keys(freeBoard).reduce(function(e, k){
       var fa = freeBoard[k]
       fa['id'] = k
