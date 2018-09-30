@@ -11,6 +11,7 @@
       tolerance = 4.3, // how tolerant are the agents?
       sparsity = 1, // how much room is there to spread out?
       occupiedBoard,
+      population,
       freeBoard
 
   // moore neighborhood
@@ -18,6 +19,7 @@
                [ 0, -1],        [ 0, 1],
                [-1, -1],[-1, 0],[-1, 1]]
 
+  // runpause({value: 1})
   function createBoard(){
     freeBoard = {}
     occupiedBoard = {}
@@ -38,6 +40,7 @@
       else {
         occupiedBoard[id] = {x: x, y: y, c: 'red'}
       }
+      population = Object.keys(occupiedBoard).length
     })
   }
 
@@ -51,11 +54,17 @@
 
   var context = world.node().getContext('2d')
   context.fillRect(0, 0, world_width, world_width);
-  
+
   var controls = d3.selectAll("#schelling_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
     .attr("class","schelling_widgets")
+
+  var happiness = d3.select('#percentHappy')
+        .append('text')
+        .attr("x",100)
+        .attr("y",100)
+        .text("ther")
 
   // Buttons and Blocks.
   var g = widget.grid(controlbox_width,controlbox_height,
@@ -91,7 +100,7 @@
          .symbolSize(0.6*g.x(7)).update(runpause)
   ]
 
-  controls.selectAll(".radio .block3").data(radios).enter()
+  controls.selectAll(".radio .block2").data(radios).enter()
     .append(widget.radioElement).attr("transform",function(d,i){
       return "translate("+radioBlock.x(0)+","+radioBlock.y(i)+")"
     });
@@ -109,12 +118,6 @@
 
   var t; // initialize timer
   function runpause(d){ d.value == 1 ? t = d3.timer(schelling,0) : t.stop(); }
-
-  function resetpositions() {
-    if (typeof(t) === "object") {t.stop()};
-    createBoard()
-    schelling()
-  }
 
   // Schelling Segration Code
   // TODO: write nearest avail so that first nearest is sufficient
@@ -145,6 +148,7 @@
   }
 
   function schelling() {
+    var satisfied = 0
     Object.keys(occupiedBoard).forEach(function(key){
       var agent = occupiedBoard[key]
       if (neigh(agent) < tol.value) {
@@ -163,8 +167,15 @@
         occupiedBoard[newRental.id] = newRental
         context.fillStyle = agent.c
         context.fillRect(X(newRental.x), Y(newRental.y), agentSize, agentSize);
-      }
+      } else { satisfied += 1 }
     })
+
+    displayHappiness(satisfied)
+  }
+
+  function displayHappiness(s) { // make this a simple dom element update
+    percentSatisfied = Math.floor(100 * s / population)
+    happiness.text("Happiness: "+percentSatisfied+" %")
   }
 
   // loads Initial conditions

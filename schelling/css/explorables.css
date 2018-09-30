@@ -12,3 +12,11 @@
 	display: block;
 	margin: auto;
 }
+
+.happiness {
+  font-family: dinLight;
+  padding-left: 20px;
+  font-size: 34px;
+  line-height: 1.5;
+  font-weight: 400;
+}
