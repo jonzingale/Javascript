@@ -2,13 +2,13 @@
 (function(){
 
   var L = 50,
-      agentSize = 7.6,
       world_width = 400,
+      agentSize = world_width/L,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      tolerance = 5, // how tolerant are the agents?
+      tolerance = 4, // how tolerant are the agents?
       sparsity = 3 // how much room is there to spread out?
 
   // Todo: Make template for larger neighborhoods
@@ -118,19 +118,8 @@
   }
 
   // Schelling Segration Code
-  function leastDistance(d){
-    var ll = { dist: Infinity, cell: {x: 0, y: 0} }
-    for (i=0; i < freeBoard.length; i++){
-      var { x, y, state } = freeBoard[i]
-      var dd = Math.sqrt((d.x - x)**2 + (d.y - y)**2)
-      if (dd <= ll.dist) { ll = {dist: dd, cell: d} }
-    }
-    return(ll.cell)
-  }
-
   // TODO: write nearest avail so that first nearest is sufficient
   // consider a ball about the given agent.
-  // consider a torus
   function nearestAvail(a){
     var dist;
     var rental;
