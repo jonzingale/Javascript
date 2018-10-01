@@ -24,7 +24,7 @@
   function createBoard(){
     freeBoard = {}
     occupiedBoard = {}
-    var stateK = 5/22 * (1 + spar.value**1.6)
+    var stateK = 10/45 * (1 + spar.value**1.6)
     d3.range(L**2).forEach(function(d,i){
       var id = String(i),
           x = i % L,
