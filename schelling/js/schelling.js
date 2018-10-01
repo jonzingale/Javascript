@@ -15,6 +15,10 @@
       population,
       freeBoard
 
+  var vacantColor = '#330C00', // darkbrown
+      agentColor1 = '#CD853F', // peru
+      agentColor2 = '#8B4513' // coffee
+
   // moore neighborhood
   var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
                [ 0, -1],        [ 0, 1],
@@ -33,13 +37,13 @@
           ptype = Math.floor(Math.random() + 0.5)
 
       if (state == 0) {
-        freeBoard[id] = {x: x, y: y, c: 'black'}
+        freeBoard[id] = {x: x, y: y, c: vacantColor}
       }
       else if (state == 1 && ptype == 1) {
-        occupiedBoard[id] = {x: x, y: y, c: 'orange'}
+        occupiedBoard[id] = {x: x, y: y, c: agentColor1}
       }
       else {
-        occupiedBoard[id] = {x: x, y: y, c: 'red'}
+        occupiedBoard[id] = {x: x, y: y, c: agentColor2}
       }
       population = Object.keys(occupiedBoard).length
     })
@@ -48,8 +52,6 @@
   var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
   var Y = d3.scaleLinear().domain([0,L]).range([world_width,0]);
 
-  var happiness = d3.select('#percentHappy')
-
   var world = d3.selectAll("#schelling_display").append('canvas')
     .attr('width', world_width)
     .attr('height', world_width)
@@ -57,6 +59,8 @@
 
   var context = world.node().getContext('2d')
   context.fillRect(0, 0, world_width, world_width);
+
+  var happiness = d3.select('#percentHappy')
 
   var controls = d3.selectAll("#schelling_controls").append("svg")
     .attr("width",controlbox_width)
@@ -156,7 +160,7 @@
         // remove occupants and make available as rental
         delete occupiedBoard[key]
         freeBoard[key] = agent
-        context.fillStyle = "black"
+        context.fillStyle = vacantColor
         context.fillRect(X(agent.x), Y(agent.y), agentSize, agentSize);
 
         // move into new rental and remove rental from market
