@@ -4,6 +4,9 @@
   For more background see American Scientist July 2015.
 */
 
+// https://en.wikipedia.org/wiki/Braess%27s_paradox
+// http://bit-player.org/ brian hayes' site.
+
 (function() {
   
   var xmlns = "http://www.w3.org/2000/svg";
