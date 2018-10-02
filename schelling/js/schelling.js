@@ -71,9 +71,9 @@
   // Buttons and Blocks.
   var g = widget.grid(controlbox_width,controlbox_height,
                       n_grid_x, n_grid_y);
-  var playblock = g.block({x0:5,y0:18,width:0,height:0});
-  var buttonblock = g.block({x0:12,y0:16,width:4,height:0}).Nx(2);
-  var sliderBlock = g.block({x0:2,y0:8,width:10,height:3});
+  var playblock = g.block({x0:5,y0:16,width:0,height:0});
+  var buttonblock = g.block({x0:12,y0:14,width:4,height:0}).Nx(2);
+  var sliderBlock = g.block({x0:2,y0:7,width:10,height:3});
 
   var sliderwidth = sliderBlock.w();
   var handleSize = 12, trackSize = 8;
