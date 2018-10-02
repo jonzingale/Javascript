@@ -18,7 +18,7 @@
   var stateK = 10/45 * (1 + 2**1.6)
 
   var vacantColor = '#330C00', // darkbrown
-      agentColor1 = '#CD853F', // peru
+      agentColor1 = '#D3AC8B', // peru
       agentColor2 = '#8B4513' // coffee
 
   // moore neighborhood
