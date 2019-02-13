@@ -16,8 +16,8 @@ Random Traffic Generation.
 seed :: StdGen
 seed = mkStdGen 23
 
--- possible positions -> number of cars -> selected positions
-randPositions :: Int -> Int -> [Int]
+-- available positions -> # cars -> Positions
+randPositions :: Int -> Int -> [Position]
 randPositions p n = sort $ rsel [0..p-1] p n seed
   where
     rsel ps l 0 g = []
@@ -26,7 +26,7 @@ randPositions p n = sort $ rsel [0..p-1] p n seed
       let c = ps !! j in
       c : rsel (filter (/= c) ps) (l-1) (i-1) g'
 
--- possible positions -> number of cars -> Traffic
+-- available positions -> # cars -> Traffic
 randTraffic :: Int -> Int -> Traffic
 randTraffic p n =
   let vvs = randomRs (0, 5) seed in
