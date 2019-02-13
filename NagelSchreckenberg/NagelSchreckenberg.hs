@@ -13,10 +13,12 @@ type Traffic = [Car]
 {--
 Random Traffic Generation.
 --}
+seed :: StdGen
+seed = mkStdGen 23
 
 -- possible positions -> number of cars -> selected positions
 randPositions :: Int -> Int -> [Int]
-randPositions p n = sort.rsel [0..p-1] p n $ mkStdGen 10
+randPositions p n = sort $ rsel [0..p-1] p n seed
   where
     rsel ps l 0 g = []
     rsel ps l i g = 
@@ -27,7 +29,7 @@ randPositions p n = sort.rsel [0..p-1] p n $ mkStdGen 10
 -- possible positions -> number of cars -> Traffic
 randTraffic :: Int -> Int -> Traffic
 randTraffic p n =
-  let vvs = randomRs (0, 5) $ mkStdGen 32 in
+  let vvs = randomRs (0, 5) seed in
   let pps = randPositions p n in
   tr 0 vvs pps
   where
