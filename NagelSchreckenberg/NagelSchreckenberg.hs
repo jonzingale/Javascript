@@ -43,9 +43,24 @@ A car found in position n can then query about the car at n+1.
 
 car0 = Car 0 23 2
 car1 = Car 1 51 3
+
 traffic = randTraffic 100 5
 
 neighPos :: Traffic -> Car -> Position
 neighPos t c = position.((!!) t) $ mod (cid c + 1) (length t)
+
+distances :: Traffic -> [Int]
+distances (t:ts) = let len = length (t:ts) in
+  [mod (position q - position p) len | (p, q) <- zip (t:ts) (ts ++ [t])]
+
+-- This doesn't really seem to be correct. Negative velocities.
+updateVs :: Traffic -> Traffic
+updateVs tts = uVs tts (distances tts)
+  where
+    uVs [] _ = []
+    uVs ((Car i p v):cs) (d:ds)
+      | d > 5  = (Car i p v): uVs cs ds
+      | otherwise = (Car i p (d-v)) : uVs cs ds
+
 
 
