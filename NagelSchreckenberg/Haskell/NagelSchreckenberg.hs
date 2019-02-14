@@ -14,14 +14,14 @@ main = do runNS seed traffic
 
 -- Globals and Constants:
 traffic = randTraffic trSize cars
-trSize = 210
+trSize = 100
 
 seed :: StdGen
 seed = mkStdGen 23
 prob :: Probability
 prob = (1,3)
 
-(braking, maxV, cars) = (4, 7, div (trSize * 4) 20) -- edge of chaos
+(braking, maxV, cars) = (4, 7, div (trSize * 4) 20) -- edge of chaos, size=200
 -- (braking, maxV, cars) = (1, 10, div (trSize * 3) 20) -- all clumpy
 -- (braking, maxV, cars) = (1, 5, div (trSize * 7) 20) -- standard model
 
