@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ghc -o nagel NagelSchreckenberg.hs
+rm NagelSchreckenberg.hi NagelSchreckenberg.o
+./nagel

@@ -1,4 +1,4 @@
-module NagelSchreckenberg where
+module Main where
 import Data.List (sort, nub)
 import System.Random
 
@@ -13,26 +13,22 @@ data Car = Car { cid :: Int, pos :: Position, vel :: Velocity}
 main = do runNS seed traffic
 
 -- Globals and Constants:
+traffic = randTraffic trSize cars
+trSize = 210
+
 seed :: StdGen
 seed = mkStdGen 23
 prob :: Probability
 prob = (1,3)
-maxV :: Velocity
-maxV = 1
 
-traffic = randTraffic trSize cars
-car0 = Car 0 23 2
-car1 = Car 1 51 3
-trSize = 100
-cars = 40 -- ??? div (trSize * 2) 3
--- trSize = 20
--- cars = 2
+(braking, maxV, cars) = (4, 7, div (trSize * 4) 20) -- edge of chaos
+-- (braking, maxV, cars) = (1, 10, div (trSize * 3) 20) -- all clumpy
+-- (braking, maxV, cars) = (1, 5, div (trSize * 7) 20) -- standard model
 
 -- Random Traffic Generation:
-
 -- available positions -> # cars -> Positions
 randPositions :: Int -> Int -> [Position]
-randPositions p n = sort $ rsel [0..p-1] p n seed
+randPositions p n = sort $ rsel [0..p] p n seed
   where
     rsel ps l 0 g = []
     rsel ps l i g = 
@@ -57,7 +53,6 @@ Nagel-Schreckenberg Algorithm:
 * with likelihood p, reduce speed 1 unit
 * update positions
 --}
-
 neighPos :: Traffic -> Car -> Position
 neighPos t c = pos.((!!) t) $ mod (cid c + 1) (length t)
 
@@ -66,7 +61,6 @@ distances (t:ts) =
   [mod (pos q - pos p) trSize | -- use of global
     (p, q) <- zip (t:ts) (ts ++ [t])]
 
--- will break for traffic with 1 car.
 updateVs :: Traffic -> Traffic
 updateVs tts = uVs tts (distances tts)
   where
@@ -81,20 +75,21 @@ biasedCoins g' pq =
   let rs = take trSize $ randomRs (0, 10^5) g' in -- use of global
   (map (bCoin pq) rs, snd.next $ g')
   where
-    bCoin (p, q) r | r < div (p*10^5) q = 1
-                   | otherwise = 0
+    bCoin (p, q) r | r < div (p*10^5) q = 0
+                   | otherwise = 1
 
--- with likelihood p, reduce speed 1 unit.
+-- with likelihood p, reduce speed by a braking constant.
 roadJitters :: StdGen -> Traffic -> (Traffic, StdGen)
 roadJitters g cs =
   let (bs, g') = biasedCoins g prob in -- use of global
-  let zeroV v b = if v > 0 then v-b else v in
+  let zeroV v b = if v > braking-1 then v-(b*braking) else v in
   let tf = [Car i p (zeroV v b) | (Car i p v, b) <- zip cs bs] in
     (tf, g')
 
 updatePs :: Traffic -> Traffic
 updatePs [] = [] -- use of global
-updatePs ((Car i p v): cs) = (Car i (mod (p+v) trSize) v) : updatePs cs
+updatePs ((Car i p v): cs) =
+  (Car i (mod (p+v) trSize) v) : updatePs cs
 
 showTraffic :: Traffic -> String
 showTraffic cs = f 0 (sort.map pos $ cs)
@@ -106,24 +101,13 @@ showTraffic cs = f 0 (sort.map pos $ cs)
                | i == p = '*' : f (i+1) ps
                | otherwise = ' ' : f (i+1) (p:ps)
 
-runT :: StdGen -> Traffic -> IO()
-runT g cs = do
-  let uVCs = updateVs cs
-  let (uJCs, g') = roadJitters g uVCs
-  let uPCs = updatePs uVCs
-  let poss = map pos cs
-  let diff = length poss - (length.reverse.nub.reverse $ poss)
-  putStr $ (show poss) ++ " : " ++ show diff ++ "\n"
-  wait (10^6)
-  runT g' uPCs
-
 runNS :: StdGen -> Traffic -> IO()
 runNS g cs = do
   let uVCs = updateVs cs
   let (uJCs, g') = roadJitters g uVCs
   let uPCs = updatePs uJCs
   putStr $ showTraffic cs
-  wait (10^5)
+  wait (10^6)
   runNS g' uPCs
 
 wait :: Int -> IO()
