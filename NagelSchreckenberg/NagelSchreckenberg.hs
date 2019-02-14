@@ -10,11 +10,17 @@ data Car = Car { cid :: Int, position :: Position, velocity :: Velocity}
 
 type Traffic = [Car]
 
-{--
-Random Traffic Generation.
---}
+-- Globals and Constants:
 seed :: StdGen
 seed = mkStdGen 23
+
+trSize = 100
+car0 = Car 0 23 2
+car1 = Car 1 51 3
+traffic = randTraffic trSize 5
+
+
+-- Random Traffic Generation.
 
 -- available positions -> # cars -> Positions
 randPositions :: Int -> Int -> [Position]
@@ -36,30 +42,23 @@ randTraffic p n =
     tr i (v:vs) [] = []
     tr i (v:vs) (p:ps) = Car i p v : tr (i+1) vs ps
 
-{--
-Perhaps think of the board as an indexed list of cars.
-A car found in position n can then query about the car at n+1. 
---}
 
-car0 = Car 0 23 2
-car1 = Car 1 51 3
-
-traffic = randTraffic 100 5
+-- N-S functions
 
 neighPos :: Traffic -> Car -> Position
 neighPos t c = position.((!!) t) $ mod (cid c + 1) (length t)
 
 distances :: Traffic -> [Int]
-distances (t:ts) = let len = length (t:ts) in
-  [mod (position q - position p) len | (p, q) <- zip (t:ts) (ts ++ [t])]
+distances (t:ts) =
+  [mod (position q - position p) trSize |
+    (p, q) <- zip (t:ts) (ts ++ [t])]
 
--- This doesn't really seem to be correct. Negative velocities.
 updateVs :: Traffic -> Traffic
 updateVs tts = uVs tts (distances tts)
   where
     uVs [] _ = []
     uVs ((Car i p v):cs) (d:ds)
-      | d > 5  = (Car i p v): uVs cs ds
+      | d > 5  = (Car i p v) : uVs cs ds
       | otherwise = (Car i p (d-v)) : uVs cs ds
 
 
