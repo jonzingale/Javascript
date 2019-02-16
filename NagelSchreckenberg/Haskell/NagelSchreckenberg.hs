@@ -53,8 +53,6 @@ Nagel-Schreckenberg Algorithm:
 * with likelihood p, reduce speed 1 unit
 * update positions
 --}
-neighPos :: Traffic -> Car -> Position
-neighPos t c = pos.((!!) t) $ mod (cid c + 1) (length t)
 
 distances :: Traffic -> [Int]
 distances (t:ts) =
