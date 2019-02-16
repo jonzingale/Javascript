@@ -31,7 +31,7 @@ randPositions :: Int -> Int -> [Position]
 randPositions p n = sort $ rsel [0..p] p n seed
   where
     rsel ps l 0 g = []
-    rsel ps l i g = 
+    rsel ps l i g =
       let (j, g') = randomR (0, l) g in
       let c = ps !! j in
       c : rsel (filter (/= c) ps) (l-1) (i-1) g'
