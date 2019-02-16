@@ -94,6 +94,59 @@
   }
 
   // Cellular Automata
+
+  // chooses n, an ordered but random subset of p.
+  function randPositions(p, n) {
+    var rPositions = []
+    var zeroToP = []
+    var r = 0
+
+    // gives the total possible car positions
+    while (p>=0) { zeroToP.unshift(p) ; p-=1}
+
+    // iteratively choose n possible positions
+    while (n > 0) {
+      r = Math.floor(Math.random() * zeroToP.length)
+      rPositions.unshift(zeroToP[r])
+      zeroToP = zeroToP.filter(p => p != zeroToP[r])
+      n -= 1
+    }
+
+    rPositions.sort(function(a, b){return a-b})
+    return rPositions
+  }
+
+
+  var maxV = 5
+  // available positions -> # cars -> Traffic
+  function randTraffic(p, n) {
+    var pps = randPositions(p, n)
+    var rando = 0
+    var cars = []
+    var vvs = []
+
+    while (p>=0) {
+      rando = Math.floor(Math.random() * maxV)
+      vvs.unshift(rando)
+      p-=1
+    }
+
+    while (n > 0) {
+      p = pps.shift()
+      v = vvs.shift()
+      cars.push({'id': n, 'pos': p, 'vel': v})
+      n -= 1
+    }
+    return cars
+  }
+
+  traffic = randTraffic(100, 5)
+
+  it = traffic.map(c => c.pos)
+  console.log(it)
+
+//////////////////////////////////
+
   function modB(n) {
     return(n < 0 ? L + (n % L) : n % L)
   }
