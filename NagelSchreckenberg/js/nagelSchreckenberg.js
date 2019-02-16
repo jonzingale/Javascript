@@ -93,7 +93,14 @@
     d.value ? rule.value = true : rule.value = false
   }
 
-  // Cellular Automata
+
+// Nagel-Schreckenberg Algorithm:
+// * accelerate by 1 unit if not max: 5
+// * slowing down to p(b)-p(a)-1 if v(a) > p(b)-p(a)
+// * with likelihood p, reduce speed 1 unit
+// * update positions
+
+  function mod(a,b){return(((a % b) + b) % b)}
 
   // chooses n, an ordered but random subset of p.
   function randPositions(p, n) {
@@ -115,7 +122,6 @@
     rPositions.sort(function(a, b){return a-b})
     return rPositions
   }
-
 
   var maxV = 5
   // available positions -> # cars -> Traffic
@@ -140,42 +146,67 @@
     return cars
   }
 
-  traffic = randTraffic(100, 5)
+  var trSize = 20
+  var traffic = randTraffic(trSize, 5)
 
-  it = traffic.map(c => c.pos)
-  console.log(it)
+  // distances :: Traffic -> [Int]
+  function distances(tff) {
+    var poss = tff.map(c => c.pos)
+    var t = tff.shift() ; tff.push(t)
+
+    var ds = poss.map(function(e,i) {
+      return(mod(tff[i].pos - e, trSize))
+    })
+    return ds
+  }
+
+  // Todo: don't redefine traffic in function
+  function updateVs(tff) {
+    var dds = distances(tff)
+    var cars = []
+    while (tff.length > 0){
+      d = dds.shift()
+      t = tff.shift()
+
+      if (d > maxV && t.vel < maxV) { t.vel += 1 } 
+      else if (t.vel >= d) { t.vel = d-1 }
+      cars.unshift(t)
+    }
+    return(traffic=cars)
+  }
+
+  // Todo: don't redefine traffic in function
+  function updatePs(tff) {
+    var cars = tff.map(function(car){
+      var p = car.pos
+      var v = car.vel
+      return {'id': 1, 'pos': mod(p+v, trSize), 'vel': v}
+    })
+    return(traffic=cars)
+  }
+// roadJitters :: StdGen -> Traffic -> (Traffic, StdGen)
+// roadJitters g cs =
+//   let (bs, g') = biasedCoins g prob in -- use of global
+//   let zeroV v b = if v > braking-1 then v-(b*braking) else v in
+//   let tf = [Car i p (zeroV v b) | (Car i p v, b) <- zip cs bs] in
+//     (tf, g')
+
+
+// runNS :: StdGen -> Traffic -> IO()
+// runNS g cs = do
+//   let uVCs = updateVs cs
+//   let (uJCs, g') = roadJitters g uVCs
+//   let uPCs = updatePs uJCs
+//   putStr $ showTraffic cs
+//   wait (10^6)
+//   runNS g' uPCs
+// ary = [] ; p = 10 ; while (p>=0) { ary.unshift(p) ; p-=1}
+console.log(JSON.stringify(updatePs(traffic)))
+console.log(JSON.stringify(updatePs(traffic)))
+
 
 //////////////////////////////////
 
-  function modB(n) {
-    return(n < 0 ? L + (n % L) : n % L)
-  }
-
-  function neigh(d) {
-    var ns = moore.map(x =>
-      board[modB(d.x + x[0]) + modB(d.y + x[1]) * L].state)
-
-    // only sum if state is a 1
-    var result = ns.reduce((a,s) => a += s % 2, 0)
-    return(result)
-  }
-
-  function conways(d) { // conway's blink
-    if (d.state == 0 && neigh(d) == 3)
-      { return {x: d.x, y: d.y, state: 1} }
-    else if (d.state == 1 && (neigh(d) == 3 || neigh(d) == 2))
-      { return {x: d.x, y: d.y, state: 1} }
-    else { return {x: d.x, y: d.y, state: 0} }
-  }
-
-  // https://en.wikipedia.org/wiki/Brian%27s_Brain
-  function brians(d) { // brian's blink
-    if (d.state == 0 && neigh(d) == 2)
-      { return {x: d.x, y: d.y, state: 1} }
-    else if (d.state == 1)
-      { return {x: d.x, y: d.y, state: 2} }
-    else { return {x: d.x, y: d.y, state: 0} }
-  }
 
   function updateDisplay() {
     board.forEach(function(d) {
@@ -188,7 +219,7 @@
   }
 
   function runBlink() {
-    newboard = board.map(x => rule.value ? brians(x) : conways(x))
+    // newboard = board.map(x => rule.value ? brians(x) : conways(x))
     board = newboard
     updateDisplay()
   }
