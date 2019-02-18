@@ -6,48 +6,33 @@
       controlbox_height = 400,
       n_grid_x = 24,
       n_grid_y = 24,
-      L = 150,
+      L = 0,
       k = world_width/L
 
-  // moore neighborhood
-  var moore = [[-1,-1],[-1, 0],[-1, 1],
-              [ 0, -1],        [ 0, 1],
-              [ 1, -1],[ 1, 0],[ 1, 1]]
+  // var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
+  // var Y = d3.scaleLinear().domain([0,L]).range([world_height,0]);
 
-  // create board
-  var newboard = []
-  var board = d3.range(L**2).map(function(d,i){
-    return {
-      x: i % L,
-      y: Math.floor(i/L),
-      state: Math.floor(Math.random() + 0.02) // sparse randomness
-    }
-  })
-
-  var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
-  var Y = d3.scaleLinear().domain([0,L]).range([world_height,-3]);
-
-  var world = d3.selectAll("#automata_display").append('canvas')
+  var world = d3.selectAll("#traffic_display").append('canvas')
                 .attr('width', world_width)
                 .attr('height', world_height)
-                .attr("class",'automata_display')
+                .attr("class",'traffic_display')
 
   var context = world.node().getContext('2d')
 
-  var controls = d3.selectAll("#automata_controls").append("svg")
+  var controls = d3.selectAll("#traffic_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
-    .attr("class","automata_widgets")
+    .attr("class","traffic_widgets")
 
   // Play button.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
   var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:3,y0:10,width:4,height:0}).Nx(2);
-  var ruleblock = g.block({x0:8,y0:10,width:6,height:3}).Ny(2);
+  var buttonblock = g.block({x0:15,y0:19,width:4,height:0}).Nx(2);
 
-  var playpause = { id:"b4", name:"start world", actions: ["play","pause"], value: 0};
-  var reset = { id:"b6", name:"new world", actions: ["rewind"], value: 0};
-  var rule = {id:"t1", name: "Conway's / Brian's",  value: true};
+  var playpause = { id:"b4", name:"play / pause",
+                    actions: ["play","pause"], value: 0};
+
+  var reset = { id:"b6", name:"reset", actions: ["rewind"], value: 0};
 
   var playbutton = [
    widget.button(playpause).size(g.x(7))
@@ -56,10 +41,6 @@
 
   var buttons = [
     widget.button(reset).update(resetpositions),
-  ]
-
-  var toggles = [
-    widget.toggle(rule).label("bottom").size(14).update(togglerule),
   ]
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
@@ -72,20 +53,20 @@
           .append(widget.buttonElement)
           .attr("transform",function(d,i){
      return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"
-   });  
+   });
 
-  controls.selectAll(".toggle").data(toggles).enter()
-          .append(widget.toggleElement)
-          .attr("transform",function(d,i){
-      return "translate("+ruleblock.x(0)+","+ruleblock.y(i)+")"
-  });  
+  var tm; // initialize timer
+  function runpause(d){
+    d.value == 1 ? tm = setInterval(runBlink, 50) : clearInterval(tm)
+    // d.value == 1 ? t = d3.timer(runBlink,0) : t.stop()
+  }
 
-  var t; // initialize timer
-  function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
-
+  var y = 0 // initializes y position
   function resetpositions() {
-    if (typeof(t) === "object") {t.stop()};
-    board.forEach( d => d.state = Math.floor(Math.random() + 0.02))
+    if (typeof(t) === "object") {clearInterval(tm)};
+    y = 0; context.fillStyle = 'white'
+    context.fillRect(0, 0, world_width, world_width);
+    var traffic = randTraffic(trSize, trSize/3)
     runBlink()
   }
 
@@ -94,11 +75,11 @@
   }
 
 
-// Nagel-Schreckenberg Algorithm:
-// * accelerate by 1 unit if not max: 5
-// * slowing down to p(b)-p(a)-1 if v(a) > p(b)-p(a)
-// * with likelihood p, reduce speed 1 unit
-// * update positions
+  // Nagel-Schreckenberg Algorithm:
+  // * accelerate by 1 unit if not max: 5
+  // * slowing down to p(b)-p(a)-1 if v(a) > p(b)-p(a)
+  // * with likelihood p, reduce speed 1 unit
+  // * update positions
 
   function mod(a,b){return(((a % b) + b) % b)}
 
@@ -112,11 +93,11 @@
     while (p>=0) { zeroToP.unshift(p) ; p-=1}
 
     // iteratively choose n possible positions
-    while (n > 0) {
+    i = 0 ; while (n > i) {
       r = Math.floor(Math.random() * zeroToP.length)
       rPositions.unshift(zeroToP[r])
       zeroToP = zeroToP.filter(p => p != zeroToP[r])
-      n -= 1
+      i += 1
     }
 
     rPositions.sort(function(a, b){return a-b})
@@ -124,106 +105,76 @@
   }
 
   var maxV = 5
+  var carSize = 2
+  var trSize = world_width
+  var numCars = 10
+  var traffic = randTraffic(trSize, numCars)
+  var braking = 2
+  var prob = 2/3
+
   // available positions -> # cars -> Traffic
   function randTraffic(p, n) {
     var pps = randPositions(p, n)
+    var [cars, vvs] = [[],[]]
     var rando = 0
-    var cars = []
-    var vvs = []
 
-    while (p>=0) {
+    for (i=0; i < p; i++) {
       rando = Math.floor(Math.random() * maxV)
-      vvs.unshift(rando)
-      p-=1
+      vvs.push(rando)
     }
 
-    while (n > 0) {
-      p = pps.shift()
-      v = vvs.shift()
-      cars.push({'id': n, 'pos': p, 'vel': v})
-      n -= 1
+    for (i=0; i < n; i++) {
+      [p, v] = [pps.shift(), vvs.shift()]
+      cars.unshift({'id': n-i-1, 'pos': p, 'vel': v})
     }
     return cars
   }
 
-  var trSize = 20
-  var traffic = randTraffic(trSize, 5)
-
-  // distances :: Traffic -> [Int]
-  function distances(tff) {
-    var poss = tff.map(c => c.pos)
-    var t = tff.shift() ; tff.push(t)
-
-    var ds = poss.map(function(e,i) {
-      return(mod(tff[i].pos - e, trSize))
-    })
-    return ds
-  }
-
-  // Todo: don't redefine traffic in function
   function updateVs(tff) {
-    var dds = distances(tff)
-    var cars = []
-    while (tff.length > 0){
-      d = dds.shift()
-      t = tff.shift()
+    tff.forEach(function(car) {
+      var nextCar = tff[mod(car.id + 1, numCars)]
+      var d = mod(nextCar.pos - car.pos, trSize)
 
-      if (d > maxV && t.vel < maxV) { t.vel += 1 } 
-      else if (t.vel >= d) { t.vel = d-1 }
-      cars.unshift(t)
-    }
-    return(traffic=cars)
-  }
+      // update velocity
+      if (d > maxV && car.vel < maxV) { car.vel = car.vel + 1 } 
+      else if (car.vel >= d) { car.vel = d}
 
-  // Todo: don't redefine traffic in function
-  function updatePs(tff) {
-    var cars = tff.map(function(car){
-      var p = car.pos
-      var v = car.vel
-      return {'id': 1, 'pos': mod(p+v, trSize), 'vel': v}
+      // jitters
+      var b = 0 ; if (Math.random() > prob) {b = 1}
+      // if (car.vel > braking && car.vel >= d)
+      if (car.vel > braking)
+
+        { car.vel = car.vel - b*braking }
     })
-    return(traffic=cars)
   }
-// roadJitters :: StdGen -> Traffic -> (Traffic, StdGen)
-// roadJitters g cs =
-//   let (bs, g') = biasedCoins g prob in -- use of global
-//   let zeroV v b = if v > braking-1 then v-(b*braking) else v in
-//   let tf = [Car i p (zeroV v b) | (Car i p v, b) <- zip cs bs] in
-//     (tf, g')
 
+  function updatePs(tff) {
+    tff.forEach(function (car){
+      car.pos = mod(car.pos+car.vel, trSize)
+    })
+  }
 
-// runNS :: StdGen -> Traffic -> IO()
-// runNS g cs = do
-//   let uVCs = updateVs cs
-//   let (uJCs, g') = roadJitters g uVCs
-//   let uPCs = updatePs uJCs
-//   putStr $ showTraffic cs
-//   wait (10^6)
-//   runNS g' uPCs
-// ary = [] ; p = 10 ; while (p>=0) { ary.unshift(p) ; p-=1}
-console.log(JSON.stringify(updatePs(traffic)))
-console.log(JSON.stringify(updatePs(traffic)))
+  function updateDisplay(tff) {
+    context.save()
+    context.translate(0,carSize)
+    context.drawImage(world.node(), 0, 0)
+    context.restore()
 
+    context.fillStyle = 'white'
+    context.fillRect(0, 0, world_width, carSize);
 
-//////////////////////////////////
-
-
-  function updateDisplay() {
-    board.forEach(function(d) {
-      if (d.state == 0) { context.fillStyle = "black"}
-      else if (d.state == 1) { context.fillStyle = "orange" }
-      else { context.fillStyle = "red" }
-
-      context.fillRect(X(d.x), Y(d.y), 3.5, 3.5);
+    tff.forEach(function(c) {
+      context.fillStyle = 'black'
+      if (c['id'] == 1) { context.fillStyle = 'red' }
+      context.fillRect(c.pos, L-y, carSize, carSize);
     })
   }
 
   function runBlink() {
-    // newboard = board.map(x => rule.value ? brians(x) : conways(x))
-    board = newboard
-    updateDisplay()
+    updatePs(traffic)
+    updateVs(traffic)
+    updateDisplay(traffic)
+    y = 0 //mod(y+1, L)
   }
-  
-  runBlink() // loads board effectively
-  
+
 })()
