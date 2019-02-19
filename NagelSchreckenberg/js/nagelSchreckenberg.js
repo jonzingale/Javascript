@@ -47,7 +47,6 @@
   var trSize = world_width
   var numCars = Math.floor(35/100*world_width/carSize)
   var traffic = randTraffic(trSize, numCars)
-  var r = 0
 
   // Sliders
   var def_velocity_param = 5, // Max Velocity
@@ -92,7 +91,7 @@
     if (typeof(t) === "object") {clearInterval(tm)};
     context.fillStyle = 'white'
     context.fillRect(0, 0, world_width, world_height);
-    var traffic = randTraffic(trSize, trSize/3)
+    var traffic = randTraffic(trSize, numCars)
     runBlink()
 
     sliders[0].click(def_probability_param);
@@ -122,7 +121,7 @@
 
     // iteratively choose n possible positions
     for (i=0; i < n; i++ ) {
-      r = Math.floor(Math.random() * zeroToP.length)
+      var r = Math.floor(Math.random() * zeroToP.length)
       rPositions.unshift(zeroToP[r])
       zeroToP = zeroToP.filter(p => p != zeroToP[r])
     }
@@ -160,7 +159,7 @@
       var dp = mod(car.pos - prevCar.pos, trSize)
       var br = Math.floor(braking.value) || 1
       var mV = Math.floor(maxV.value) || 5
-      var vel = 0
+      var vel = car.vel
 
       // update velocity
       if (dn > mV && mV > car.vel) { vel = car.vel + 1 } // go max speed
