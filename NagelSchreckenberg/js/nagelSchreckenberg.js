@@ -2,8 +2,8 @@
 
   var world_width = 400,
       world_height = 600,
-      controlbox_width = 400,
-      controlbox_height = 400,
+      controlbox_width = 350,
+      controlbox_height = 350,
       n_grid_x = 24,
       n_grid_y = 24
 
@@ -18,6 +18,33 @@
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
     .attr("class","traffic_widgets")
+
+  var roadContainer = d3.selectAll("#open_road").append("svg")
+    .attr("width",controlbox_width)
+    .attr("height",controlbox_height)
+    .attr("class","open_road")
+
+  var road = roadContainer.append('circle')
+    .style('fill','white').attr("cx", 175).attr("cy", 175).attr("r", 165)
+    .style('stroke','black').attr("stroke-width", 20)
+
+  var carData = [] // data for Cars on Road.
+  var colors = ['red', 'orange', 'green', 'blue', 'violet']
+  colors.forEach(function(c) {
+    carData.unshift({ 'cx': 340, 'cy' : 175, 'r' : 9, 'color': c })
+  })
+  for (i=0; i<20 ; i++){
+    carData.unshift({ 'cx':340, 'cy':175, 'r':9, 'color': 'lightgrey'})
+  }
+
+  var roadCars = roadContainer.selectAll('circle')
+    .data(carData).enter().append('circle')
+
+  var carAttrs = roadCars
+    .style("fill", function (d) { return d.color; })
+    .attr("cx", function (d) { return d.cx; })
+    .attr("cy", function (d) { return d.cy; })
+    .attr("r", function (d) { return d.r; })
 
   // Play button.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
@@ -84,7 +111,7 @@
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runBlink, 25) : clearInterval(tm)
+    d.value == 1 ? tm = setInterval(runBlink, 50) : clearInterval(tm)
   }
 
   function resetpositions() {
@@ -98,7 +125,6 @@
     sliders[1].click(def_braking_param);
     sliders[2].click(def_velocity_param);
   }
-
 
   // Nagel-Schreckenberg Algorithm:
   // * accelerate by 1 unit if not max: 5
@@ -139,7 +165,8 @@
 
     for (i=0; i < n; i++) {
       [p, v] = [pps.shift(), vvs.shift()]
-      cars.unshift({'cid': n-i-1, 'pos': p, 'vel': v})
+      col = 'black' ; if (i==0) {col = 'red'} 
+      cars.unshift({'cid': n-i-1, 'pos': p, 'vel': v, 'col': col})
     }
     return cars
   }
@@ -165,7 +192,7 @@
       // jitters
       if (vel > br) { vel -= b*Math.min(br, dp) }
 
-      cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel})
+      cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel, 'col': car.col})
     })
     traffic = cff
   }
@@ -194,6 +221,18 @@
     context.fillStyle = 'white'
     context.fillRect(0, 0, world_width, carSize);
 
+    // position display
+    var cData = tff.slice(0,25).map(function(car){
+      var anglePos = 2*Math.PI * car.pos/world_width
+      return { 'cx' : 175+Math.cos(anglePos)*165,
+               'cy' : 175+Math.sin(anglePos)*165}
+    })
+
+    roadCars.data(cData)
+      .attr("cx", function (d) { return d.cx; })
+      .attr("cy", function (d) { return d.cy; })
+
+    // time display
     tff.forEach(function(car) {
       applyColor(car)
       context.fillRect(car.pos, 0, carSize, carSize);
