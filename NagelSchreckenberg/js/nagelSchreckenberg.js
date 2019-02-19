@@ -22,7 +22,8 @@
   // Play button.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
   var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:13,y0:19,width:4,height:0}).Nx(2);
+  var buttonblock = g.block({x0:5,y0:11,width:4,height:0}).Nx(2);
+  var paramsblock = g.block({x0:12,y0:10,width:10,height:8}).Ny(3);
 
   var playpause = { id:"b4", name:"play / pause",
                     actions: ["play","pause"], value: 0};
@@ -30,12 +31,40 @@
   var reset = { id:"b6", name:"reset", actions: ["rewind"], value: 0};
 
   var playbutton = [
-   widget.button(playpause).size(g.x(7))
-         .symbolSize(0.6*g.x(7)).update(runpause)
+   widget.button(playpause).size(g.x(7)).symbolSize(0.6*g.x(7)).update(runpause)
   ]
 
   var buttons = [
     widget.button(reset).update(resetpositions),
+  ]
+
+  // Constants
+  var maxV = 5
+  var braking = 1
+  var prob = 1/3
+
+  var carSize = 2
+  var trSize = world_width
+  var numCars = Math.floor(35/100*world_width/carSize)
+  var traffic = randTraffic(trSize, numCars)
+  var r = 0
+
+  // Sliders
+  var def_velocity_param = 5, // Max Velocity
+      def_braking_param = 1, // sensitivity when braking
+      def_prob_param = 1/3 // probability of braking
+
+  var sliderwidth = paramsblock.w();
+  var handleSize = 12, trackSize = 8;
+
+  var maxV = {id:"maxV", name: "max velocity", range: [1,20], value: def_velocity_param};
+  var braking = {id:"braking", name: "brake sensitivity", range: [1,10], value: def_braking_param};
+  var prob = {id:"prob", name: "probability of braking", range: [0,1], value: def_prob_param};
+
+  var sliders = [
+    widget.slider(prob).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(braking).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(maxV).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
   ]
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
@@ -50,6 +79,10 @@
      return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"
    });
 
+  controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
+    .attr("transform",function(d,i){return "translate("+paramsblock.x(0)+","+paramsblock.y(i)+")"});  
+
+
   var tm; // initialize timer
   function runpause(d){
     d.value == 1 ? tm = setInterval(runBlink, 25) : clearInterval(tm)
@@ -61,6 +94,10 @@
     context.fillRect(0, 0, world_width, world_height);
     var traffic = randTraffic(trSize, trSize/3)
     runBlink()
+
+    sliders[0].click(def_probability_param);
+    sliders[1].click(def_braking_param);
+    sliders[2].click(def_velocity_param);
   }
 
   function togglerule(d) {
@@ -76,20 +113,9 @@
 
   function mod(a,b){return(((a % b) + b) % b)}
 
-  // Constants
-  var maxV = 7
-  var braking = 4
-  var carSize = 2
-  var trSize = world_width
-  var numCars = Math.floor(35/100*world_width/carSize)
-  var traffic = randTraffic(trSize, numCars)
-  var prob = 1/3
-
   // chooses n, an ordered but random subset of p.
   function randPositions(p, n) {
-    var rPositions = []
-    var zeroToP = []
-    var r = 0
+    var [rPositions, zeroToP] = [[],[]]
 
     // gives the total possible car positions
     for (i=0; i < p; i++) { zeroToP.unshift(i) }
@@ -107,12 +133,13 @@
 
   // available positions -> # cars -> Traffic
   function randTraffic(p, n) {
+    var mV = Math.floor(maxV.value) || 5
     var pps = randPositions(p, n)
     var [cars, vvs] = [[],[]]
     var rando = 0
 
     for (i=0; i < p; i++) {
-      vvs.push(1+Math.floor(Math.random() * (maxV-1)))
+      vvs.push(1+Math.floor(Math.random() * (mV-1)))
     }
 
     for (i=0; i < n; i++) {
@@ -126,20 +153,22 @@
     var cff = []
 
     tff.forEach(function(car) {
-      var b = 0 ; if (Math.random() < prob) {b = 1}
+      var b = 0 ; if (Math.random() < prob.value) {b = 1}
       var prevCar = tff[mod(car.cid - 1, numCars)]
       var nextCar = tff[mod(car.cid + 1, numCars)]
       var dn = mod(nextCar.pos - car.pos, trSize)
       var dp = mod(car.pos - prevCar.pos, trSize)
+      var br = Math.floor(braking.value) || 1
+      var mV = Math.floor(maxV.value) || 5
       var vel = 0
 
       // update velocity
-      if (dn > maxV && maxV > car.vel) { vel = car.vel + 1 } // go max speed
+      if (dn > mV && mV > car.vel) { vel = car.vel + 1 } // go max speed
       else if (car.vel > dn) { vel = dn } // too fast, slow down
       else { vel = car.vel } // just right
 
       // jitters
-      if (vel > braking) { vel -= b*Math.min(braking, dp) }
+      if (vel > br) { vel -= b*Math.min(br, dp) }
 
       cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel})
     })
@@ -147,9 +176,7 @@
   }
 
   function updatePs(tff) {
-    tff.forEach(function (car){
-      car.pos = mod(car.pos+car.vel, trSize)
-    })
+    tff.forEach(function (car){ car.pos = mod(car.pos+car.vel, trSize) })
   }
 
   function applyColor(car) {
