@@ -99,10 +99,6 @@
     sliders[2].click(def_velocity_param);
   }
 
-  function togglerule(d) {
-    d.value ? rule.value = true : rule.value = false
-  }
-
 
   // Nagel-Schreckenberg Algorithm:
   // * accelerate by 1 unit if not max: 5
