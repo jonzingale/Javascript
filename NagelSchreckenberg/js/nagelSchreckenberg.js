@@ -58,7 +58,7 @@
   function resetpositions() {
     if (typeof(t) === "object") {clearInterval(tm)};
     context.fillStyle = 'white'
-    context.fillRect(0, 0, world_width, world_width);
+    context.fillRect(0, 0, world_width, world_height);
     var traffic = randTraffic(trSize, trSize/3)
     runBlink()
   }
@@ -77,8 +77,8 @@
   function mod(a,b){return(((a % b) + b) % b)}
 
   // Constants
-  var maxV = 5
-  var braking = 1
+  var maxV = 7
+  var braking = 4
   var carSize = 2
   var trSize = world_width
   var numCars = Math.floor(35/100*world_width/carSize)
@@ -122,24 +122,24 @@
     return cars
   }
 
-  // warning: will eat its own face.
   function updateVs(tff) {
-    cff = []
+    var cff = []
 
     tff.forEach(function(car) {
+      var b = 0 ; if (Math.random() < prob) {b = 1}
       var prevCar = tff[mod(car.cid - 1, numCars)]
       var nextCar = tff[mod(car.cid + 1, numCars)]
       var dn = mod(nextCar.pos - car.pos, trSize)
       var dp = mod(car.pos - prevCar.pos, trSize)
       var vel = 0
 
-      // jitters // warning: jitters may allow passing!!
-      var b = 0 ; if (Math.random() < prob) {b = 1}
-      if (prevCar.vel < dp && car.vel >= braking) { vel -= b*braking }
-
       // update velocity
-      if (dn > maxV && maxV > car.vel) { vel = car.vel + 1 }
-      else if (car.vel >= dn) { vel = dn-1} else {vel = car.vel}
+      if (dn > maxV && maxV > car.vel) { vel = car.vel + 1 } // go max speed
+      else if (car.vel > dn) { vel = dn } // too fast, slow down
+      else { vel = car.vel } // just right
+
+      // jitters
+      if (vel > braking) { vel -= b*Math.min(braking, dp) }
 
       cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel})
     })
