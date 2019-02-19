@@ -1,21 +1,16 @@
 (function(){
 
   var world_width = 400,
-      world_height = 400,
+      world_height = 600,
       controlbox_width = 400,
       controlbox_height = 400,
       n_grid_x = 24,
-      n_grid_y = 24,
-      L = 0,
-      k = world_width/L
-
-  // var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
-  // var Y = d3.scaleLinear().domain([0,L]).range([world_height,0]);
+      n_grid_y = 24
 
   var world = d3.selectAll("#traffic_display").append('canvas')
-                .attr('width', world_width)
-                .attr('height', world_height)
-                .attr("class",'traffic_display')
+    .attr('width', world_width)
+    .attr('height', world_height)
+    .attr("class",'traffic_display')
 
   var context = world.node().getContext('2d')
 
@@ -27,7 +22,7 @@
   // Play button.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
   var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:15,y0:19,width:4,height:0}).Nx(2);
+  var buttonblock = g.block({x0:13,y0:19,width:4,height:0}).Nx(2);
 
   var playpause = { id:"b4", name:"play / pause",
                     actions: ["play","pause"], value: 0};
@@ -57,14 +52,12 @@
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runBlink, 50) : clearInterval(tm)
-    // d.value == 1 ? t = d3.timer(runBlink,0) : t.stop()
+    d.value == 1 ? tm = setInterval(runBlink, 25) : clearInterval(tm)
   }
 
-  var y = 0 // initializes y position
   function resetpositions() {
     if (typeof(t) === "object") {clearInterval(tm)};
-    y = 0; context.fillStyle = 'white'
+    context.fillStyle = 'white'
     context.fillRect(0, 0, world_width, world_width);
     var traffic = randTraffic(trSize, trSize/3)
     runBlink()
@@ -83,6 +76,15 @@
 
   function mod(a,b){return(((a % b) + b) % b)}
 
+  // Constants
+  var maxV = 5
+  var braking = 1
+  var carSize = 2
+  var trSize = world_width
+  var numCars = Math.floor(35/100*world_width/carSize)
+  var traffic = randTraffic(trSize, numCars)
+  var prob = 1/3
+
   // chooses n, an ordered but random subset of p.
   function randPositions(p, n) {
     var rPositions = []
@@ -90,27 +92,18 @@
     var r = 0
 
     // gives the total possible car positions
-    while (p>=0) { zeroToP.unshift(p) ; p-=1}
+    for (i=0; i < p; i++) { zeroToP.unshift(i) }
 
     // iteratively choose n possible positions
-    i = 0 ; while (n > i) {
+    for (i=0; i < n; i++ ) {
       r = Math.floor(Math.random() * zeroToP.length)
       rPositions.unshift(zeroToP[r])
       zeroToP = zeroToP.filter(p => p != zeroToP[r])
-      i += 1
     }
 
-    rPositions.sort(function(a, b){return a-b})
+    rPositions.sort(function(a, b){return b-a})
     return rPositions
   }
-
-  var maxV = 5
-  var carSize = 2
-  var trSize = world_width
-  var numCars = 10
-  var traffic = randTraffic(trSize, numCars)
-  var braking = 2
-  var prob = 2/3
 
   // available positions -> # cars -> Traffic
   function randTraffic(p, n) {
@@ -119,39 +112,55 @@
     var rando = 0
 
     for (i=0; i < p; i++) {
-      rando = Math.floor(Math.random() * maxV)
-      vvs.push(rando)
+      vvs.push(1+Math.floor(Math.random() * (maxV-1)))
     }
 
     for (i=0; i < n; i++) {
       [p, v] = [pps.shift(), vvs.shift()]
-      cars.unshift({'id': n-i-1, 'pos': p, 'vel': v})
+      cars.unshift({'cid': n-i-1, 'pos': p, 'vel': v})
     }
     return cars
   }
 
+  // warning: will eat its own face.
   function updateVs(tff) {
+    cff = []
+
     tff.forEach(function(car) {
-      var nextCar = tff[mod(car.id + 1, numCars)]
-      var d = mod(nextCar.pos - car.pos, trSize)
+      var prevCar = tff[mod(car.cid - 1, numCars)]
+      var nextCar = tff[mod(car.cid + 1, numCars)]
+      var dn = mod(nextCar.pos - car.pos, trSize)
+      var dp = mod(car.pos - prevCar.pos, trSize)
+      var vel = 0
+
+      // jitters // warning: jitters may allow passing!!
+      var b = 0 ; if (Math.random() < prob) {b = 1}
+      if (prevCar.vel < dp && car.vel >= braking) { vel -= b*braking }
 
       // update velocity
-      if (d > maxV && car.vel < maxV) { car.vel = car.vel + 1 } 
-      else if (car.vel >= d) { car.vel = d}
+      if (dn > maxV && maxV > car.vel) { vel = car.vel + 1 }
+      else if (car.vel >= dn) { vel = dn-1} else {vel = car.vel}
 
-      // jitters
-      var b = 0 ; if (Math.random() > prob) {b = 1}
-      // if (car.vel > braking && car.vel >= d)
-      if (car.vel > braking)
-
-        { car.vel = car.vel - b*braking }
+      cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel})
     })
+    traffic = cff
   }
 
   function updatePs(tff) {
     tff.forEach(function (car){
       car.pos = mod(car.pos+car.vel, trSize)
     })
+  }
+
+  function applyColor(car) {
+    switch (car.cid) {
+      case 0: context.fillStyle = 'red' ; break;
+      case 1: context.fillStyle = 'orange' ; break;
+      case 2: context.fillStyle = 'green' ; break;
+      case 3: context.fillStyle = 'blue' ; break;
+      case 4: context.fillStyle = 'violet' ; break;
+      default: context.fillStyle = 'black' ; break;
+    }
   }
 
   function updateDisplay(tff) {
@@ -163,18 +172,16 @@
     context.fillStyle = 'white'
     context.fillRect(0, 0, world_width, carSize);
 
-    tff.forEach(function(c) {
-      context.fillStyle = 'black'
-      if (c['id'] == 1) { context.fillStyle = 'red' }
-      context.fillRect(c.pos, L-y, carSize, carSize);
+    tff.forEach(function(car) {
+      applyColor(car)
+      context.fillRect(car.pos, 0, carSize, carSize);
     })
   }
 
   function runBlink() {
-    updatePs(traffic)
     updateVs(traffic)
+    updatePs(traffic)
     updateDisplay(traffic)
-    y = 0 //mod(y+1, L)
   }
 
 })()
