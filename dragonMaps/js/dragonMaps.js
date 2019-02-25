@@ -67,7 +67,7 @@
   // as volcanic hotspots and let laplacians smooth the
   // rest of the space. Lastly we add a Sea Level.
   // some good ratios to look out for via performSmoothing
-  // and boardToWater:
+  // and boardToPoints:
 
   // smoothing to sea level
   // (30, 44) (60, 45)
@@ -122,20 +122,7 @@
     return(newBoard)
   }
 
-  // colors the canvas
-  var hue = 120
-  function boardToPoints(board) {
-    board.forEach((saturation, i) => {
-      var x = i % modWidth
-      var y = Math.floor(i / modHeight)
-
-      // hue = saturation == 100 ? 30 : 250 
-      context.fillStyle = `hsl(${hue},${saturation}%,${saturation}%)`
-      context.fillRect(x*scalar, y*scalar, scalar, scalar);
-    })
-  }
-
-  // i is the number of smoothing iterations
+ // i is the number of smoothing iterations
   function performSmoothing() {
     for (let i=0; i<40; i++){
       newboard = avgBoard(board)
@@ -143,14 +130,19 @@
     }
   }
 
-  function boardToWater(board) {
-    context.fillStyle = 'hsl(250,50%,50%)'
+  // colors the canvas
+  function boardToPoints(board) {
     scalar = Math.ceil(scalars.value) || 2
     
     board.forEach((saturation, i) => {
       var x = i % modWidth
       var y = Math.floor(i / modHeight)
       if (saturation < 45) { // sea level
+        context.fillStyle = 'hsl(250,60%,30%)'
+        context.fillRect(x*scalar, y*scalar, scalar, scalar);
+      } else {
+        // hue = saturation == 100 ? 30 : 250 
+        context.fillStyle = `hsl(120,${saturation}%,${saturation}%)`
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       }
     })
@@ -160,10 +152,8 @@
     context.fillStyle = 'white'
     context.fillRect(0, 0, world_width, world_height);
     board = genBoard()
-    boardToPoints(board)
     performSmoothing()
     boardToPoints(board)
-    boardToWater(board)
   }
 
   // running the simulation
