@@ -142,6 +142,10 @@
         context.fillStyle = `hsl(32,71%,${saturation}%)`
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       }
+      else if (saturation > 50) { // mountains
+        context.fillStyle = `hsl(36,19%,${saturation}%)`
+        context.fillRect(x*scalar, y*scalar, scalar, scalar);
+      }
       else { // landmass
         context.fillStyle = `hsl(120,${saturation}%,${saturation}%)`
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
