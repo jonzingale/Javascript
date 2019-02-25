@@ -9,7 +9,7 @@
       n_grid_y = 24
 
   var scalar = 2
-  var hotSpotNum = 45
+  var hotSpotNum = 80
   var modWidth = Math.floor(world_width/scalar)
   var modHeight = Math.floor(world_height/scalar)
   var boardSize = modWidth * modHeight
@@ -137,7 +137,12 @@
       if (saturation < 45) { // sea level
         context.fillStyle = 'hsl(250,60%,30%)'
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
-      } else {
+      } 
+      else if (saturation < 45.08) { // beachs
+        context.fillStyle = `hsl(32,71%,${saturation}%)`
+        context.fillRect(x*scalar, y*scalar, scalar, scalar);
+      }
+      else { // landmass
         context.fillStyle = `hsl(120,${saturation}%,${saturation}%)`
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       }
