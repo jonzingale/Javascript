@@ -1,8 +1,8 @@
 (function(){
 
   // Constants
-  var world_width = 400,
-      world_height = 400,
+  var world_width = 650,
+      world_height = 650,
       controlbox_width = 350,
       controlbox_height = 350,
       n_grid_x = 24,
@@ -122,10 +122,9 @@
     return(newBoard)
   }
 
- // i is the number of smoothing iterations
   var newboard;
   function performSmoothing() {
-    for (let i=0; i<40; i++){
+    for (let i=0; i<45; i++){ // smoothing
       newboard = avgBoard(board)
       board = newboard
     }
@@ -138,7 +137,7 @@
     board.forEach((saturation, i) => {
       var x = i % modWidth
       var y = Math.floor(i / modHeight)
-      if (saturation < 45) { // sea level
+      if (saturation < 44) { // sea level
         context.fillStyle = 'hsl(250,60%,30%)'
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       } else {
