@@ -121,7 +121,7 @@
 
   var newboard;
   function performSmoothing() {
-    for (let i=0; i<60; i++){ // smoothing
+    for (let i=0; i<100; i++){ // smoothing
       newboard = avgBoard(board)
       board = newboard
     }
@@ -134,22 +134,21 @@
     board.forEach((saturation, i) => {
       var x = i % modWidth
       var y = Math.floor(i / modHeight)
+      var normedSat = saturation/100
+
       if (saturation < 45) { // sea level
         context.fillStyle = 'hsl(250,60%,30%)'
-        context.fillRect(x*scalar, y*scalar, scalar, scalar);
       } 
       else if (saturation < 45.08) { // beachs
         context.fillStyle = `hsl(32,71%,${saturation}%)`
-        context.fillRect(x*scalar, y*scalar, scalar, scalar);
-      }
-      else if (saturation > 50) { // mountains
-        context.fillStyle = `hsl(36,19%,${saturation}%)`
-        context.fillRect(x*scalar, y*scalar, scalar, scalar);
       }
       else { // landmass
-        context.fillStyle = `hsl(120,${saturation}%,${saturation}%)`
-        context.fillRect(x*scalar, y*scalar, scalar, scalar);
+        var greenTogrey = 36*normedSat + 120*(1-normedSat)
+        var satDel = 19*normedSat + 100*(1-normedSat)
+        var bright = saturation*Math.log(saturation/33) + 13
+        context.fillStyle = `hsl(${greenTogrey},${satDel}%,${bright}%)`
       }
+      context.fillRect(x*scalar, y*scalar, scalar, scalar);
     })
   }
 
