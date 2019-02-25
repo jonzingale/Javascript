@@ -1,5 +1,6 @@
 (function(){
 
+  // Constants
   var world_width = 400,
       world_height = 400,
       controlbox_width = 350,
@@ -7,6 +8,28 @@
       n_grid_x = 24,
       n_grid_y = 24
 
+  var scalar = 2
+  var hotSpotNum = 45
+  var modWidth = Math.floor(world_width/scalar)
+  var modHeight = Math.floor(world_height/scalar)
+  var boardSize = modWidth * modHeight
+
+  // moore neighborhood, [ny, nx]
+  // var moore = [[-1, -1],[-1, 0],[-1, 1],
+  //              [ 0, -1],[ 0, 0],[ 0, 1],
+  //              [ 1, -1],[ 1, 0],[ 1, 1]]
+
+  var moore = [ // write this procedurally?
+    [-2, -2],[-2, -1],[-2, 0],[-2, 1],[-2, 2],
+    [-1, -2],[-1, -1],[-1, 0],[-1, 1],[-1, 2],
+    [ 0, -2],[ 0, -1],[ 0, 0],[ 0, 1],[ 0, 2],
+    [ 1, -2],[ 1, -1],[ 1, 0],[ 1, 1],[ 1, 2],
+    [ 2, -2],[ 2, -1],[ 2, 0],[ 2, 1],[ 2, 2],
+    ]
+
+  var mooreSize = moore.length
+
+  // D3 World settings
   var world = d3.selectAll("#dragonMaps_display").append('canvas')
     .attr('width', world_width)
     .attr('height', world_height)
@@ -19,229 +42,132 @@
     .attr("height",controlbox_height)
     .attr("class","dragonMaps_widgets")
 
-  // Play button.
+  // Sliders.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
-  var playblock = g.block({x0:5,y0:19,width:0,height:0});
-  var buttonblock = g.block({x0:5,y0:11,width:4,height:0}).Nx(2);
-  var paramsblock = g.block({x0:12,y0:10,width:10,height:8}).Ny(3);
-
-  var playpause = { id:"b4", name:"play / pause",
-                    actions: ["play","pause"], value: 0};
-
-  var reset = { id:"b6", name:"reset", actions: ["rewind"], value: 0};
-
-  var playbutton = [
-   widget.button(playpause).size(g.x(7)).symbolSize(0.6*g.x(7)).update(runpause)
-  ]
-
-  var buttons = [
-    widget.button(reset).update(resetpositions),
-  ]
-
-  // Constants
-  var maxV = 5
-  var braking = 1
-  var prob = 1/3
-
-  var carSize = 2
-  var trSize = world_width
-  var numCars = Math.floor(35/100*world_width/carSize)
-
-  // Sliders
-  var def_velocity_param = 5, // Max Velocity
-      def_braking_param = 1, // sensitivity when braking
-      def_prob_param = 1/3 // probability of braking
+  var paramsblock = g.block({x0:12,y0:17,width:10,height:8}).Ny(3);
 
   var sliderwidth = paramsblock.w();
   var handleSize = 12, trackSize = 8;
 
-  var maxV = {id:"maxV", name: "max velocity", range: [1,20], value: def_velocity_param};
-  var braking = {id:"braking", name: "brake sensitivity", range: [1,10], value: def_braking_param};
-  var prob = {id:"prob", name: "probability of braking", range: [0,1], value: def_prob_param};
+  var scalars = {id:"scalar", name: "screen refinement scalar", range: [1,5], value: scalar};
+  var hotSpotNums = {id:"hotties", name: "number of hotspots", range: [1,100], value: hotSpotNum};
 
   var sliders = [
-    widget.slider(prob).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
-    widget.slider(braking).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
-    widget.slider(maxV).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(hotSpotNums).width(sliderwidth)
+          .trackSize(trackSize).handleSize(handleSize).update(updatePositions),
+    widget.slider(scalars).width(sliderwidth).trackSize(trackSize)
+          .handleSize(handleSize).update(updatePositions),
   ]
 
-  controls.selectAll(".button .playbutton").data(playbutton).enter()
-          .append(widget.buttonElement)
-          .attr("transform", function(d,i){
-     return "translate("+playblock.x(0)+","+playblock.y(i)+")"
-   });
-
-  controls.selectAll(".button .others").data(buttons).enter()
-          .append(widget.buttonElement)
-          .attr("transform",function(d,i){
-     return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"
-   });
-
   controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
-    .attr("transform",function(d,i){return "translate("+paramsblock.x(0)+","+paramsblock.y(i)+")"});  
-
-
-  var tm; // initialize timer
-  function runpause(d){
-    d.value == 1 ? tm = setInterval(runBlink, 50) : clearInterval(tm)
-  }
-
-  function resetpositions() {
-    if (typeof(t) === "object") {clearInterval(tm)};
-    context.fillStyle = 'white'
-    context.fillRect(0, 0, world_width, world_height);
-    var dragonMaps = randTraffic(trSize, numCars)
-    runBlink()
-
-    sliders[0].click(def_probability_param);
-    sliders[1].click(def_braking_param);
-    sliders[2].click(def_velocity_param);
-  }
+    .attr("transform",function(d,i){return "translate("+paramsblock.x(0)+","+paramsblock.y(i)+")"});
 
   // Dragon Maps:
-  scalar = 10
-  boardSize = world_width/scalar * world_height/scalar
+  // The idea here is to make heat maps that would serve
+  // as volcanic hotspots and let laplacians smooth the
+  // rest of the space. Lastly we add a Sea Level.
+  // some good ratios to look out for via performSmoothing
+  // and boardToWater:
 
+  // smoothing to sea level
+  // (30, 44) (60, 45)
+
+  function mod(a,b){return(((a % b) + b) % b)}
+
+  // board generation
   function genBoard() {
     var accum = []
+
+    var hotSpots =
+      hs = [] ; for (let i=0; i < hotSpotNums.value; i++) {
+        hs.push(Math.floor(Math.random()*boardSize))
+      }
+
     for (let i=0; i < boardSize; i++) {
-      accum.unshift(Math.floor(Math.random()*90))
+      if (hotSpots.indexOf(i) > -1) { accum.push(100) }
+      else { accum.push(Math.floor(Math.random()*90)) }
     }
     return accum
   }
 
-  // neighborhood
 
   // averaging scheme.
+  function avgNeighbors(cell, cellIndex) {
 
-  // averages neighborhoods over board
+    // let alone max hot or max cold
+    if (cell == 100 || cell < 0) {return cell}
+    else {
+      var sum = 0;
+      moore.forEach(([ny, nx], i) => {
+        cx = mod(cellIndex, modWidth) //0..79
+        cy = Math.floor(cellIndex/modHeight) //0..79
+        
+        xi = mod(cx + nx, modWidth) // x mod 80
+        yi = mod(cy + ny, modHeight) // y mod 80
 
+        // if (ny==0&&nx==0) { // weighted center
+        //   sum += board[xi + yi * modHeight] * 10
+        // } else { sum += board[xi + yi * modHeight] }
 
-  function boardToPoints(board) {
-    var hotSpots = []
-
-    for (let i=0; i < 5; i++) {
-      hotSpots.unshift(Math.floor(Math.random()*boardSize))
+        sum += board[xi + yi * modHeight]
+      })
+      return (sum / mooreSize)
     }
-
-    board.forEach((c, i) => {
-      var x = i % (world_width/scalar)
-      var y = Math.floor(i / (world_height/scalar))
-
-      if (hotSpots.indexOf(i) > -1) {
-        context.fillStyle = `hsl(30,100%,50%)`
-      } else { context.fillStyle = `hsl(250,${c}%,50%)` }
-
-      context.fillRect(x*scalar, y*scalar, 10, 10);
-    })
-
   }
 
+  // averages neighborhoods over board
+  function avgBoard(board) {
+    newBoard = []
+    board.forEach((c, i) => { newBoard.push(avgNeighbors(c,i)) })
+    return(newBoard)
+  }
+
+  // colors the canvas
+  var hue = 120
+  function boardToPoints(board) {
+    board.forEach((saturation, i) => {
+      var x = i % modWidth
+      var y = Math.floor(i / modHeight)
+
+      // hue = saturation == 100 ? 30 : 250 
+      context.fillStyle = `hsl(${hue},${saturation}%,${saturation}%)`
+      context.fillRect(x*scalar, y*scalar, scalar, scalar);
+    })
+  }
+
+  // i is the number of smoothing iterations
+  function performSmoothing() {
+    for (let i=0; i<40; i++){
+      newboard = avgBoard(board)
+      board = newboard
+      boardToPoints(board)
+    }
+  }
+
+  function boardToWater(board) {
+    context.fillStyle = 'hsl(250,50%,50%)'
+    scalar = scalars.value || 2
+    board.forEach((saturation, i) => {
+      var x = i % modWidth
+      var y = Math.floor(i / modHeight)
+      if (saturation < 45) { // sea level
+        context.fillRect(x*scalar, y*scalar, scalar, scalar);
+      }
+    })
+  }
+
+  function updatePositions() {
+    context.fillStyle = 'white'
+    context.fillRect(0, 0, world_width, world_height);
+    board = genBoard()
+    boardToPoints(board)
+    performSmoothing()
+    boardToWater(board)
+  }
+
+  // running the simulation
   var board = genBoard()
-  boardToPoints(board)
-
-  // console.log(JSON.stringify(genBoard()))
-
-  // function mod(a,b){return(((a % b) + b) % b)}
-
-  // // chooses n, an ordered but random subset of p.
-  // function randPositions(p, n) {
-  //   var [rPositions, zeroToP] = [[],[]]
-
-  //   // gives the total possible car positions
-  //   for (i=0; i < p; i++) { zeroToP.unshift(i) }
-
-  //   // iteratively choose n possible positions
-  //   for (i=0; i < n; i++ ) {
-  //     var r = Math.floor(Math.random() * zeroToP.length)
-  //     rPositions.unshift(zeroToP[r])
-  //     zeroToP = zeroToP.filter(p => p != zeroToP[r])
-  //   }
-
-  //   rPositions.sort(function(a, b){return b-a})
-  //   return rPositions
-  // }
-
-  // // available positions -> # cars -> Traffic
-  // function randTraffic(p, n) {
-  //   var mV = Math.floor(maxV.value) || 5
-  //   var pps = randPositions(p, n)
-  //   var [cars, vvs] = [[],[]]
-  //   var rando = 0
-
-  //   for (i=0; i < p; i++) {
-  //     vvs.push(1+Math.floor(Math.random() * (mV-1)))
-  //   }
-
-  //   for (i=0; i < n; i++) {
-  //     [p, v] = [pps.shift(), vvs.shift()]
-  //     col = 'black' ; if (i==0) {col = 'red'} 
-  //     cars.unshift({'cid': n-i-1, 'pos': p, 'vel': v, 'col': col})
-  //   }
-  //   return cars
-  // }
-
-  // function updateVs(tff) {
-  //   var cff = []
-
-  //   tff.forEach(function(car) {
-  //     var b = 0 ; if (Math.random() < prob.value) {b = 1}
-  //     var prevCar = tff[mod(car.cid - 1, numCars)]
-  //     var nextCar = tff[mod(car.cid + 1, numCars)]
-  //     var dn = mod(nextCar.pos - car.pos, trSize)
-  //     var dp = mod(car.pos - prevCar.pos, trSize)
-  //     var br = Math.floor(braking.value) || 1
-  //     var mV = Math.floor(maxV.value) || 5
-  //     var vel = car.vel
-
-  //     // update velocity
-  //     if (dn > mV && mV > car.vel) { vel = car.vel + 1 } // go max speed
-  //     else if (car.vel > dn) { vel = dn } // too fast, slow down
-  //     else { vel = car.vel } // just right
-
-  //     // jitters
-  //     if (vel > br) { vel -= b*Math.min(br, dp) }
-
-  //     cff.push({'cid': car.cid, 'pos': car.pos, 'vel': vel, 'col': car.col})
-  //   })
-  //   dragonMaps = cff
-  // }
-
-  // function updatePs(tff) {
-  //   tff.forEach(function (car){ car.pos = mod(car.pos+car.vel, trSize) })
-  // }
-
-  // function applyColor(car) {
-  //   switch (car.cid) {
-  //     case 0: context.fillStyle = 'red' ; break;
-  //     case 1: context.fillStyle = 'orange' ; break;
-  //     case 2: context.fillStyle = 'green' ; break;
-  //     case 3: context.fillStyle = 'blue' ; break;
-  //     case 4: context.fillStyle = 'violet' ; break;
-  //     default: context.fillStyle = 'black' ; break;
-  //   }
-  // }
-
-  // function updateDisplay(tff) {
-  //   context.save()
-  //   context.translate(0,carSize)
-  //   context.drawImage(world.node(), 0, 0)
-  //   context.restore()
-
-  //   context.fillStyle = 'white'
-  //   context.fillRect(0, 0, world_width, carSize);
-
-  //   // time display
-  //   tff.forEach(function(car) {
-  //     applyColor(car)
-  //     context.fillRect(car.pos, 0, carSize, carSize);
-  //   })
-  // }
-
-  // function runBlink() {
-  //   updateVs(dragonMaps)
-  //   updatePs(dragonMaps)
-  //   updateDisplay(dragonMaps)
-  // }
+  var newboard = []
+  updatePositions()
 
 })()
