@@ -123,6 +123,7 @@
   }
 
  // i is the number of smoothing iterations
+  var newboard;
   function performSmoothing() {
     for (let i=0; i<40; i++){
       newboard = avgBoard(board)
@@ -141,7 +142,6 @@
         context.fillStyle = 'hsl(250,60%,30%)'
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       } else {
-        // hue = saturation == 100 ? 30 : 250 
         context.fillStyle = `hsl(120,${saturation}%,${saturation}%)`
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       }
@@ -149,16 +149,14 @@
   }
 
   function updatePositions() {
-    context.fillStyle = 'white'
-    context.fillRect(0, 0, world_width, world_height);
     board = genBoard()
     performSmoothing()
     boardToPoints(board)
   }
 
   // running the simulation
-  var board = genBoard()
-  var newboard = []
+  context.fillStyle = 'white'
+  context.fillRect(0, 0, world_width, world_height);
   updatePositions()
 
 })()
