@@ -10,15 +10,12 @@
 
   var scalar = 2
   var hotSpotNum = 80
+  var coldSpotNum = 0
   var modWidth = Math.floor(world_width/scalar)
   var modHeight = Math.floor(world_height/scalar)
   var boardSize = modWidth * modHeight
 
   // moore neighborhood, [ny, nx]
-  // var moore = [[-1, -1],[-1, 0],[-1, 1],
-  //              [ 0, -1],[ 0, 0],[ 0, 1],
-  //              [ 1, -1],[ 1, 0],[ 1, 1]]
-
   var moore = [ // write this procedurally?
     [-2, -2],[-2, -1],[-2, 0],[-2, 1],[-2, 2],
     [-1, -2],[-1, -1],[-1, 0],[-1, 1],[-1, 2],
@@ -44,15 +41,18 @@
 
   // Sliders.
   var g = widget.grid(controlbox_width,controlbox_height,n_grid_x,n_grid_y);
-  var paramsblock = g.block({x0:12,y0:17,width:10,height:8}).Ny(3);
+  var paramsblock = g.block({x0:12,y0:13,width:10,height:8}).Ny(3);
 
   var sliderwidth = paramsblock.w();
-  var handleSize = 12, trackSize = 8;
+  var handleSize = 14, trackSize = 16;
 
   var scalars = {id:"scalar", name: "screen refinement scalar", range: [1,5], value: scalar};
-  var hotSpotNums = {id:"hotties", name: "number of hotspots", range: [1,200], value: hotSpotNum};
+  var hotSpotNums = {id:"hotties", name: "number of hot spots", range: [1,200], value: hotSpotNum};
+  var coldSpotNums = {id:"coldies", name: "number of cold spots", range: [0,100], value: coldSpotNum};
 
   var sliders = [
+    widget.slider(coldSpotNums).width(sliderwidth)
+          .trackSize(trackSize).handleSize(handleSize).update(updatePositions),
     widget.slider(hotSpotNums).width(sliderwidth)
           .trackSize(trackSize).handleSize(handleSize).update(updatePositions),
     widget.slider(scalars).width(sliderwidth).trackSize(trackSize)
@@ -74,25 +74,30 @@
   // board generation
   function genBoard() {
     var accum = []
-
+    var coldScale = (coldSpotNums.value > 0) ? 1 : 0
     var hotSpots =
       hs = [] ; for (let i=0; i < hotSpotNums.value; i++) {
         hs.push(Math.floor(Math.random()*boardSize))
       }
 
+    var coldSpots =
+      cs = [] ; for (let i=0; i < Math.floor(coldSpotNums.value); i++) {
+        cs.push(Math.floor(Math.random()*boardSize))
+      }
+
     for (let i=0; i < boardSize; i++) {
       if (hotSpots.indexOf(i) > -1) { accum.push(100) }
-      else { accum.push(Math.floor(Math.random()*90)) }
+      else if (coldScale > 0 && coldSpots.indexOf(i) > -1) { accum.push(0) }
+      else { accum.push(Math.floor(Math.random()*90) + coldScale) }
     }
     return accum
   }
 
-
   // averaging scheme.
   function avgNeighbors(cell, cellIndex) {
-
-    // let alone max hot or max cold
-    if (cell == 100 || cell < 0) {return cell}
+    var coldScale = (coldSpotNums.value > 0) ? 1 : 0
+    // let alone max hot or max cold, set cold to 1 if on
+    if (cell == 100 || cell < coldScale) {return cell}
     else {
       var sum = 0;
       moore.forEach(([ny, nx], i) => {
@@ -101,11 +106,6 @@
         
         xi = mod(cx + nx, modWidth) // x mod 80
         yi = mod(cy + ny, modHeight) // y mod 80
-
-        // if (ny==0&&nx==0) { // weighted center
-        //   sum += board[xi + yi * modHeight] * 10
-        // } else { sum += board[xi + yi * modHeight] }
-
         sum += board[xi + yi * modHeight]
       })
       return (sum / mooreSize)
