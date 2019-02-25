@@ -140,13 +140,13 @@
     for (let i=0; i<40; i++){
       newboard = avgBoard(board)
       board = newboard
-      boardToPoints(board)
     }
   }
 
   function boardToWater(board) {
     context.fillStyle = 'hsl(250,50%,50%)'
-    scalar = scalars.value || 2
+    scalar = Math.ceil(scalars.value) || 2
+    
     board.forEach((saturation, i) => {
       var x = i % modWidth
       var y = Math.floor(i / modHeight)
@@ -162,6 +162,7 @@
     board = genBoard()
     boardToPoints(board)
     performSmoothing()
+    boardToPoints(board)
     boardToWater(board)
   }
 
