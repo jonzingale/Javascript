@@ -50,7 +50,7 @@
   var handleSize = 12, trackSize = 8;
 
   var scalars = {id:"scalar", name: "screen refinement scalar", range: [1,5], value: scalar};
-  var hotSpotNums = {id:"hotties", name: "number of hotspots", range: [1,100], value: hotSpotNum};
+  var hotSpotNums = {id:"hotties", name: "number of hotspots", range: [1,200], value: hotSpotNum};
 
   var sliders = [
     widget.slider(hotSpotNums).width(sliderwidth)
@@ -66,11 +66,8 @@
   // The idea here is to make heat maps that would serve
   // as volcanic hotspots and let laplacians smooth the
   // rest of the space. Lastly we add a Sea Level.
-  // some good ratios to look out for via performSmoothing
-  // and boardToPoints:
-
-  // smoothing to sea level
-  // (30, 44) (60, 45)
+  // Variations are supported by balancing smoothing
+  // against sea level.
 
   function mod(a,b){return(((a % b) + b) % b)}
 
@@ -124,7 +121,7 @@
 
   var newboard;
   function performSmoothing() {
-    for (let i=0; i<45; i++){ // smoothing
+    for (let i=0; i<60; i++){ // smoothing
       newboard = avgBoard(board)
       board = newboard
     }
@@ -137,7 +134,7 @@
     board.forEach((saturation, i) => {
       var x = i % modWidth
       var y = Math.floor(i / modHeight)
-      if (saturation < 44) { // sea level
+      if (saturation < 45) { // sea level
         context.fillStyle = 'hsl(250,60%,30%)'
         context.fillRect(x*scalar, y*scalar, scalar, scalar);
       } else {
