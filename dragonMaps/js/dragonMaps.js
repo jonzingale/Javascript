@@ -121,7 +121,7 @@
 
   var newboard;
   function performSmoothing() {
-    for (let i=0; i<100; i++){ // smoothing
+    for (let i=0; i<80; i++){ // smoothing
       newboard = avgBoard(board)
       board = newboard
     }
@@ -145,7 +145,7 @@
       else { // landmass
         var greenTogrey = 36*normedSat + 120*(1-normedSat)
         var satDel = 19*normedSat + 100*(1-normedSat)
-        var bright = saturation*Math.log(saturation/33) + 13
+        var bright = (saturation/8)*Math.log(saturation*5000) - 40
         context.fillStyle = `hsl(${greenTogrey},${satDel}%,${bright}%)`
       }
       context.fillRect(x*scalar, y*scalar, scalar, scalar);
