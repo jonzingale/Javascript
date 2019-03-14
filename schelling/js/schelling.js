@@ -20,6 +20,11 @@
       agentColor1 = '#D3AC8B', // peru
       agentColor2 = '#8B4513' // coffee
 
+  // Alternative Color Scheme.
+  // var vacantColor = '#330C00', // darkbrown
+  //     agentColor1 = '#6699FF', // bluish
+  //     agentColor2 = '#8B4513' // coffee
+
   // moore neighborhood
   var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
                [ 0, -1],        [ 0, 1],
