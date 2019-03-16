@@ -1,7 +1,7 @@
 // http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
 (function(){
 
-  const L = 80,
+  const L = 120,
         world_width = 400,
         kk = Math.ceil(world_width/L), // agent size
         controlbox_width = 400,
