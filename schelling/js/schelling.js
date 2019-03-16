@@ -16,14 +16,14 @@
       population,
       freeBoard
 
-  var vacantColor = '#330C00', // darkbrown
-      agentColor1 = '#D3AC8B', // peru
-      agentColor2 = '#8B4513' // coffee
+  // var vacantColor = '#330C00', // darkbrown
+  //     agentColor1 = '#D3AC8B', // peru
+  //     agentColor2 = '#8B4513' // coffee
 
   // Alternative Color Scheme.
-  // var vacantColor = '#330C00', // darkbrown
-  //     agentColor1 = '#6699FF', // bluish
-  //     agentColor2 = '#8B4513' // coffee
+  var vacantColor = '#330C00', // darkbrown
+      agentColor1 = '#6699FF', // bluish
+      agentColor2 = '#8B4513' // coffee
 
   // moore neighborhood
   var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
@@ -92,7 +92,7 @@
       .handleSize(handleSize),
   ]
 
-  var buttons = [ widget.button(reset).update(createBoard) ]
+  var buttons = [ widget.button(reset).update(resetpositions) ]
 
   var playbutton = [
     widget.button(playpause).size(g.x(7)).symbolSize(0.6*g.x(7)).update(runpause),
@@ -114,6 +114,11 @@
 
   var t; // initialize timer
   function runpause(d){ d.value == 1 ? t = d3.timer(schelling,0) : t.stop(); }
+
+  function resetpositions() {
+    createBoard()
+    schelling()
+  }
 
   // Schelling Segregation Code
   var delx; var dely; var fa; var dist; var rental;
