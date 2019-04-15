@@ -1,0 +1,22 @@
+
+.explorable_display {
+	border:1px solid black;
+	background:rgb(230,230,230);
+	display: block;
+	margin: auto;
+	margin-bottom: 10px;
+}
+
+.explorable_widgets {
+	display: block;
+	display: block;
+	margin: auto;
+}
+
+.happiness {
+  font-family: dinLight;
+  padding-left: 20px;
+  font-size: 34px;
+  line-height: 1.5;
+  font-weight: 400;
+}
