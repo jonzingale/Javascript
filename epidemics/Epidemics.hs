@@ -1,13 +1,12 @@
 {-# OPTIONS_GHC -fno-warn-missing-methods #-}
 module Epidemics where
+import LinearAlgebra ((<|>), Vect(..), Matx(..), uV)
 import Data.List (transpose, intersperse)
+import System.Random
 
 {--
 Write a linear algebraic SIR network model
 --}
-
-abc = M [V [1,2], V [3,4]]
-xyz = M [V [5,6], V [7,8]]
 
 a = M [V [0,1,0,1,0],
        V [1,0,1,1,0],
@@ -18,44 +17,31 @@ a = M [V [0,1,0,1,0],
 i = V [1,0,1,0,0]
 s = V [0,1,0,0,1]
 
-data Matx a = M [Vect a]
-data Vect a = V [a]
+-- true susceptibility
+ts = a <|> i * s
 
-instance Show a => Show (Vect a) where
-    show (V xs) = show xs ++ "\n"
+-- calculate probability P(A) + P(B) - P(A&B)
+pr :: Integral a => Float -> a -> Float
+pr p 0 = 0
+pr p n = (fromIntegral n) * p - p^n --VERIFY
 
-instance Show a => Show (Matx a) where
-    show (M a) = foldr ((++).show) "" a
+prV :: Integral a => Float -> Vect a -> Vect Float
+prV p v = V $ map (pr (1/2)) (uV ts)
 
-uV :: Vect a -> [a]
-uV (V a) = a
+{-- Randomness --}
+seed :: StdGen
+seed = mkStdGen 32
 
-uM :: Matx a -> [Vect a]
-uM (M a) = a
-
-instance (Num a) => Num (Vect a) where
-  (+) (V v) (V w) = V $ zipWith (+) v w
-  (-) (V v) (V w) = V $ zipWith (-) v w
-  (*) (V v) (V w) = V $ zipWith (*) v w
-
--- transpose.
-tr :: Matx a -> Matx a
-tr (M ws') = let ws = map uV ws' in
-    M . (map V) . transpose $ ws
-
--- outer product of two vectors.
-(*:) :: Num a => Vect a -> Vect a -> Vect a
-(*:) (V x) (V y) = V $ (*) <$> x <*> y
-
--- apply linear transformation.
-(|:) :: Num a => Matx a -> Vect a -> Vect a
-(|:) (M m) v = V . ff $ map (*  v) m
+-- likelihood of being True
+biasedCoin :: StdGen -> Float -> (Bool, StdGen)
+biasedCoin g p =
+    let (a, g') = random g in
+    let n = fromIntegral range * p in
+    let d = fromIntegral (a `mod` range) in
+    (n > d, g')
     where
-      ff = map $ (foldr (+) 0) . uV
+      range = snd.genRange.mkStdGen $ 32
 
--- composition of linear transformations.
-(.:) :: Num a => Matx a -> Matx a -> Matx a
-(.:) m n = tr . M $ map ((|:) m) $ (uM.tr) n
-
-
-
+-- contractibility
+prContract = prV (1/3) ts
+nextInfected = map (fst.biasedCoin seed) (uV prContract)
