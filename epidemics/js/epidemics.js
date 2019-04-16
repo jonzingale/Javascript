@@ -1,30 +1,53 @@
 // http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
 (function(){
 
-  const L = 120,
-        world_width = 400,
-        kk = Math.ceil(world_width/L), // agent size
-        controlbox_width = 400,
-        controlbox_height = 400,
-        n_grid_x = 24,
-        n_grid_y = 24,
-        stateK = .99 // population/availability
-
-  var tolerance = 4, // dynamic for tol > 4
+  var L = 50,
       satisfied = 0,
+      world_width = 400,
+      agentSize = world_width/L,
+      controlbox_width = 400,
+      controlbox_height = 400,
+      n_grid_x = 24,
+      n_grid_y = 24,
+      tolerance = 4.3, // how tolerant are the agents?
+      sparsity = 1, // how much room is there to spread out?
       occupiedBoard,
       population,
       freeBoard
 
-  // Alternative Color Scheme.
+  var stateK = 10/45 * (1 + 2**1.6)
+
   var vacantColor = '#330C00', // darkbrown
-      agentColor1 = '#6699FF', // bluish
+      agentColor1 = '#D3AC8B', // peru
       agentColor2 = '#8B4513' // coffee
 
   // moore neighborhood
   var moore = [[ 1, -1],[ 1, 0],[ 1, 1],
                [ 0, -1],        [ 0, 1],
                [-1, -1],[-1, 0],[-1, 1]]
+
+
+// From Dragon Maps
+  function mod(a,b){return(((a % b) + b) % b)}
+
+  // board generation
+  var hotSpotNums = 5;
+  
+  function genBoard() {
+    var accum = []
+
+    var hotSpots =
+      hs = [] ; for (let i=0; i < hotSpotNums.value; i++) {
+        hs.push(Math.floor(Math.random()*boardSize))
+      }
+
+    for (let i=0; i < boardSize; i++) {
+      if (hotSpots.indexOf(i) > -1) { accum.push(100) }
+      else { accum.push(Math.floor(Math.random()*90)) }
+    }
+    return accum
+  }
+//////////////////
 
   // runpause({value: 1})
   function createBoard(){
@@ -49,6 +72,9 @@
       population = Object.keys(occupiedBoard).length
     })
   }
+
+  var X = d3.scaleLinear().domain([0,L]).range([0,world_width]);
+  var Y = d3.scaleLinear().domain([0,L]).range([world_width,0]);
 
   var world = d3.selectAll("#epidemics_display").append('canvas')
     .attr('width', world_width)
@@ -77,18 +103,17 @@
   var playpause = { id:"b4", name:"run simulation",
                     actions: ["play","pause"], value: 0};
 
-  var tol = {id:"tol", name: "satisfied", nameR: "seeking",
+  var tol = {id:"tol", name: "satisfied <-------|-------> seeking",
              range: [3,6], value: tolerance};
 
-  var reset = { id:"epidemicsreset", name:"randomize",
-                actions: ["rewind"], value: 0};
+  var reset = { id:"schellingreset", name:"reset", actions: ["rewind"], value: 0};
 
   var sliders = [
     widget.slider(tol).width(sliderwidth).trackSize(trackSize)
       .handleSize(handleSize),
   ]
 
-  var buttons = [ widget.button(reset).update(resetpositions) ]
+  var buttons = [ widget.button(reset).update(createBoard) ]
 
   var playbutton = [
     widget.button(playpause).size(g.x(7)).symbolSize(0.6*g.x(7)).update(runpause),
@@ -109,82 +134,62 @@
    });
 
   var t; // initialize timer
-  function runpause(d){ d.value == 1 ? t = d3.timer(epidemics,0) : t.stop(); }
+  function runpause(d){ d.value == 1 ? t = d3.timer(schelling,0) : t.stop(); }
 
-  function resetpositions() {
-    createBoard()
-    epidemics()
-  }
-
-  // epidemics Segregation Code
-  var delx; var dely; var fa; var dist; var rental;
-  function mod(a){return(((a % L) + L) % L)}
-
+  // Schelling Segration Code
   function nearestAvail(a){
+    var dist; var rental;
     Object.keys(freeBoard).reduce(function(e, k){
-      fa = freeBoard[k]
+      var fa = freeBoard[k]
       fa['id'] = k
-
-      delx = mod(fa.x - a.x)
-      dely = mod(fa.y - a.y)
-      dist = Math.sqrt(delx**2 + dely**2)
-      if (dist < e) { rental = fa ; return(dist) }
-      else { return(e) }
+      dist = Math.sqrt((fa.x - a.x)**2 + (fa.y - a.y)**2)
+      if (dist < e) { rental = fa ; return(dist) } else { return(e) }
     }, Infinity)
-
     return rental
   }
 
-  function neigh(a) {
-    return( // number of similar neighbors
-      moore.reduce(function(acc, [i, j]) {
-        var nkey = mod(a.x + i) + mod(a.y + j) * L
-        var cond = !!(occupiedBoard[nkey]) && (occupiedBoard[nkey].c == a.c)
+  function modB(n) {
+    return(n < 0 ? L + (n % L) : n % L)
+  }
 
+  function neigh(a) {
+    return(
+      moore.reduce(function(acc, m) {
+        var nkey = modB(a.x + m[0]) + modB(a.y + m[1]) * L
+        var cond = !!(occupiedBoard[nkey]) && (occupiedBoard[nkey].c == a.c)
         if (cond) { return (acc += 1) } else { return acc }
       }, 0)
     )
   }
 
-    function epidemics() {
-      satisfied = 0
+  function schelling() {
+    satisfied = 0
+    Object.keys(occupiedBoard).forEach(function(key){
+      var agent = occupiedBoard[key]
+      if (neigh(agent) < tol.value) {
+        // calculate distance from agent to nearest available rental
+        newRental = nearestAvail(agent)
+        newRental['c'] = agent.c
 
-      Object.keys(occupiedBoard).forEach(function(key){
-        var agent = occupiedBoard[key]
-        if (neigh(agent) < tol.value) {
-          // calculate distance from agent to nearest available rental
-          newRental = nearestAvail(agent)
-          newRental['c'] = agent.c
+        // remove occupants and make available as rental
+        delete occupiedBoard[key]
+        freeBoard[key] = agent
+        context.fillStyle = vacantColor
+        context.fillRect(X(agent.x), Y(agent.y), agentSize, agentSize);
 
-          // remove occupants and make available as rental
-          delete occupiedBoard[key]
-          freeBoard[key] = agent
-
-          // move into new rental and remove rental from market
-          delete freeBoard[newRental.id]
-          occupiedBoard[newRental.id] = newRental
-        } else { satisfied += 1 }
-      })
-
-      // color occupied board positions
-      Object.keys(occupiedBoard).forEach(function(key){
-        var agent = occupiedBoard[key]
+        // move into new rental and remove rental from market
+        delete freeBoard[newRental.id]
+        occupiedBoard[newRental.id] = newRental
         context.fillStyle = agent.c
-        context.fillRect(agent.x * kk, agent.y * kk, kk, kk);
-      })
+        context.fillRect(X(newRental.x), Y(newRental.y), agentSize, agentSize);
+      } else { satisfied += 1 }
+    })
 
-      // color un-occupied board positions
-      context.fillStyle = vacantColor
-      Object.keys(freeBoard).forEach(function(key){
-        var newRental = freeBoard[key]
-        context.fillRect(newRental.x * kk, newRental.y * kk, kk, kk);
-      })
-
-      percentSatisfied = Math.floor(100 * satisfied / population)
-      happiness.text("Percent Happy: "+percentSatisfied+" %")
-    }
+    percentSatisfied = Math.floor(100 * satisfied / population)
+    happiness.text("Percent Happy: "+percentSatisfied+" %")
+  }
 
   // loads Initial conditions
   createBoard()
-  epidemics()
+  schelling()
 })()
