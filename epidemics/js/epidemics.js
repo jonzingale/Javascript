@@ -33,7 +33,7 @@
   // board generation
   var hotSpotNums = 5;
   
-  function genBoard() {
+  function generateBoard() {
     var accum = []
 
     var hotSpots =
@@ -54,20 +54,18 @@ var matr = [[1,2,3],[4,5,6],[7,8,9]]
 var xect = vectorTransform(matr, vect)
 var ns = innerProduct(xect, wect)
 
-console.log(JSON.stringify(removeNode(matr, 0))) // <-----------
+console.log(JSON.stringify(removeNode(matr, 1))) // <-----------
 
 // Vector -> Vector -> Vector
 function innerProduct(v, w) {
-  var vw = v.map(function(e, i) { return e*w[i] });
-  return vw
+  return v.map((e, i) => e*w[i])
 }
 
 // Matrix -> Vector -> Vector
 function vectorTransform(m, v) {
   var w = m.map(function(e) {
     return innerProduct(e, v).reduce((t, v) => t + v)
-  })
-  return w
+  }) ; return w
 }
 
 // Vector -> N -> Vector
@@ -77,11 +75,10 @@ function nubList(list, i) { var ls = [];
 }
 
 // Matrix -> N -> Matrix
-function removeNode(m, i) { var mm = [];
-  m.forEach(function(rs,j) {
+function removeNode(matrx, i) { var mm = [];
+  matrx.forEach(function(rs, j) {
     if (j!=i) { mm.push(nubList(rs, i)) }
-  })
-  return mm
+  }) ; return mm
 }
 
 
