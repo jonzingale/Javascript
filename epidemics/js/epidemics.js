@@ -56,23 +56,27 @@ var ns = innerProduct(xect, wect)
 
 console.log(JSON.stringify(removeNode(matr, 0))) // <-----------
 
-function innerProduct(v, w) { // Vector -> Vector -> Vector
+// Vector -> Vector -> Vector
+function innerProduct(v, w) {
   var vw = v.map(function(e, i) { return e*w[i] });
   return vw
 }
 
-function vectorTransform(m, v) { // Matrix -> Vector -> Vector
+// Matrix -> Vector -> Vector
+function vectorTransform(m, v) {
   var w = m.map(function(e) {
     return innerProduct(e, v).reduce((t, v) => t + v)
   })
   return w
 }
 
-function nubList(list, i) { var ls = []; // Vector -> Vector
+// Vector -> N -> Vector
+function nubList(list, i) { var ls = [];
   list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
   return ls
 }
 
+// Matrix -> N -> Matrix
 function removeNode(m, i) { var mm = [];
   m.forEach(function(rs,j) {
     if (j!=i) { mm.push(nubList(rs, i)) }
