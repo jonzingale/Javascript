@@ -47,6 +47,45 @@
     }
     return accum
   }
+
+var vect = [1,2,3]
+var wect = [4,5,6]
+var matr = [[1,2,3],[4,5,6],[7,8,9]]
+var xect = vectorTransform(matr, vect)
+var ns = innerProduct(xect, wect)
+
+console.log(JSON.stringify(xect)) // <-----------
+console.log(JSON.stringify(removeNode(matr, 0))) // <-----------
+
+function innerProduct(v, w) { // Vector -> Vector -> Vector
+  var vw = v.map(function(e, i) { return e*w[i] });
+  return vw
+}
+
+function vectorTransform(m, v) { // Matrix -> Vector -> Vector
+  var w = m.map(function(e) {
+    return innerProduct(e, v).reduce((t, v) => t + v)
+  })
+  return w
+}
+
+function removeNode(m, i) {
+  var mm = [];
+
+  m.forEach(function(r,j) {
+    var row = []
+
+    if (j!=i) {
+      r.forEach(function(s, k) { if (k!=i) { row.push(s)} })
+      mm.push(row);
+    }
+  })
+
+  return(mm)
+}
+
+
+
 //////////////////
 
   // runpause({value: 1})
