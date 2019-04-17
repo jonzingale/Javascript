@@ -54,7 +54,6 @@ var matr = [[1,2,3],[4,5,6],[7,8,9]]
 var xect = vectorTransform(matr, vect)
 var ns = innerProduct(xect, wect)
 
-console.log(JSON.stringify(xect)) // <-----------
 console.log(JSON.stringify(removeNode(matr, 0))) // <-----------
 
 function innerProduct(v, w) { // Vector -> Vector -> Vector
@@ -69,19 +68,16 @@ function vectorTransform(m, v) { // Matrix -> Vector -> Vector
   return w
 }
 
-function removeNode(m, i) {
-  var mm = [];
+function nubList(list, i) { var ls = []; // Vector -> Vector
+  list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
+  return ls
+}
 
-  m.forEach(function(r,j) {
-    var row = []
-
-    if (j!=i) {
-      r.forEach(function(s, k) { if (k!=i) { row.push(s)} })
-      mm.push(row);
-    }
+function removeNode(m, i) { var mm = [];
+  m.forEach(function(rs,j) {
+    if (j!=i) { mm.push(nubList(rs, i)) }
   })
-
-  return(mm)
+  return mm
 }
 
 
