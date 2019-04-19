@@ -12,10 +12,6 @@
     .attr("class","graph")
 
   var nodeData = [] // data for Cars on Road.
-  // var color = d3.scale.category10()
-  // var color = d3.scale.category20c();
-  // var color = d3.schemeCategory10(0)
-  // var color = d3.interpolateYlGn()
   var dataset = d3.range(numNodes);
   var colors = ['red', 'orange', 'green', 'blue', 'violet']
 
