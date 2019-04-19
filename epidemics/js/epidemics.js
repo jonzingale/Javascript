@@ -1,12 +1,15 @@
 // http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
 (function(){
 
-  var world_width = 900,
-      world_height = 900,
+  var world_width = 400,
+      world_height = 400,
       controlbox_width = 300,
       controlbox_height = 300,
       n_grid_x = 24,
       n_grid_y = 24
+
+const numNodes = 10
+const boardSize = 300
 
 //// Buttons and Blocks.
   var controls = d3.selectAll("#epidemics_controls").append("svg")
@@ -44,7 +47,6 @@
   var t; // initialize timer
   function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
 
-// From Nagel-Schreckenberg
   var roadContainer = d3.selectAll("#open_road").append("svg")
     .attr("width",world_width)
     .attr("height",world_height)
@@ -52,14 +54,10 @@
 
   var carData = [] // data for Cars on Road.
   var colors = ['red', 'orange', 'green', 'blue', 'violet']
-  
+
   colors.forEach(function(c) {
     carData.unshift({ 'cx': 340, 'cy' : 175, 'r' : 9, 'color': c })
   })
-
-  for (i=0; i<20 ; i++){
-    carData.unshift({ 'cx':340, 'cy':175, 'r':9, 'color': 'lightgrey'})
-  }
 
   var roadCars = roadContainer.selectAll('circle')
     .data(carData).enter().append('circle')
@@ -69,13 +67,7 @@
     .attr("cy", function (d) { return d.cy; })
     .attr("r", function (d) { return d.r; })
 
-
-// From Dragon Maps
-  function mod(a,b){return(((a % b) + b) % b)}
-
-// Coordinates
-const boardSize = 300
-const numNodes = 10
+function mod(a,b){return(((a % b) + b) % b)}
 
 function generateCoordinates() {
   nodes = [] ; for (let i=0; i < numNodes; i++) {
