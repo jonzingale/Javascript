@@ -45,8 +45,6 @@
   function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
 
 // From Nagel-Schreckenberg
-  var world = d3.selectAll("#traffic_display")
-
   var roadContainer = d3.selectAll("#open_road").append("svg")
     .attr("width",world_width)
     .attr("height",world_height)
