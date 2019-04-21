@@ -1,4 +1,6 @@
 // http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
+import miserable.js
+
 (function(){
 
   var world_width = 400,

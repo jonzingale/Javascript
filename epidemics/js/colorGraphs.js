@@ -1,4 +1,3 @@
-// http://nifty.stanford.edu/2014/mccown-schelling-model-segregation/
 (function(){
   const boardSize = 400,
         center = boardSize/2,
