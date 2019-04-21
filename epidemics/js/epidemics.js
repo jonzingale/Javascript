@@ -8,8 +8,8 @@
       n_grid_x = 24,
       n_grid_y = 24
 
-const numNodes = 10
-const boardSize = 300
+  const numNodes = 10
+  const boardSize = 300
 
 //// Buttons and Blocks.
   var controls = d3.selectAll("#epidemics_controls").append("svg")
@@ -67,50 +67,48 @@ const boardSize = 300
     .attr("cy", function (d) { return d.cy; })
     .attr("r", function (d) { return d.r; })
 
-function mod(a,b){return(((a % b) + b) % b)}
+  function mod(a,b){return(((a % b) + b) % b)}
 
-function generateCoordinates() {
-  nodes = [] ; for (let i=0; i < numNodes; i++) {
-    var x = Math.floor(Math.random()*boardSize)
-    var y = Math.floor(Math.random()*boardSize)
-    nodes.push([x,y])
-  } ; return nodes
-}
+  function generateCoordinates() {
+    nodes = [] ; for (let i=0; i < numNodes; i++) {
+      var x = Math.floor(Math.random()*boardSize)
+      var y = Math.floor(Math.random()*boardSize)
+      nodes.push([x,y])
+    } ; return nodes
+  }
 
-// vector constants
-var vect = [1,2,3]
-var wect = [4,5,6]
-var matr = [[1,2,3],[4,5,6],[7,8,9]]
-var xect = vectorTransform(matr, vect)
-var ns = innerProduct(xect, wect)
+  // vector constants
+  var vect = [1,2,3]
+  var wect = [4,5,6]
+  var matr = [[1,2,3],[4,5,6],[7,8,9]]
+  var xect = vectorTransform(matr, vect)
+  var ns = innerProduct(xect, wect)
 
-// Vector -> Vector -> Vector
-function innerProduct(v, w) {
-  return v.map((e, i) => e*w[i])
-}
+  // Vector -> Vector -> Vector
+  function innerProduct(v, w) {
+    return v.map((e, i) => e*w[i])
+  }
 
-// Matrix -> Vector -> Vector
-function vectorTransform(m, v) {
-  var w = m.map(function(e) {
-    return innerProduct(e, v).reduce((t, v) => t + v)
-  }) ; return w
-}
+  // Matrix -> Vector -> Vector
+  function vectorTransform(m, v) {
+    var w = m.map(function(e) {
+      return innerProduct(e, v).reduce((t, v) => t + v)
+    }) ; return w
+  }
 
-// Vector -> N -> Vector
-function nubList(list, i) { var ls = [];
-  list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
-  return ls
-}
+  // Vector -> N -> Vector
+  function nubList(list, i) { var ls = [];
+    list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
+    return ls
+  }
 
-// Matrix -> N -> Matrix
-function removeNode(matrx, i) { var mm = [];
-  matrx.forEach(function(rs, j) {
-    if (j!=i) { mm.push(nubList(rs, i)) }
-  }) ; return mm
-}
+  // Matrix -> N -> Matrix
+  function removeNode(matrx, i) { var mm = [];
+    matrx.forEach(function(rs, j) {
+      if (j!=i) { mm.push(nubList(rs, i)) }
+    }) ; return mm
+  }
 
-
-  // Nagel-Schreckenberg
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
       return { 'cx' : x + 30, 'cy' : y + 30 }
@@ -119,8 +117,6 @@ function removeNode(matrx, i) { var mm = [];
     roadCars.data(cData)
       .attr("cx", function (d) { return d.cx; })
       .attr("cy", function (d) { return d.cy; })
-
-    console.log(JSON.stringify(cData)) // <-------------
   }
 
 traffic = generateCoordinates()

@@ -1,15 +1,15 @@
 {
   "nodes":[
-    {"name":"0","group":1},
-    {"name":"1","group":2},
-    {"name":"2","group":2},
-    {"name":"3","group":3},
-    {"name":"4","group":3},
-    {"name":"5","group":2},
-    {"name":"6","group":3},
-    {"name":"7","group":2},
-    {"name":"8","group":2},
-    {"name":"9","group":3}
+    {"name":"0"},
+    {"name":"1"},
+    {"name":"2"},
+    {"name":"3"},
+    {"name":"4"},
+    {"name":"5"},
+    {"name":"6"},
+    {"name":"7"},
+    {"name":"8"},
+    {"name":"9"} 
   ],
   "links":[
     {"source":2,"target":1,"weight":1},
