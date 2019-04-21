@@ -30,13 +30,14 @@
       .data(graph.nodes)
       .enter().append("circle")
         .attr("r", 2.5)
+        // .fill(d3.interpolateYlOrRd())
         // .interpolateYlOrRd()
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
 
-console.log(JSON.stringify(node))
+// console.log(JSON.stringify(node))
 
     node.append("title")
         .text(function(d) { return d.id; });
