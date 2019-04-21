@@ -8,6 +8,13 @@
       .force("charge", d3.forceManyBody().strength(-10))
       .force("center", d3.forceCenter(width / 2, height / 2));
 
+  // dataset.forEach(function(c, i) {
+  //   nodeData.unshift(
+  //     { 'cx': center, 'cy' : center, 'r' : radius,
+  //       'color': d3.interpolateYlOrRd(i/numNodes)
+  //     })
+  // })
+
   d3.json("js/miserable.json", function(error, graph) {
     if (error) throw error;
 
@@ -23,10 +30,13 @@
       .data(graph.nodes)
       .enter().append("circle")
         .attr("r", 2.5)
+        // .interpolateYlOrRd()
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
+
+console.log(JSON.stringify(node))
 
     node.append("title")
         .text(function(d) { return d.id; });

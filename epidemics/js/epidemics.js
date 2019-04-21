@@ -45,7 +45,8 @@
    });
 
   var t; // initialize timer
-  function runpause(d){ d.value == 1 ? t = d3.timer(runBlink,0) : t.stop(); }
+  function runpause(d){ d.value == 1 ?
+    t = d3.timer(runBlink,0) : t.stop(); }
 
   var roadContainer = d3.selectAll("#open_road").append("svg")
     .attr("width",world_width)
@@ -65,7 +66,7 @@
   roadCars.style("fill", function (d) { return d.color; })
     .attr("cx", function (d) { return d.cx; })
     .attr("cy", function (d) { return d.cy; })
-    .attr("r", function (d) { return d.r; })
+    .attr("r" , function (d) { return d.r; })
 
   function mod(a,b){return(((a % b) + b) % b)}
 
@@ -119,7 +120,7 @@
       .attr("cy", function (d) { return d.cy; })
   }
 
-traffic = generateCoordinates()
+  traffic = generateCoordinates()
 
   function runBlink() {
     updateDisplay(traffic)
