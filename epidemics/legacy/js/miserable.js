@@ -28,10 +28,10 @@ var miserable = (function(){
         .attr('fill', function(d, i) {
           return d3.interpolateYlOrRd(i/numNodes)
         })
-        // .call(d3.drag()
-        //   .on("start", dragstarted)
-        //   .on("drag", dragged)
-        //   .on("end", dragended));
+        .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
 
     simulation
         .nodes(graph.nodes)
