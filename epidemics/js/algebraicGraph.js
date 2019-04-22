@@ -39,7 +39,7 @@ function vectorTransform(m, v) {
   }) ; return w
 }
 // Vector -> N -> Vector
-function nubList(list, i) { var ls = [];
+function nubList(list, i, ls=[]) {
   list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
   return ls
 }
@@ -56,9 +56,7 @@ function randomFromList(list) {
   return list[rr].id
 }
 
-function randomAdjacency(num, density) {
-  var matrx = []
-
+function randomAdjacency(num, density, matrx=[]) {
   // lower triangular
   for (let i=0; i < num; i++) {
     var row = [] ; for (let j=0; j < num; j++) {
@@ -77,13 +75,11 @@ function generateNodes() {
   } ; return nodes
 }
 
-// TODO: randomly assign remaining edges, no multi-edges.
 // links: {'source': id, 'target': id, value: k}
-function generateLinks(nodes) {
+function generateLinks(nodes, links=[]) {
   var remainingLinks = numLinks - numNodes
   var pi = nodes.slice(0,1)
   var nodes = nodes.slice(1)
-  var links = []
 
   // Tree
   nodes.forEach(function(n, i) {
