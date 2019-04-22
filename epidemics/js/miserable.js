@@ -1,5 +1,7 @@
 import * as Linear from './linearAlgebra.js';
 
+const numNodes = 77;
+
 var miserable = (function(){
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -13,8 +15,6 @@ var miserable = (function(){
   d3.json("js/miserable.json", function(error, graph) {
     if (error) throw error;
 
-    var numNodes = graph.nodes.length
-
     var link = svg.append("g")
       .attr("class", "links")
       .selectAll("line")
@@ -26,8 +26,8 @@ var miserable = (function(){
       .selectAll("circle")
       .data(graph.nodes)
       .enter().append("circle")
-        .attr("r", 3.5)
-        .attr('fill', function(d, i) {
+        .attr("r", 3.5) // size of nodes
+        .attr('fill', function(d, i) { // color nodes
           return d3.interpolateYlOrRd(i/numNodes)
         })
         .call(d3.drag()

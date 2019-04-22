@@ -1,8 +1,5 @@
-// import { miserable } from 'miserable.js';
-// import { innerProduct, vectorTransform, nubList, removeNode } from 'linearAlgebra.js';
-// console.log(innerProduct([1,2,3],[5,6,7]))
-
 // SERVER on 8000: python -m http.server
+import * as Linear from './linearAlgebra.js';
 
 (function(){
   var world_width = 400,
