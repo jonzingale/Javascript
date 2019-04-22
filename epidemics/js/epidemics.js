@@ -4,6 +4,8 @@
 
 (function(){
 
+// SERVER on 8000
+// python -m http.server 
   var world_width = 400,
       world_height = 400,
       controlbox_width = 300,
