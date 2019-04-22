@@ -13,7 +13,6 @@ function vectorTransform(m, v) {
     return innerProduct(e, v).reduce((t, v) => t + v)
   }) ; return w
 }
-
 // Vector -> N -> Vector
 function nubList(list, i) { var ls = [];
   list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
@@ -27,4 +26,14 @@ function removeNode(matrx, i) { var mm = [];
   }) ; return mm
 }
 
-export {innerProduct, vectorTransform, nubList, removeNode}
+function generateCoordinates() {
+    var nodes = [] ; for (let i=0; i < numNodes; i++) {
+      var x = Math.floor(Math.random()*boardSize)
+      var y = Math.floor(Math.random()*boardSize)
+      nodes.push([x,y])
+    } ; return nodes
+}
+
+
+export {innerProduct, vectorTransform, nubList,
+        removeNode, generateCoordinates}

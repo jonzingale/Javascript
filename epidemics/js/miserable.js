@@ -1,4 +1,4 @@
-import * as Linear from './linearAlgebra.js';
+import * as Graph from './algebraicGraph.js';
 
 const numNodes = 77;
 

@@ -1,5 +1,5 @@
 // SERVER on 8000: python -m http.server
-import * as Linear from './linearAlgebra.js';
+import * as Graph from './algebraicGraph.js';
 
 (function(){
   var world_width = 400,
@@ -74,18 +74,19 @@ import * as Linear from './linearAlgebra.js';
 
   function mod(a,b){return(((a % b) + b) % b)}
 
+// see if the json can be imported and assigned.
+  d3.json("js/miserable.json", function(error, graph) {
+    if (error) throw error;
+    console.log(JSON.stringify(graph))
+  })
+
   function generateCoordinates() {
-    nodes = [] ; for (let i=0; i < numNodes; i++) {
+    var nodes = [] ; for (let i=0; i < numNodes; i++) {
       var x = Math.floor(Math.random()*boardSize)
       var y = Math.floor(Math.random()*boardSize)
       nodes.push([x,y])
     } ; return nodes
   }
-
-  // vector constants
-  var vect = [1,2,3]
-  var wect = [4,5,6]
-  var matr = [[1,2,3],[4,5,6],[7,8,9]]
 
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
@@ -99,7 +100,7 @@ import * as Linear from './linearAlgebra.js';
       .attr("cy", function (d) { return d.cy; })
   }
 
-  traffic = generateCoordinates()
+  const traffic = generateCoordinates()
 
   function runBlink() {
     updateDisplay(traffic)
