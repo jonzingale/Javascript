@@ -34,17 +34,30 @@ function removeNode(matrx, i) { var mm = [];
   }) ; return mm
 }
 
+function randomFromList(list) {
+  var rr = Math.floor(Math.random() * list.length)
+  return list[rr].id
+}
+
+function randomAdjacency(num, density) {
+  var ary = [], matrx = []
+
+  for (let i=0; i < num**2; i++) {
+    Math.random() > density ? ary.push(1) : ary.push(0)
+  }
+
+  for (let i=0; i < num; i++) {
+    matrx.push(ary.slice(0,num))
+  }
+  return matrx
+}
+
 // nodes: {'id': i, 'group': j}
 function generateNodes() {
     var nodes = [] ; for (let i=0; i < numNodes; i++) {
       var g = Math.floor(Math.random()*numNodes)
       nodes.push({id: i, group: g})
     } ; return nodes
-}
-
-function randomFromList(list) {
-  var rr = Math.floor(Math.random() * list.length)
-  return list[rr]
 }
 
 // TODO: randomly assign remaining edges, no multi-edges.
@@ -58,16 +71,17 @@ function generateLinks(nodes) {
   // Tree
   nodes.forEach(function(n, i) {
     var k = Math.floor(Math.random()*numNodes)
-    var rSrc = randomFromList(pi).id
+    var rSrc = randomFromList(pi)
     pi.push(n)
     links.push({'source': rSrc, 'target': n.id, value: k})
   })
 
-  // TODO: grab pairs of nodes, verify that they have no link
+  // TODO: grab pairs of nodes, verify that they have no link,
+  // or self loops. Perhaps try building from Adjacency.
   // more links
-  while (remainingLinks > 0) {
+  // while (remainingLinks > 0) {
     
-  }
+  // }
 
   return links
 }
@@ -78,5 +92,5 @@ function generateGraph() {
   return {'nodes': nodes, 'links': links}
 }
 
-export {innerProduct, vectorTransform, nubList,
+export {innerProduct, vectorTransform, nubList, randomAdjacency,
         removeNode, generateGraph}
