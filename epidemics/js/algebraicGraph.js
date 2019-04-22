@@ -1,12 +1,11 @@
-const matr = [[1,2,3],[4,5,6],[7,8,9]]
-const tri  = [[0,0,0,0],[1,0,0,0],[1,1,0,0],[1,1,1,0]]
-
 const vect = [1,2,3]
 const wect = [4,5,6]
 
-const numNodes = 77
-const numLinks = 122
-const boardSize = 300
+const matr = [[1,2,3],
+              [4,5,6],
+              [7,8,9]]
+
+const numNodes = 70
 
 function mod(a,b) {
   return(((a % b) + b) % b)
@@ -60,10 +59,10 @@ function randomAdjacency(num, density, matrx=[]) {
   // lower triangular
   for (let i=0; i < num; i++) {
     var row = [] ; for (let j=0; j < num; j++) {
-      j<i && Math.random() > density ? row.push(1) : row.push(0)
+      j < i && Math.random() > density ? row.push(1) : row.push(0)
     } ; matrx.push(row)
   }
-  // full adjacency
+
   return mSum(matrx, tr(matrx))
 }
 
@@ -76,10 +75,8 @@ function generateNodes() {
 }
 
 // links: {'source': id, 'target': id, value: k}
-function generateLinks(nodes, links=[]) {
-  var remainingLinks = numLinks - numNodes
-  var pi = nodes.slice(0,1)
-  var nodes = nodes.slice(1)
+function generateTree(nodes, links=[]) {
+  var pi = nodes.slice(0,1), nodes = nodes.slice(1)
 
   // Tree
   nodes.forEach(function(n, i) {
@@ -87,14 +84,30 @@ function generateLinks(nodes, links=[]) {
     var rSrc = randomFromList(pi)
     pi.push(n)
     links.push({'source': rSrc, 'target': n.id, value: k})
+  }) ; return links
+}
+
+// links: {'source': id, 'target': id, value: k}
+function generateLinks(nodes, adj, links=[]) {
+  nodes.forEach(function(n, i) {
+    var k = Math.floor(Math.random()*numNodes)
+
+    for (let j=0; j < i; j++) {
+      if (adj[i][j] == 1) {
+        links.push({'source': nodes[j], 'target': n.id, value: k})        
+      }
+    }
   })
 
   return links
 }
 
+var adjM = randomAdjacency(numNodes, 0.97)
+
 function generateGraph() {
   var nodes = generateNodes()
-  var links = generateLinks(nodes)
+  var links = generateLinks(nodes, adjM)
+  // var links = generateTree(nodes)
   return {'nodes': nodes, 'links': links}
 }
 
