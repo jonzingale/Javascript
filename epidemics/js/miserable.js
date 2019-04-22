@@ -1,3 +1,5 @@
+import * as Linear from './linearAlgebra.js';
+
 var miserable = (function(){
   var svg = d3.select("svg"),
       width = +svg.attr("width"),

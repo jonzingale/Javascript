@@ -22,3 +22,5 @@
       if (j!=i) { mm.push(nubList(rs, i)) }
     }) ; return mm
   }
+
+export {innerProduct, vectorTransform, nubList, removeNode}

@@ -2,10 +2,9 @@
 // import { innerProduct, vectorTransform, nubList, removeNode } from 'linearAlgebra.js';
 // console.log(innerProduct([1,2,3],[5,6,7]))
 
-(function(){
+// SERVER on 8000: python -m http.server
 
-// SERVER on 8000
-// python -m http.server 
+(function(){
   var world_width = 400,
       world_height = 400,
       controlbox_width = 300,
@@ -90,8 +89,6 @@
   var vect = [1,2,3]
   var wect = [4,5,6]
   var matr = [[1,2,3],[4,5,6],[7,8,9]]
-  // var xect = vectorTransform(matr, vect)
-  // var ns = innerProduct(xect, wect)
 
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
