@@ -1,4 +1,6 @@
-// import miserable from miserable.js;
+// import { miserable } from 'miserable.js';
+// import { innerProduct, vectorTransform, nubList, removeNode } from 'linearAlgebra.js';
+// console.log(innerProduct([1,2,3],[5,6,7]))
 
 (function(){
 
@@ -28,17 +30,19 @@
   var playpause = { id:"b4", name:"run simulation",
                     actions: ["play","pause"], value: 0};
 
-  var reset = { id:"schellingreset", name:"reset",
+  var reset = { id:"sir_reset", name:"reset",
                 actions: ["rewind"], value: 0};
 
   var buttons = [ widget.button(reset).update(generateCoordinates) ]
 
   var playbutton = [
-    widget.button(playpause).size(g.x(7)).symbolSize(0.6*g.x(7)).update(runpause),
+    widget.button(playpause).size(g.x(7))
+          .symbolSize(0.6*g.x(7)).update(runpause),
   ]
 
-  controls.selectAll(".button .others").data(buttons).enter().append(widget.buttonElement)
-    .attr("transform",function(d,i){return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"});  
+  controls.selectAll(".button .others").data(buttons).enter()
+    .append(widget.buttonElement).attr("transform",function(d,i) {
+      return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"});  
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
           .append(widget.buttonElement)
@@ -50,10 +54,10 @@
   function runpause(d){ d.value == 1 ?
     t = d3.timer(runBlink,0) : t.stop(); }
 
-  var roadContainer = d3.selectAll("#open_road").append("svg")
+  var roadContainer = d3.selectAll("#network").append("svg")
     .attr("width",world_width)
     .attr("height",world_height)
-    .attr("class","open_road")
+    .attr("class","network")
 
   var carData = [] // data for Cars on Road.
   var colors = ['red', 'orange', 'green', 'blue', 'violet']
@@ -84,33 +88,8 @@
   var vect = [1,2,3]
   var wect = [4,5,6]
   var matr = [[1,2,3],[4,5,6],[7,8,9]]
-  var xect = vectorTransform(matr, vect)
-  var ns = innerProduct(xect, wect)
-
-  // Vector -> Vector -> Vector
-  function innerProduct(v, w) {
-    return v.map((e, i) => e*w[i])
-  }
-
-  // Matrix -> Vector -> Vector
-  function vectorTransform(m, v) {
-    var w = m.map(function(e) {
-      return innerProduct(e, v).reduce((t, v) => t + v)
-    }) ; return w
-  }
-
-  // Vector -> N -> Vector
-  function nubList(list, i) { var ls = [];
-    list.forEach(function(l, j) { if (j!=i) { ls.push(l) }})
-    return ls
-  }
-
-  // Matrix -> N -> Matrix
-  function removeNode(matrx, i) { var mm = [];
-    matrx.forEach(function(rs, j) {
-      if (j!=i) { mm.push(nubList(rs, i)) }
-    }) ; return mm
-  }
+  // var xect = vectorTransform(matr, vect)
+  // var ns = innerProduct(xect, wect)
 
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
