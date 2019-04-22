@@ -62,21 +62,19 @@ function randomAdjacency(num, density) {
   // lower triangular
   for (let i=0; i < num; i++) {
     var row = [] ; for (let j=0; j < num; j++) {
-      Math.random() > density && j<i ? row.push(1) : row.push(0)
+      j<i && Math.random() > density ? row.push(1) : row.push(0)
     } ; matrx.push(row)
   }
   // full adjacency
   return mSum(matrx, tr(matrx))
 }
 
-console.log(JSON.stringify(randomAdjacency(5, 0.5)))
-
 // nodes: {'id': i, 'group': j}
 function generateNodes() {
-    var nodes = [] ; for (let i=0; i < numNodes; i++) {
-      var g = Math.floor(Math.random()*numNodes)
-      nodes.push({id: i, group: g})
-    } ; return nodes
+  var nodes = [] ; for (let i=0; i < numNodes; i++) {
+    var g = Math.floor(Math.random()*numNodes)
+    nodes.push({id: i, group: g})
+  } ; return nodes
 }
 
 // TODO: randomly assign remaining edges, no multi-edges.
@@ -94,13 +92,6 @@ function generateLinks(nodes) {
     pi.push(n)
     links.push({'source': rSrc, 'target': n.id, value: k})
   })
-
-  // TODO: grab pairs of nodes, verify that they have no link,
-  // or self loops. Perhaps try building from Adjacency.
-  // more links
-  // while (remainingLinks > 0) {
-    
-  // }
 
   return links
 }
