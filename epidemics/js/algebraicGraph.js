@@ -5,7 +5,7 @@ const matr = [[1,2,3],
               [4,5,6],
               [7,8,9]]
 
-const numNodes = 70
+const numNodes = 120
 
 function mod(a,b) {
   return(((a % b) + b) % b)
@@ -74,6 +74,10 @@ function generateNodes() {
   } ; return nodes
 }
 
+function rNode() {
+  return Math.floor(Math.random()*numNodes)
+}
+
 // links: {'source': id, 'target': id, value: k}
 function generateTree(nodes, links=[]) {
   var pi = nodes.slice(0,1), nodes = nodes.slice(1)
@@ -84,17 +88,23 @@ function generateTree(nodes, links=[]) {
     var rSrc = randomFromList(pi)
     pi.push(n)
     links.push({'source': rSrc, 'target': n.id, value: k})
-  }) ; return links
+  })
+
+  // add cycles
+  for (let i=0; i < numNodes/Math.log(numNodes); i++) {
+    links.push({'source': rNode(), 'target': rNode(), 'value': rNode()})
+  }
+
+  return links
 }
 
 // links: {'source': id, 'target': id, value: k}
 function generateLinks(nodes, adj, links=[]) {
   nodes.forEach(function(n, i) {
-    var k = Math.floor(Math.random()*numNodes)
-
     for (let j=0; j < i; j++) {
       if (adj[i][j] == 1) {
-        links.push({'source': nodes[j], 'target': n.id, value: k})        
+        links.push({'source': nodes[j], 'target': n.id,
+          'value': Math.floor(Math.random()*numNodes)})        
       }
     }
   })
@@ -102,12 +112,12 @@ function generateLinks(nodes, adj, links=[]) {
   return links
 }
 
-var adjM = randomAdjacency(numNodes, 0.97)
+var adjM = randomAdjacency(numNodes, 0.98)
 
 function generateGraph() {
   var nodes = generateNodes()
-  var links = generateLinks(nodes, adjM)
-  // var links = generateTree(nodes)
+  // var links = generateLinks(nodes, adjM)
+  var links = generateTree(nodes)
   return {'nodes': nodes, 'links': links}
 }
 
