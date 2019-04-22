@@ -1,4 +1,6 @@
 const matr = [[1,2,3],[4,5,6],[7,8,9]]
+const tri  = [[0,0,0,0],[1,0,0,0],[1,1,0,0],[1,1,1,0]]
+
 const vect = [1,2,3]
 const wect = [4,5,6]
 
@@ -6,8 +8,23 @@ const numNodes = 77
 const numLinks = 122
 const boardSize = 300
 
-function mod(a,b){
+function mod(a,b) {
   return(((a % b) + b) % b)
+}
+
+// Matrix -> Matrix
+function tr(ms, newMatrx=[]) {
+  for (let i=0; i < ms.length ; i++) {
+    newMatrx.push(ms.map(vs => vs[0]))
+    ms = ms.map(vs => vs.slice(1))
+  } ; return newMatrx
+}
+
+function mSum(ms, ns, mm=[]) {
+  for (let i=0; i < ms.length ; i++) {
+    var vs = ms[i].map((v, j) => v + ns[i][j])
+    mm.push(vs)
+  } ; return mm
 }
 
 // Vector -> Vector -> Vector
@@ -40,17 +57,19 @@ function randomFromList(list) {
 }
 
 function randomAdjacency(num, density) {
-  var ary = [], matrx = []
+  var matrx = []
 
-  for (let i=0; i < num**2; i++) {
-    Math.random() > density ? ary.push(1) : ary.push(0)
-  }
-
+  // lower triangular
   for (let i=0; i < num; i++) {
-    matrx.push(ary.slice(0,num))
+    var row = [] ; for (let j=0; j < num; j++) {
+      Math.random() > density && j<i ? row.push(1) : row.push(0)
+    } ; matrx.push(row)
   }
-  return matrx
+  // full adjacency
+  return mSum(matrx, tr(matrx))
 }
+
+console.log(JSON.stringify(randomAdjacency(5, 0.5)))
 
 // nodes: {'id': i, 'group': j}
 function generateNodes() {

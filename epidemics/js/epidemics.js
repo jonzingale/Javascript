@@ -1,8 +1,5 @@
 // SERVER on 8000: python -m http.server
-import * as Graph from './algebraicGraph.js';
 import {generateGraph, randomAdjacency} from './algebraicGraph.js';
-
-console.log(JSON.stringify(randomAdjacency(10,0.5)))
 
 (function(){
   var world_width = 400,

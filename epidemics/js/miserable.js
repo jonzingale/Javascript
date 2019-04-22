@@ -1,8 +1,6 @@
 import {generateGraph} from './algebraicGraph.js';
 // Color Nodes yes, but better might be by group!
 
-// console.log(JSON.stringify(generateGraph()))
-
 const numNodes = 77;
 
 var miserable = (function(){
@@ -32,9 +30,9 @@ var miserable = (function(){
       .data(graph.nodes)
       .enter().append("circle")
         .attr("r", 3.5) // size of nodes
-        .attr('fill', function(d, i) { // color nodes
-          return d3.interpolateYlOrRd(i/numNodes)
-        })
+        // .attr('fill', function(d, i) { // color nodes
+          // return d3.interpolateYlOrRd(i/numNodes)
+        // })
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
