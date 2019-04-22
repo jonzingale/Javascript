@@ -1,5 +1,6 @@
 // SERVER on 8000: python -m http.server
 import * as Graph from './algebraicGraph.js';
+import {generateGraph} from './algebraicGraph.js';
 
 (function(){
   var world_width = 400,
@@ -8,9 +9,6 @@ import * as Graph from './algebraicGraph.js';
       controlbox_height = 300,
       n_grid_x = 24,
       n_grid_y = 24
-
-  const numNodes = 10
-  const boardSize = 300
 
 //// Buttons and Blocks.
   var controls = d3.selectAll("#epidemics_controls").append("svg")
@@ -31,7 +29,7 @@ import * as Graph from './algebraicGraph.js';
   var reset = { id:"sir_reset", name:"reset",
                 actions: ["rewind"], value: 0};
 
-  var buttons = [ widget.button(reset).update(generateCoordinates) ]
+  var buttons = [ widget.button(reset).update(generateGraph) ]
 
   var playbutton = [
     widget.button(playpause).size(g.x(7))
@@ -57,36 +55,26 @@ import * as Graph from './algebraicGraph.js';
     .attr("height",world_height)
     .attr("class","network")
 
-  var carData = [] // data for Cars on Road.
-  var colors = ['red', 'orange', 'green', 'blue', 'violet']
+  // var carData = [] // data for Cars on Road.
+  // var colors = ['red', 'orange', 'green', 'blue', 'violet']
 
-  colors.forEach(function(c) {
-    carData.unshift({ 'cx': 340, 'cy' : 175, 'r' : 9, 'color': c })
-  })
+  // colors.forEach(function(c) {
+  //   carData.unshift({ 'cx': 340, 'cy' : 175, 'r' : 9, 'color': c })
+  // })
 
-  var roadCars = roadContainer.selectAll('circle')
-    .data(carData).enter().append('circle')
+  // var roadCars = roadContainer.selectAll('circle')
+  //   .data(carData).enter().append('circle')
 
-  roadCars.style("fill", function (d) { return d.color; })
-    .attr("cx", function (d) { return d.cx; })
-    .attr("cy", function (d) { return d.cy; })
-    .attr("r" , function (d) { return d.r; })
-
-  function mod(a,b){return(((a % b) + b) % b)}
+  // roadCars.style("fill", function (d) { return d.color; })
+  //   .attr("cx", function (d) { return d.cx; })
+  //   .attr("cy", function (d) { return d.cy; })
+  //   .attr("r" , function (d) { return d.r; })
 
 // see if the json can be imported and assigned.
-  d3.json("js/miserable.json", function(error, graph) {
-    if (error) throw error;
-    console.log(JSON.stringify(graph))
-  })
-
-  function generateCoordinates() {
-    var nodes = [] ; for (let i=0; i < numNodes; i++) {
-      var x = Math.floor(Math.random()*boardSize)
-      var y = Math.floor(Math.random()*boardSize)
-      nodes.push([x,y])
-    } ; return nodes
-  }
+  // d3.json("js/miserable.json", function(error, graph) {
+  //   if (error) throw error;
+  //   console.log(JSON.stringify(graph))
+  // })
 
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
@@ -100,10 +88,10 @@ import * as Graph from './algebraicGraph.js';
       .attr("cy", function (d) { return d.cy; })
   }
 
-  const traffic = generateCoordinates()
+  const traffic = generateGraph()
 
   function runBlink() {
-    updateDisplay(traffic)
+    // updateDisplay(traffic)
   }
 
   runBlink()

@@ -1,4 +1,7 @@
-import * as Graph from './algebraicGraph.js';
+import {generateGraph} from './algebraicGraph.js';
+// Color Nodes yes, but better might be by group!
+
+// console.log(JSON.stringify(generateGraph()))
 
 const numNodes = 77;
 
@@ -14,6 +17,8 @@ var miserable = (function(){
 
   d3.json("js/miserable.json", function(error, graph) {
     if (error) throw error;
+
+    var graph = generateGraph() 
 
     var link = svg.append("g")
       .attr("class", "links")
@@ -41,10 +46,6 @@ var miserable = (function(){
 
     simulation.force("link")
         .links(graph.links);
-
-    // TODO:
-    // How will I reference the circles during the sir simulation?
-
 
     function ticked() {
       link
