@@ -1,5 +1,4 @@
 import {generateGraph} from './algebraicGraph.js';
-// Color Nodes yes, but better might be by group!
 
 // const numNodes = 9204;
 const numNodes = 647;
@@ -30,7 +29,8 @@ var miserable = (function(){
       .enter().append("circle")
         .attr("r", 2.5) // size of nodes
         .attr('fill', function(d, i) { // color nodes
-          return d3.interpolateYlOrRd((numNodes-i)/numNodes)
+          return d3.interpolateYlGnBu((numNodes-i)/numNodes)
+          // return d3.interpolateYlOrRd((numNodes-i)/numNodes)
         })
         .call(d3.drag()
           .on("start", dragstarted)

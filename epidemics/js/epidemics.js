@@ -49,15 +49,13 @@ import {generateGraph, randomAdjacency} from './algebraicGraph.js';
   function runpause(d){ d.value == 1 ?
     t = d3.timer(runBlink,0) : t.stop(); }
 
-  var roadContainer = d3.selectAll("#network").append("svg")
-    .attr("width",world_width)
-    .attr("height",world_height)
-    .attr("class","network")
+  // var roadContainer = d3.selectAll("#network").append("svg")
+  //   .attr("width",world_width)
+  //   .attr("height",world_height)
+  //   .attr("class","network")
 
-// see if the json can be imported and assigned.
-  // d3.json("js/miserable.json", function(error, graph) {
+  // d3.json("js/json/gitGraph.json", function(error, graph) {
   //   if (error) throw error;
-  //   console.log(JSON.stringify(graph))
   // })
 
   function updateDisplay(coords) {
@@ -65,11 +63,15 @@ import {generateGraph, randomAdjacency} from './algebraicGraph.js';
       return { 'cx' : x + 30, 'cy' : y + 30 }
     })
 
-    // miserable
-
     roadCars.data(cData)
       .attr("cx", function (d) { return d.cx; })
       .attr("cy", function (d) { return d.cy; })
+  }
+
+  function runEpidemic() {
+    // <M*i| s>
+    // new M, i , s
+    // 
   }
 
   const traffic = generateGraph()
