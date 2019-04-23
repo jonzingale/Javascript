@@ -45,3 +45,7 @@ class Graph:
 agent = Agent()
 agent.walk_network(CENTER_NODE, 3)
 agent.data_writer()
+
+# TODO: restrict links to degree 5 and go deeper
+
+
