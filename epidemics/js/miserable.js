@@ -1,7 +1,9 @@
 import {generateGraph} from './algebraicGraph.js';
 // Color Nodes yes, but better might be by group!
 
-const numNodes = 77;
+// const numNodes = 77;
+// const numNodes = 9204;
+const numNodes = 647;
 
 var miserable = (function(){
   var svg = d3.select("svg"),
@@ -10,13 +12,11 @@ var miserable = (function(){
 
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink().id(function(d) { return d.id; }))
-      .force("charge", d3.forceManyBody().strength(-10))
+      .force("charge", d3.forceManyBody().strength(-2))
       .force("center", d3.forceCenter(width / 2, height / 2));
 
-  d3.json("js/miserable.json", function(error, graph) {
+  d3.json("js/gitGraph.json", function(error, graph) {
     if (error) throw error;
-
-    var graph = generateGraph() 
 
     var link = svg.append("g")
       .attr("class", "links")
@@ -29,10 +29,10 @@ var miserable = (function(){
       .selectAll("circle")
       .data(graph.nodes)
       .enter().append("circle")
-        .attr("r", 3.5) // size of nodes
-        // .attr('fill', function(d, i) { // color nodes
-          // return d3.interpolateYlOrRd(i/numNodes)
-        // })
+        .attr("r", 2.5) // size of nodes
+        .attr('fill', function(d, i) { // color nodes
+          return d3.interpolateYlOrRd((numNodes-i)/numNodes)
+        })
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)

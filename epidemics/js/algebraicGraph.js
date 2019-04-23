@@ -117,6 +117,7 @@ var adjM = randomAdjacency(numNodes, 0.98)
 function generateGraph() {
   var nodes = generateNodes()
   // var links = generateLinks(nodes, adjM)
+  // var links = ... Real Data from somewhere.
   var links = generateTree(nodes)
   return {'nodes': nodes, 'links': links}
 }
