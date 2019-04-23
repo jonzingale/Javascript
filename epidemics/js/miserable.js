@@ -37,6 +37,14 @@ var miserable = (function(){
           .on("drag", dragged)
           .on("end", dragended));
 
+    // var text = svg.append("g")
+    //   .attr("class", "nodes")
+    //   .selectAll("text")
+    //   .data(graph.nodes)
+    //   .enter()
+    //   .append("text")
+    //   .text(function(d) { return d.id; });
+
     simulation
         .nodes(graph.nodes)
         .on("tick", ticked);
@@ -54,6 +62,10 @@ var miserable = (function(){
       node
           .attr("cx", function(d) { return d.x; })
           .attr("cy", function(d) { return d.y; });
+
+      // text.attr("transform", function(d) {
+      //   return "translate(" + d.x + "," + d.y + ")"; }
+      // );
     }
   });
 

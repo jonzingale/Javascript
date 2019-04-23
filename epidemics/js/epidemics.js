@@ -54,21 +54,6 @@ import {generateGraph, randomAdjacency} from './algebraicGraph.js';
     .attr("height",world_height)
     .attr("class","network")
 
-  // var carData = [] // data for Cars on Road.
-  // var colors = ['red', 'orange', 'green', 'blue', 'violet']
-
-  // colors.forEach(function(c) {
-  //   carData.unshift({ 'cx': 340, 'cy' : 175, 'r' : 9, 'color': c })
-  // })
-
-  // var roadCars = roadContainer.selectAll('circle')
-  //   .data(carData).enter().append('circle')
-
-  // roadCars.style("fill", function (d) { return d.color; })
-  //   .attr("cx", function (d) { return d.cx; })
-  //   .attr("cy", function (d) { return d.cy; })
-  //   .attr("r" , function (d) { return d.r; })
-
 // see if the json can be imported and assigned.
   // d3.json("js/miserable.json", function(error, graph) {
   //   if (error) throw error;
