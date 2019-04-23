@@ -1,7 +1,6 @@
 import {generateGraph} from './algebraicGraph.js';
 // Color Nodes yes, but better might be by group!
 
-// const numNodes = 77;
 // const numNodes = 9204;
 const numNodes = 647;
 
