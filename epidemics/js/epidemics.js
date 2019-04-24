@@ -74,7 +74,7 @@ import {generateGraph, randomAdjacency} from './algebraicGraph.js';
     // 
   }
 
-  const traffic = generateGraph()
+  // const traffic = generateGraph()
 
   function runBlink() {
     // updateDisplay(traffic)

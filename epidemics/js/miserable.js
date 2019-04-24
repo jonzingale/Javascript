@@ -87,3 +87,5 @@ var miserable = (function(){
   }
 
 })()
+
+export {miserable}
