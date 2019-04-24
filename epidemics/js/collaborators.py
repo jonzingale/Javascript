@@ -36,15 +36,13 @@ class Graph:
 
   def data_writer(self):
     encoder = json.JSONEncoder()
-    file = open("gitGraph.json", "w")
+    file = open("./json/gitGraph.json", "w")
     file.write(encoder.encode(self.graph))
 
 decoder = json.JSONDecoder()
-file = open("twoDegree.json", "r").read()
+file = open("./json/twoDegree.json", "r").read()
 data = decoder.decode(file)
 
 gr = Graph(data)
 gr.data_writer()
 # print(gr.graph)
-
-st()
