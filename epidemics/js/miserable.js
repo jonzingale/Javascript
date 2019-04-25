@@ -1,7 +1,6 @@
 import {generateGraph} from './algebraicGraph.js';
 
-// const numNodes = 9204;
-const numNodes = 647;
+var numNodes = 436;
 
 var miserable = (function(){
   var svg = d3.select("svg"),
@@ -10,11 +9,16 @@ var miserable = (function(){
 
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink().id(function(d) { return d.id; }))
-      .force("charge", d3.forceManyBody().strength(-2))
+      .force("charge", d3.forceManyBody().strength(
+        function(d){ return -d.degree * 3.3} )
+      )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
   d3.json("js/json/gitGraph.json", function(error, graph) {
     if (error) throw error;
+
+    // console.log(JSON.stringify(graph.nodes.length))
+    var numNode = graph.nodes.length
 
     var link = svg.append("g")
       .attr("class", "links")
@@ -27,7 +31,7 @@ var miserable = (function(){
       .selectAll("circle")
       .data(graph.nodes)
       .enter().append("circle")
-        .attr("r", 2.5) // size of nodes
+        .attr("r", function(d) { return d.degree * 3 }) // size of nodes
         .attr('fill', function(d, i) { // color nodes
           return d3.interpolateYlGnBu((numNodes-i)/numNodes)
           // return d3.interpolateYlOrRd((numNodes-i)/numNodes)
