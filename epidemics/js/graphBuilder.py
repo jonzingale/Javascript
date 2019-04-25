@@ -33,7 +33,6 @@ class Graph:
     for n in dictN:
       if dictN[n] > 0:
         deg = math.log(dictN[n])
-        # deg = dictN[n]
         nodes.append({'id': n, 'degree': deg})
 
     return({'nodes': nodes, 'links': links})
@@ -44,7 +43,10 @@ class Graph:
     file.write(encoder.encode(self.graph))
 
 decoder = json.JSONDecoder()
-file = open("./json/twoDegree.json", "r").read()
+# file = open("./json/benmaier.json", "r").read()
+# file = open("./json/jonzingale.json", "r").read()
+file = open("./json/dirkbrockmann.json", "r").read()
+
 # file = open("./gitData.json", "r").read()
 data = decoder.decode(file)
 
