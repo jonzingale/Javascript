@@ -3,7 +3,9 @@ from bs4 import BeautifulSoup
 from pdb import set_trace as st
 import json
 
-CENTER_NODE = '/benmaier'
+# CENTER_NODE = '/benmaier'
+CENTER_NODE = '/dirkbrockmann'
+
 URL_FORMAT = "https://github.com%s?tab=followers" 
 LINK_CLASS = "d-inline-block no-underline mb-1"
 
@@ -36,9 +38,9 @@ class Agent:
 
 class Graph:
   def __init__(self):
+    self.json = {}
     self.edges = self.json.values()
     self.nodes = self.json.keys()
-    self.json = {}
 
   # subgraph :: {user_stub: [user_stubs]}
   def add_subgraph(self, node, edges):
