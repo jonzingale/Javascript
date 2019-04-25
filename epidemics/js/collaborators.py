@@ -1,38 +1,42 @@
 from pdb import set_trace as st
+import random
+import math
 import json
 import re
 
 class Graph:
   def __init__(self, json):
-    self.links = self.format_links(json)
-    self.nodes = self.format_nodes(json)
-    self.graph = {**self.nodes, **self.links}
+    self.graph = self.format_graph(json)
 
-  def format_nodes(self, json):
-    nodes, dictN = [], {}
+  def format_graph(self, json):
+    links, nodes, dictN = [], [], {}
 
+    for src in json:
+      for tar in json[src]:
+        src = src.strip('/')
+        tar = tar.strip('/')
+
+        # build links
+        links.append({'source': src, 'target': tar})
+
+        # calculate node with degree
+        if src in dictN: dictN[src] += 1
+        else: dictN[src] = 2
+
+    # ensure target nodes exist in nodes
     for ns in json.values():
       for n in ns:
-        dictN[n.strip('/')] = None
+        node = n.strip('/')
+        if not node in dictN: dictN[node] = 2
 
-    for n in json.keys():
-      dictN[n.strip('/')] = None
+    # build nodes
+    for n in dictN:
+      if dictN[n] > 0:
+        deg = math.log(dictN[n])
+        # deg = dictN[n]
+        nodes.append({'id': n, 'degree': deg})
 
-    for n in dictN.keys():
-      nodes.append({'id': n})
-
-    return({'nodes': nodes})
-
-  def format_links(self, json):
-    links = []
-    for src in json.keys():
-      for tar in json[src]:
-        links.append(
-          {'source': src.strip('/'),
-           'target': tar.strip('/'),
-           'value': 10})
-
-    return({'links': links})
+    return({'nodes': nodes, 'links': links})
 
   def data_writer(self):
     encoder = json.JSONEncoder()
@@ -41,8 +45,10 @@ class Graph:
 
 decoder = json.JSONDecoder()
 file = open("./json/twoDegree.json", "r").read()
+# file = open("./gitData.json", "r").read()
 data = decoder.decode(file)
 
 gr = Graph(data)
 gr.data_writer()
 # print(gr.graph)
+# st()
