@@ -14,7 +14,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Agent:
   def __init__(self):
     self.http = urllib3.PoolManager()
-    self.file = open("gitData.json", "w")
+    self.file = open("./json/gitData.json", "w")
     self.json = json.JSONEncoder()
     self.graph = Graph()
 

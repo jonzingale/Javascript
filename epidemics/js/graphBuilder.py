@@ -47,7 +47,7 @@ decoder = json.JSONDecoder()
 # file = open("./json/jonzingale.json", "r").read()
 file = open("./json/dirkbrockmann.json", "r").read()
 
-# file = open("./gitData.json", "r").read()
+# file = open("./json/gitData.json", "r").read()
 data = decoder.decode(file)
 
 gr = Graph(data)
