@@ -7,6 +7,13 @@ const matr = [[1,2,3],
 
 const numNodes = 120
 
+function longVect() {
+  ary = []
+  for (let i=0; i<514; i++) {
+    ary.push(Math.floor(Math.random() + 0.5))
+  }
+}
+
 function mod(a,b) {
   return(((a % b) + b) % b)
 }
@@ -123,4 +130,4 @@ function generateGraph() {
 }
 
 export {innerProduct, vectorTransform, nubList, randomAdjacency,
-        removeNode, generateGraph}
+        removeNode, generateGraph, longVect}

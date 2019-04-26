@@ -42,12 +42,13 @@ class Graph:
     file = open("./json/gitGraph.json", "w")
     file.write(encoder.encode(self.graph))
 
-decoder = json.JSONDecoder()
 # file = open("./json/benmaier.json", "r").read()
 # file = open("./json/jonzingale.json", "r").read()
-file = open("./json/dirkbrockmann.json", "r").read()
+# file = open("./json/dirkbrockmann.json", "r").read()
+file = open("./json/mothtamer.json", "r").read()
 
 # file = open("./json/gitData.json", "r").read()
+decoder = json.JSONDecoder()
 data = decoder.decode(file)
 
 gr = Graph(data)

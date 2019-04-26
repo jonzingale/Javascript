@@ -4,7 +4,8 @@ from pdb import set_trace as st
 import json
 
 # CENTER_NODE = '/benmaier'
-CENTER_NODE = '/dirkbrockmann'
+# CENTER_NODE = '/dirkbrockmann'
+CENTER_NODE = '/mothtamer'
 
 URL_FORMAT = "https://github.com%s?tab=followers" 
 LINK_CLASS = "d-inline-block no-underline mb-1"
@@ -14,7 +15,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Agent:
   def __init__(self):
     self.http = urllib3.PoolManager()
-    self.file = open("./json/gitData.json", "w")
+    self.file = open("./json/%s.json" % CENTER_NODE, "w")
     self.json = json.JSONEncoder()
     self.graph = Graph()
 
@@ -47,5 +48,5 @@ class Graph:
     self.json[node] = edges
 
 agent = Agent()
-agent.walk_network(CENTER_NODE, 2)
+agent.walk_network(CENTER_NODE, 3)
 agent.data_writer()

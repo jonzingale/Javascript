@@ -1,6 +1,4 @@
-import {generateGraph} from './algebraicGraph.js';
-
-var numNodes = 436;
+import {generateGraph, vectorTransform, nubList, longVect} from './algebraicGraph.js';
 
 var miserable = (function(){
   var svg = d3.select("svg"),
@@ -10,15 +8,19 @@ var miserable = (function(){
   var simulation = d3.forceSimulation()
       .force("link", d3.forceLink().id(function(d) { return d.id; }))
       .force("charge", d3.forceManyBody().strength(
-        function(d){ return -d.degree * 3.3} )
+        function(d){ return -d.degree * 2.7} )
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
+  // d3.json('js/json/adjacency.json', function(error, graph) {
+  //   console.log(JSON.stringify(graph.length))
+  //   var ms = vectorTransform(graph, longVect)
+  //   console.log(JSON.stringify(ms))
+  // })
+
   d3.json("js/json/gitGraph.json", function(error, graph) {
     if (error) throw error;
-
-    // console.log(JSON.stringify(graph.nodes.length))
-    var numNode = graph.nodes.length
+    var numNodes = graph.nodes.length
 
     var link = svg.append("g")
       .attr("class", "links")
