@@ -42,7 +42,6 @@ class Graph:
     file = open("./json/gitGraph.json", "w")
     file.write(encoder.encode(self.graph))
 
-# file = open("./json/gitData.json", "r").read()
 # file = open("./json/benmaier.json", "r").read()
 # file = open("./json/jonzingale.json", "r").read()
 file = open("./json/dirkbrockmann.json", "r").read()
