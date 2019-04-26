@@ -44,8 +44,8 @@ class Graph:
 
 # file = open("./json/benmaier.json", "r").read()
 # file = open("./json/jonzingale.json", "r").read()
-# file = open("./json/dirkbrockmann.json", "r").read()
-file = open("./json/mothtamer.json", "r").read()
+file = open("./json/dirkbrockmann.json", "r").read()
+# file = open("./json/mothtamer.json", "r").read()
 
 # file = open("./json/gitData.json", "r").read()
 decoder = json.JSONDecoder()

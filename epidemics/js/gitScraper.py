@@ -4,8 +4,8 @@ from pdb import set_trace as st
 import json
 
 # CENTER_NODE = '/benmaier'
-# CENTER_NODE = '/dirkbrockmann'
-CENTER_NODE = '/mothtamer'
+CENTER_NODE = '/dirkbrockmann'
+# CENTER_NODE = '/mothtamer'
 
 URL_FORMAT = "https://github.com%s?tab=followers" 
 LINK_CLASS = "d-inline-block no-underline mb-1"
@@ -48,5 +48,5 @@ class Graph:
     self.json[node] = edges
 
 agent = Agent()
-agent.walk_network(CENTER_NODE, 3)
+agent.walk_network(CENTER_NODE, 2)
 agent.data_writer()
