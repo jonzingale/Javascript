@@ -8,21 +8,54 @@ const network = {'n1': ['n2', 'n3'], 'n2': ['n1'], 'n3': ['n1']}
 // {name: [names], ..., name: [names]}
 
 function pp(a) { console.log(JSON.stringify(a)) }
+function biasedCoin(prob) { return Math.random() > prob }
+function intersect(ary, bry) { return ary.filter(x => bry.includes(x))}
 
-d3.json('js/json/adjacency.json', function(error, graph) {  
+d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
+  var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
+  pp([infected, susceptible, recovered].map(l=>l.length))
 
-  pp(genNamedVectors(graph, 0.5)['infected'].length)
+  var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
+  pp([infected, susceptible, recovered].map(l=>l.length))
+
+  var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
+  pp([infected, susceptible, recovered].map(l=>l.length))
 
 })
 
 // Generate vectors I, S with T = I + S and <I|S> = 0
 function genNamedVectors(graph, den, inf=[], sus=[]) {
   Object.keys(graph).forEach(function(name) {
-    Math.random() > den ? inf.push(name) : sus.push(name)
+    biasedCoin(den) ? inf.push(name) : sus.push(name)
   })
   return({'infected': inf, 'susceptible': sus})
 }
 
+// Update those recovered.
+function updateRecovered(infected, rec, bias, inf=[]) {
+  infected.forEach(function(name) {
+    biasedCoin(bias) ? inf.push(name) : rec.push(name)
+  }) ; return [inf, rec]
+}
+
+// Update those susceptible.
+function updateSusceptible(graph, infected, susceptible, bias) {
+  // so that newly infected dont effect susceptible
+  var inf = infected, sus = []
+
+  susceptible.forEach(function(name) {
+    // look up if any infected neighbors
+    var neighs = graph[name]
+
+    // TODO: make more clever. Count as intersection iterates
+    var ins = intersect(neighs, infected).length
+
+    //TODO: calculate Inclusion-Exclusion probability
+    var prob = bias - bias**infected.length // WARNING: FAKE PROB
+
+    biasedCoin(prob) ? inf.push(name) : sus.push(name)
+  }) ; return [inf, sus]
+}
 
 // Matrix -> Matrix
 function tr(ms, newMatrx=[]) {
