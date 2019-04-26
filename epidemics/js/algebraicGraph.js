@@ -7,16 +7,12 @@ const matr = [[1,2,3],
 
 const numNodes = 120
 
-function longVect() {
-  ary = []
-  for (let i=0; i<514; i++) {
-    ary.push(Math.floor(Math.random() + 0.5))
-  }
-}
+// Rewrite this code in terms of the new DataStructure:
+// {name: [names], ..., name: [names]}
 
-function mod(a,b) {
-  return(((a % b) + b) % b)
-}
+d3.json('js/json/adjacency.json', function(error, graph) {
+  console.log(JSON.stringify(graph['dirkbrockmann']))
+})
 
 // Matrix -> Matrix
 function tr(ms, newMatrx=[]) {
@@ -24,13 +20,6 @@ function tr(ms, newMatrx=[]) {
     newMatrx.push(ms.map(vs => vs[0]))
     ms = ms.map(vs => vs.slice(1))
   } ; return newMatrx
-}
-
-function mSum(ms, ns, mm=[]) {
-  for (let i=0; i < ms.length ; i++) {
-    var vs = ms[i].map((v, j) => v + ns[i][j])
-    mm.push(vs)
-  } ; return mm
 }
 
 // Vector -> Vector -> Vector
@@ -57,77 +46,6 @@ function removeNode(matrx, i) { var mm = [];
   }) ; return mm
 }
 
-function randomFromList(list) {
-  var rr = Math.floor(Math.random() * list.length)
-  return list[rr].id
-}
 
-function randomAdjacency(num, density, matrx=[]) {
-  // lower triangular
-  for (let i=0; i < num; i++) {
-    var row = [] ; for (let j=0; j < num; j++) {
-      j < i && Math.random() > density ? row.push(1) : row.push(0)
-    } ; matrx.push(row)
-  }
-
-  return mSum(matrx, tr(matrx))
-}
-
-// nodes: {'id': i, 'group': j}
-function generateNodes() {
-  var nodes = [] ; for (let i=0; i < numNodes; i++) {
-    var g = Math.floor(Math.random()*numNodes)
-    nodes.push({id: i, group: g})
-  } ; return nodes
-}
-
-function rNode() {
-  return Math.floor(Math.random()*numNodes)
-}
-
-// links: {'source': id, 'target': id, value: k}
-function generateTree(nodes, links=[]) {
-  var pi = nodes.slice(0,1), nodes = nodes.slice(1)
-
-  // Tree
-  nodes.forEach(function(n, i) {
-    var k = Math.floor(Math.random()*numNodes)
-    var rSrc = randomFromList(pi)
-    pi.push(n)
-    links.push({'source': rSrc, 'target': n.id, value: k})
-  })
-
-  // add cycles
-  for (let i=0; i < numNodes/Math.log(numNodes); i++) {
-    links.push({'source': rNode(), 'target': rNode(), 'value': rNode()})
-  }
-
-  return links
-}
-
-// links: {'source': id, 'target': id, value: k}
-function generateLinks(nodes, adj, links=[]) {
-  nodes.forEach(function(n, i) {
-    for (let j=0; j < i; j++) {
-      if (adj[i][j] == 1) {
-        links.push({'source': nodes[j], 'target': n.id,
-          'value': Math.floor(Math.random()*numNodes)})        
-      }
-    }
-  })
-
-  return links
-}
-
-var adjM = randomAdjacency(numNodes, 0.98)
-
-function generateGraph() {
-  var nodes = generateNodes()
-  // var links = generateLinks(nodes, adjM)
-  // var links = ... Real Data from somewhere.
-  var links = generateTree(nodes)
-  return {'nodes': nodes, 'links': links}
-}
-
-export {innerProduct, vectorTransform, nubList, randomAdjacency,
-        removeNode, generateGraph, longVect}
+export {innerProduct, vectorTransform, nubList,
+        removeNode,}

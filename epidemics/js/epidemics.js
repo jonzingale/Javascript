@@ -1,5 +1,7 @@
 // SERVER on 8000: python -m http.server
-import {generateGraph, randomAdjacency} from './algebraicGraph.js';
+import {} from './algebraicGraph.js';
+
+const generateGraph = [] // place-holder
 
 (function(){
   var world_width = 400,
