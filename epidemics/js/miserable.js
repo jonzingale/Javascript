@@ -9,6 +9,7 @@ var miserable = (function(){
       .force("link", d3.forceLink().id(function(d) { return d.id; }))
       .force("charge", d3.forceManyBody().strength(
         function(d){ return -d.degree * 2.7} )
+        // function(d){ return -d.degree * 15} )
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -21,6 +22,7 @@ var miserable = (function(){
   d3.json("js/json/gitGraph.json", function(error, graph) {
     if (error) throw error;
     var numNodes = graph.nodes.length
+    // console.log(numNodes)
 
     var link = svg.append("g")
       .attr("class", "links")
