@@ -5,7 +5,6 @@ import json
 
 # CENTER_NODE = '/benmaier'
 CENTER_NODE = '/dirkbrockmann'
-# CENTER_NODE = '/mothtamer'
 
 URL_FORMAT = "https://github.com%s?tab=followers" 
 LINK_CLASS = "d-inline-block no-underline mb-1"
