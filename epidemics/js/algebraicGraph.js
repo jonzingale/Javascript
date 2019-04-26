@@ -15,9 +15,8 @@ d3.json('js/json/adjacency.json', function(error, graph) {
 
 })
 
-// generate vectors I, S with T = I + S and <I|S> = 0
+// Generate vectors I, S with T = I + S and <I|S> = 0
 function genNamedVectors(graph, den, inf=[], sus=[]) {
-  var numNodes = Object.keys(graph).length
   Object.keys(graph).forEach(function(name) {
     Math.random() > den ? inf.push(name) : sus.push(name)
   })
