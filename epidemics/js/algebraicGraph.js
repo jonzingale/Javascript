@@ -1,18 +1,29 @@
 const vect = [1,2,3]
 const wect = [4,5,6]
 
-const matr = [[1,2,3],
-              [4,5,6],
-              [7,8,9]]
+const network = {'n1': ['n2', 'n3'], 'n2': ['n1'], 'n3': ['n1']}
 
-const numNodes = 120
 
 // Rewrite this code in terms of the new DataStructure:
 // {name: [names], ..., name: [names]}
 
-d3.json('js/json/adjacency.json', function(error, graph) {
-  console.log(JSON.stringify(graph['dirkbrockmann']))
+function pp(a) { console.log(JSON.stringify(a)) }
+
+d3.json('js/json/adjacency.json', function(error, graph) {  
+
+  pp(genNamedVectors(graph, 0.5)['infected'].length)
+
 })
+
+// generate vectors I, S with T = I + S and <I|S> = 0
+function genNamedVectors(graph, den, inf=[], sus=[]) {
+  var numNodes = Object.keys(graph).length
+  Object.keys(graph).forEach(function(name) {
+    Math.random() > den ? inf.push(name) : sus.push(name)
+  })
+  return({'infected': inf, 'susceptible': sus})
+}
+
 
 // Matrix -> Matrix
 function tr(ms, newMatrx=[]) {
@@ -47,5 +58,4 @@ function removeNode(matrx, i) { var mm = [];
 }
 
 
-export {innerProduct, vectorTransform, nubList,
-        removeNode,}
+export {innerProduct, vectorTransform, nubList, removeNode,}

@@ -1,7 +1,7 @@
 // SERVER on 8000: python -m http.server
 import {} from './algebraicGraph.js';
 
-const generateGraph = [] // place-holder
+function generateGraph() {return true} // place-holder
 
 (function(){
   var world_width = 400,
