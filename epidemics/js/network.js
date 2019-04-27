@@ -18,7 +18,8 @@
       .attr("class", "links")
       .selectAll("line")
       .data(graph.links)
-      .enter().append("line");
+      .enter().append("line")
+      .attr('id', function(d) {return d.source+d.target});
 
     var node = svg.append("g")
       .attr("class", "nodes")

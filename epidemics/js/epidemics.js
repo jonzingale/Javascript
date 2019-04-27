@@ -1,7 +1,4 @@
 // SERVER on 8000: python -m http.server
-import { genNamedVectors, updateSusceptible,
-         updateRecovered, pp} from './algebraicGraph.js';
-
 import { dirksGraph } from './adjacency.js';
 
 (function(){
@@ -12,7 +9,11 @@ import { dirksGraph } from './adjacency.js';
       n_grid_x = 24,
       n_grid_y = 24
 
-//// Buttons and Blocks.
+  const graph = dirksGraph()
+  var [infected, susceptible] = genNamedVectors(graph, 90/100)
+  var recovered = [], badLinks = []
+
+  //// Buttons and Blocks.
   var controls = d3.selectAll("#epidemics_controls").append("svg")
     .attr("width",controlbox_width)
     .attr("height",controlbox_height)
@@ -50,48 +51,114 @@ import { dirksGraph } from './adjacency.js';
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runEpidemic, 500) : clearInterval(tm)
+    d.value == 1 ? tm = setInterval(runEpidemic, 700) : clearInterval(tm)
   }
 
-  // Contagion Loop
-  // var infected = [], susceptible = [], recovered = []
-  // var graph = dirksGraph()
-  // var namedV = genNamedVectors(graph, 50/100)
-  // var [infected, susceptible] = Object.values(namedV)
+  function pp(a) { console.log(JSON.stringify(a)) }
+  function biasedCoin(prob) { return Math.random() > prob }
+  function intersect(ary, bry) { return ary.filter(x => bry.includes(x))}
+  function intersectCount(ary, bry, total=0) {
+    ary.forEach(function(x) { if (bry.includes(x)) {total +=1} })
+    return total
+  }
 
-  // Todo: DEAL WITH SCOPE HOW???
-  // Color edges to show propagtion relations.
-  // TODO: RE CLEAN DATA, SOME NOT LOWERCASE.
-  function runEpidemic() {
-    d3.json('js/json/adjacency.json', function(graph) {
-      var infected = [], susceptible = [], recovered = []
-      var namedV = genNamedVectors(graph, 50/100)
-      var [infected, susceptible] = Object.values(namedV)
+  // Generate vectors I, S with T = I + S and <I|S> = 0
+  function genNamedVectors(graph, den, inf=[], sus=[]) {
+    Object.keys(graph).forEach(function(name) {
+      biasedCoin(den) ? inf.push(name) : sus.push(name)
+    }) ; return([inf, sus])
+  }
 
-      var [infected, recovered] = updateRecovered(infected,recovered, 50/100)
-      var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 50/100)
+  // Update those susceptible.
+  function contagionLoop(graph, oldInf, oldSus, rec, bias) {
+    var inf = [], sus = [], bLinks = []
 
-      var regex = RegExp(/^\d/)
-      infected.forEach(function(name) {
-        if (regex.test(name)) { name = '\\'+ name }
-        let node = d3.select('#'+name)
-        node.style('stroke', 'red')
-      })
-
-      // susceptible.forEach(function(name) {
-      //   if (regex.test(name)) { name = '\\'+ name }
-      //   let node = d3.select('#'+name)
-      //   node.attr('fill', function(d) { return 'orange' }) 
-      // })
-
-      recovered.forEach(function(name) {
-        if (regex.test(name)) { name = '\\'+ name }
-        let node = d3.select('#'+name)
-        node.attr('fill', 'black').style('stroke', 'white') 
-      })
+    // Compute newly infected
+    oldInf.forEach(function(name) {
+      biasedCoin(bias) ? inf.push(name) : rec.push(name)
     })
+
+    // once infected remove from susceptible
+    oldSus.forEach(function(name) {
+      let neighs = graph[name]
+      let infectedNeighs = intersect(neighs, oldInf)
+      let prob = probOR(bias, infectedNeighs.length)
+
+      if (biasedCoin(prob)) {
+        sus.push(name)
+      } else  {
+        oldSus.filter(a => a == !name)
+        infectedNeighs.forEach(n => bLinks.push(n+name))
+        inf.push(name)
+      }
+    })
+
+    infected = inf
+    susceptible = sus
+    recovered = rec
+    badLinks = bLinks
   }
 
-  // runEpidemic()
+  function probOR(prob, n) {
+    // P(A)+P(B)+P(C)-P(AB)-P(BC)-P(CA)+P(ABC)
+    return binomial(n).reduce((a, m, i) =>
+      m * prob**(i+1) * (-1)**i + a, 0)
+  }
 
+  function binomial(n, binomials=[[1]]) {
+    while(n >= binomials.length) {
+      let s = binomials.length;
+      let nextRow = [];
+      nextRow[0] = 1;
+      for(let i=1, prev=s-1; i<s; i++) {
+        nextRow[i] = binomials[prev][i-1] + binomials[prev][i];
+      }
+      nextRow[s] = 1;
+      binomials.push(nextRow);
+    }
+
+    return binomials[n].slice(1)
+  }
+  const regex = RegExp(/^\d/)
+
+  // TODO: CLEAN DATA, escape leading digits.
+  function updateGraph(graph, infected, susceptible, recovered) {
+    contagionLoop(graph, infected, susceptible, recovered, 1/3)
+
+    // reset links to grey
+    d3.selectAll("line").style('stroke-width', '0.5').style('stroke', 'grey')
+
+    // show transmission of infection along link
+    badLinks.forEach(function(link) {
+      if (regex.test(link)) { link = '\\'+ link }
+      d3.select('#'+link).style('stroke-width', '1').style('stroke', 'red')
+    })
+
+    infected.forEach(function(name) {
+      if (regex.test(name)) { name = '\\'+ name }
+      let node = d3.select('#'+name)
+      node.style('stroke', 'black')
+          .attr('fill', 'red')
+    })
+
+    susceptible.forEach(function(name) {
+      if (regex.test(name)) { name = '\\'+ name }
+      let node = d3.select('#'+name)
+      node.style('stroke', 'transparent')
+    })
+
+    recovered.forEach(function(name) {
+      if (regex.test(name)) { name = '\\'+ name }
+      let node = d3.select('#'+name)
+      node.style('stroke', 'black')
+          .attr('fill', 'white')
+    })
+
+    // test scope creep
+    // pp([infected.length, susceptible.length, recovered.length])
+  }
+
+  function runEpidemic() {
+    updateGraph(graph, infected, susceptible, recovered)
+  }
 })()
