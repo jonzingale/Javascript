@@ -1,6 +1,4 @@
-import {} from './algebraicGraph.js';
-
-var miserable = (function(){
+(function(){
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
       height = +svg.attr("height");
@@ -31,7 +29,6 @@ var miserable = (function(){
         .attr("r", function(d) { return d.degree * 3 }) // size of nodes
         .attr('fill', function(d, i) { // color nodes
           return d3.interpolateYlGnBu((numNodes-i)/numNodes)
-          // return d3.interpolateYlOrRd((numNodes-i)/numNodes)
         })
         .call(d3.drag()
           .on("start", dragstarted)
@@ -88,5 +85,3 @@ var miserable = (function(){
   }
 
 })()
-
-export {miserable}
