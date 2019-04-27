@@ -55,5 +55,5 @@ class Graph:
 
 dataFile = open("./json/dirkbrockmann.json", "r").read()
 gr = Graph(dataFile)
-st()
+# st()
 

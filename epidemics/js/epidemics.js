@@ -62,6 +62,13 @@ function generateGraph() {return true} // place-holder
       .attr("cy", function (d) { return d.cy; })
   }
 
+// var graph = {} // Why is this all scoped up?
+// d3.json('js/json/adjacency.json', function(error, json) {
+//   json['dirkbrockmann'].forEach(a => graph[a])
+// })
+
+
+// pp(graph)
 
 d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
   var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
