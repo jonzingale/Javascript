@@ -33,7 +33,7 @@ function updateSusceptible(graph, infected, susceptible, bias) {
 
 function probOR(prob, n) {
   // P(A)+P(B)+P(C)-P(AB)-P(BC)-P(CA)+P(ABC)
-  return binomial(n).reduce((a, m, i) => 
+  return binomial(n).reduce((a, m, i) =>
     m * 0.5**(i+1) * (-1)**i + a, 0)
 }
 
