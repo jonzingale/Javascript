@@ -7,16 +7,16 @@ function intersectCount(ary, bry, total=0) {
   return total
 }
 
-d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
-  var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
-  pp([infected, susceptible, recovered].map(l=>l.length))
+// d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
+//   var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
+//   pp([infected, susceptible, recovered].map(l=>l.length))
 
-  var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
-  pp([infected, susceptible, recovered].map(l=>l.length))
+//   var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
+//   pp([infected, susceptible, recovered].map(l=>l.length))
 
-  var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
-  pp([infected, susceptible, recovered].map(l=>l.length))
-})
+//   var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
+//   pp([infected, susceptible, recovered].map(l=>l.length))
+// })
 
 // Generate vectors I, S with T = I + S and <I|S> = 0
 function genNamedVectors(graph, den, inf=[], sus=[]) {
@@ -42,10 +42,6 @@ function updateSusceptible(graph, infected, susceptible, bias) {
   }) ; return [inf, sus]
 }
 
-// Color Nodes????
-
-// Contagion Loop ???
-
 function probOR(prob, n) {
   // P(A)+P(B)+P(C)-P(AB)-P(BC)-P(CA)+P(ABC)
   return binomial(n).reduce((a, m, i) => 
@@ -67,4 +63,4 @@ function binomial(n, binomials=[[1]]) {
   return binomials[n].slice(1)
 }
 
-export {}
+export { genNamedVectors, updateRecovered, updateSusceptible, pp}

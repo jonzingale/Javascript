@@ -1,5 +1,6 @@
 // SERVER on 8000: python -m http.server
-import {} from './algebraicGraph.js';
+import { genNamedVectors, updateSusceptible,
+         updateRecovered, pp} from './algebraicGraph.js';
 
 function generateGraph() {return true} // place-holder
 
@@ -51,15 +52,6 @@ function generateGraph() {return true} // place-holder
   function runpause(d){ d.value == 1 ?
     t = d3.timer(runBlink,0) : t.stop(); }
 
-  // var roadContainer = d3.selectAll("#network").append("svg")
-  //   .attr("width",world_width)
-  //   .attr("height",world_height)
-  //   .attr("class","network")
-
-  // d3.json("js/json/gitGraph.json", function(error, graph) {
-  //   if (error) throw error;
-  // })
-
   function updateDisplay(coords) {
     var cData = coords.map(function([x,y]){
       return { 'cx' : x + 30, 'cy' : y + 30 }
@@ -69,6 +61,22 @@ function generateGraph() {return true} // place-holder
       .attr("cx", function (d) { return d.cx; })
       .attr("cy", function (d) { return d.cy; })
   }
+
+
+d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
+  var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
+  pp([infected, susceptible, recovered].map(l=>l.length))
+
+  var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
+  pp([infected, susceptible, recovered].map(l=>l.length))
+
+  var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
+  pp([infected, susceptible, recovered].map(l=>l.length))
+})
+
+// Color Nodes????
+
+// Contagion Loop ???
 
   function runEpidemic() {
     // <M*i| s>
