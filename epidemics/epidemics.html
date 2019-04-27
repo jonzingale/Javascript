@@ -10,7 +10,8 @@
 
   .nodes circle {
     stroke: #fff;
-    stroke-width: 0.5px;
+    stroke-width: 1px;
+    /*stroke-width: 0.5px;*/
   }
 
   text {
@@ -29,10 +30,7 @@
     <script type="text/javascript" src="./js/d3.v4.min.js"></script>
     <script type="text/javascript" src="./js/widget.v3.3.js"></script>
     <script src="./js/d3-scale-chromatic.v1.min.js"></script>
-
-    <!-- <script src="https://d3js.org/d3-dsv.v1.min.js"></script> -->
-    <!-- <script src="https://d3js.org/d3-fetch.v1.min.js"></script> -->
-</head>
+  </head>
 
   <main class="pb7" role="main">
     <div class="flex-l mt2 mw8 center">
@@ -42,7 +40,6 @@
         <div class="mw10 center ph1-ns">
             <div class="fl w-100 w-50-l pa2">
               <svg id="network" width="520" height="475"></svg>
-              <!-- <svg id="network" width="1200" height="1200"></svg> -->
               <div id="epidemics_controls" ></div>
             </div>
         </div>

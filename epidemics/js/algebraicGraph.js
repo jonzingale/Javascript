@@ -24,10 +24,11 @@ function updateRecovered(infected, rec, bias, inf=[]) {
 
 // Update those susceptible.
 function updateSusceptible(graph, infected, susceptible, bias) {
-  let inf = infected, sus = []
+  let inf = [], sus = []
   susceptible.forEach(function(name) {
-    let prob = probOR(bias, intersectCount(graph[name], infected))
-    biasedCoin(prob) ? inf.push(name) : sus.push(name)
+    let neighs = graph[name]
+    let prob = probOR(bias, intersectCount(neighs, infected))
+    biasedCoin(prob) ? sus.push(name) : inf.push(name)
   }) ; return [inf, sus]
 }
 
