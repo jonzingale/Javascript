@@ -61,6 +61,7 @@ import { dirksGraph } from './adjacency.js';
 
   // Todo: DEAL WITH SCOPE HOW???
   // Color edges to show propagtion relations.
+  // TODO: RE CLEAN DATA, SOME NOT LOWERCASE.
   function runEpidemic() {
     d3.json('js/json/adjacency.json', function(graph) {
       var infected = [], susceptible = [], recovered = []

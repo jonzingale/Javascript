@@ -13,8 +13,8 @@ class Graph:
 
     for src in json:
       for tar in json[src]:
-        src = src.strip('/')
-        tar = tar.strip('/')
+        src = src.strip('/').lower()
+        tar = tar.strip('/').lower()
 
         # build links
         links.append({'source': src, 'target': tar})
@@ -26,7 +26,7 @@ class Graph:
     # ensure target nodes exist in nodes
     for ns in json.values():
       for n in ns:
-        node = n.strip('/')
+        node = n.strip('/').lower()
         if not node in dictN: dictN[node] = 2
 
     # build nodes
