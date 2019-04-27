@@ -2,14 +2,14 @@
 import { dirksGraph } from './adjacency.js';
 
 (function(){
-  var world_width = 400,
-      world_height = 400,
-      controlbox_width = 300,
+  var controlbox_width = 300,
       controlbox_height = 300,
       n_grid_x = 24,
       n_grid_y = 24
 
+  const regex = RegExp(/^\d/)
   const graph = dirksGraph()
+
   var [infected, susceptible] = genNamedVectors(graph, 90/100)
   var recovered = [], badLinks = []
 
@@ -32,7 +32,7 @@ import { dirksGraph } from './adjacency.js';
   var reset = { id:"sir_reset", name:"reset",
                 actions: ["rewind"], value: 0};
 
-  var buttons = [ widget.button(reset).update(runEpidemic) ]
+  var buttons = [ widget.button(reset).update(resetNodes) ]
 
   var playbutton = [
     widget.button(playpause).size(g.x(7))
@@ -119,19 +119,21 @@ import { dirksGraph } from './adjacency.js';
 
     return binomials[n].slice(1)
   }
-  const regex = RegExp(/^\d/)
 
   // TODO: CLEAN DATA, escape leading digits.
-  function updateGraph(graph, infected, susceptible, recovered) {
-    contagionLoop(graph, infected, susceptible, recovered, 1/3)
+  function updateDisplay() {
 
     // reset links to grey
-    d3.selectAll("line").style('stroke-width', '0.5').style('stroke', 'grey')
+    d3.selectAll("line")
+      .style('stroke-width', '0.5')
+      .style('stroke', 'grey')
 
     // show transmission of infection along link
     badLinks.forEach(function(link) {
       if (regex.test(link)) { link = '\\'+ link }
-      d3.select('#'+link).style('stroke-width', '1').style('stroke', 'red')
+      d3.select('#'+link)
+        .style('stroke-width', '1')
+        .style('stroke', 'red')
     })
 
     infected.forEach(function(name) {
@@ -159,6 +161,17 @@ import { dirksGraph } from './adjacency.js';
   }
 
   function runEpidemic() {
-    updateGraph(graph, infected, susceptible, recovered)
+    contagionLoop(graph, infected, susceptible, recovered, 1/3)
+    updateDisplay()
   }
+
+  function resetNodes() {
+    var numNodes = Object.keys(graph).length
+    var [infected, susceptible] = genNamedVectors(graph, 90/100)
+    var recovered = [], badLinks = []
+
+    d3.selectAll("line").style('stroke-width', '0.5')
+      .style('stroke', 'grey')
+  }
+
 })()
