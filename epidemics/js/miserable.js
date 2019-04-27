@@ -1,4 +1,4 @@
-import {vectorTransform, nubList} from './algebraicGraph.js';
+import {} from './algebraicGraph.js';
 
 var miserable = (function(){
   var svg = d3.select("svg"),
@@ -13,16 +13,9 @@ var miserable = (function(){
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
-  // d3.json('js/json/adjacency.json', function(error, graph) {
-
-  //   console.log(JSON.stringify(graph['dirkbrockmann']))
-
-  // })
-
   d3.json("js/json/gitGraph.json", function(error, graph) {
     if (error) throw error;
     var numNodes = graph.nodes.length
-    // console.log(numNodes)
 
     var link = svg.append("g")
       .attr("class", "links")
