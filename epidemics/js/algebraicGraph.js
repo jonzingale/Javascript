@@ -7,17 +7,6 @@ function intersectCount(ary, bry, total=0) {
   return total
 }
 
-// d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
-//   var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
-//   pp([infected, susceptible, recovered].map(l=>l.length))
-
-//   var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
-//   pp([infected, susceptible, recovered].map(l=>l.length))
-
-//   var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
-//   pp([infected, susceptible, recovered].map(l=>l.length))
-// })
-
 // Generate vectors I, S with T = I + S and <I|S> = 0
 function genNamedVectors(graph, den, inf=[], sus=[]) {
   Object.keys(graph).forEach(function(name) {
@@ -62,5 +51,16 @@ function binomial(n, binomials=[[1]]) {
 
   return binomials[n].slice(1)
 }
+
+// d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
+//   var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
+//   pp([infected, susceptible, recovered].map(l=>l.length))
+
+//   var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
+//   pp([infected, susceptible, recovered].map(l=>l.length))
+
+//   var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
+//   pp([infected, susceptible, recovered].map(l=>l.length))
+// })
 
 export { genNamedVectors, updateRecovered, updateSusceptible, pp}

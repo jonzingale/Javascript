@@ -9,7 +9,6 @@ var miserable = (function(){
       .force("link", d3.forceLink().id(function(d) { return d.id; }))
       .force("charge", d3.forceManyBody().strength(
         function(d){ return -d.degree * 2.7} )
-        // function(d){ return -d.degree * 15} )
       )
       .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -28,6 +27,7 @@ var miserable = (function(){
       .selectAll("circle")
       .data(graph.nodes)
       .enter().append("circle")
+        .attr('id', function(d) { return d.id })
         .attr("r", function(d) { return d.degree * 3 }) // size of nodes
         .attr('fill', function(d, i) { // color nodes
           return d3.interpolateYlGnBu((numNodes-i)/numNodes)

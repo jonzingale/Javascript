@@ -2,6 +2,8 @@
 import { genNamedVectors, updateSusceptible,
          updateRecovered, pp} from './algebraicGraph.js';
 
+// import { node } from './miserable.js';
+
 function generateGraph() {return true} // place-holder
 
 (function(){
@@ -62,23 +64,20 @@ function generateGraph() {return true} // place-holder
       .attr("cy", function (d) { return d.cy; })
   }
 
-// var graph = {} // Why is this all scoped up?
-// d3.json('js/json/adjacency.json', function(error, json) {
-//   json['dirkbrockmann'].forEach(a => graph[a])
-// })
-
-
-// pp(graph)
 
 d3.json('js/json/adjacency.json', function(error, graph, recovered=[]) {
-  var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
-  pp([infected, susceptible, recovered].map(l=>l.length))
+  // var [infected, susceptible] = Object.values(genNamedVectors(graph, 0.5))
+  // pp([infected, susceptible, recovered].map(l=>l.length))
 
-  var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
-  pp([infected, susceptible, recovered].map(l=>l.length))
+  // var [infected, recovered] = updateRecovered(infected,recovered, 1/10)
+  // pp([infected, susceptible, recovered].map(l=>l.length))
 
-  var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
-  pp([infected, susceptible, recovered].map(l=>l.length))
+  // var [infected, susceptible] = updateSusceptible(graph, infected, susceptible, 1/10)
+  // pp([infected, susceptible, recovered].map(l=>l.length))
+  var node = d3.selectAll("circle")
+      // width = +svg.attr("width"),
+      // height = +svg.attr("height");
+  pp(node)
 })
 
 // Color Nodes????
