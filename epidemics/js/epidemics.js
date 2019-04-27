@@ -1,5 +1,6 @@
 // SERVER on 8000: python -m http.server
 import { dirksGraph } from './adjacency.js';
+import { network } from './network.js';
 
 (function(){
   var controlbox_width = 300,
@@ -51,7 +52,7 @@ import { dirksGraph } from './adjacency.js';
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runEpidemic, 700) : clearInterval(tm)
+    d.value == 1 ? tm = setInterval(runEpidemic, 70) : clearInterval(tm)
   }
 
   function pp(a) { console.log(JSON.stringify(a)) }
@@ -159,19 +160,20 @@ import { dirksGraph } from './adjacency.js';
     // test scope creep
     // pp([infected.length, susceptible.length, recovered.length])
   }
+  network()
 
   function runEpidemic() {
     contagionLoop(graph, infected, susceptible, recovered, 1/3)
     updateDisplay()
   }
 
+  // Todo: reset Data how????
   function resetNodes() {
-    var numNodes = Object.keys(graph).length
+    d3.select('svg').selectAll("*").remove();
+    network()
+
     var [infected, susceptible] = genNamedVectors(graph, 90/100)
     var recovered = [], badLinks = []
-
-    d3.selectAll("line").style('stroke-width', '0.5')
-      .style('stroke', 'grey')
   }
 
 })()

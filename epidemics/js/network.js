@@ -1,4 +1,5 @@
-(function(){
+// (function(){
+function network() {
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
       height = +svg.attr("height");
@@ -84,5 +85,6 @@
     d.fx = null;
     d.fy = null;
   }
-
-})()
+}
+export { network }
+// })()
