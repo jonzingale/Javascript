@@ -1,4 +1,3 @@
-// (function(){
 function network() {
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -86,5 +85,5 @@ function network() {
     d.fy = null;
   }
 }
+
 export { network }
-// })()

@@ -5,8 +5,8 @@ import { network } from './network.js';
 (function(){
   var controlbox_width = 300,
       controlbox_height = 300,
-      n_grid_x = 24,
-      n_grid_y = 24
+      n_grid_x = 20,
+      n_grid_y = 20
 
   const graph = dirksGraph()
 
@@ -21,10 +21,11 @@ import { network } from './network.js';
 
   var g = widget.grid(controlbox_width,controlbox_height, n_grid_x, n_grid_y);
   var playblock = g.block({x0:5,y0:16,width:0,height:0});
-  var buttonblock = g.block({x0:12,y0:14,width:4,height:0}).Nx(2);
-  var sliderBlock = g.block({x0:2,y0:7,width:10,height:3});
+  var buttonblock = g.block({x0:12,y0:14,width:4,height:0})
+  var sliderBlock = g.block({x0:2,y0:7,width:10,height:5})
+
   var sliderwidth = sliderBlock.w();
-  var handleSize = 12, trackSize = 8;
+  var handleSize = 8, trackSize = 8;
 
   var playpause = { id:"b4", name:"run simulation",
                     actions: ["play","pause"], value: 0};
@@ -39,6 +40,21 @@ import { network } from './network.js';
           .symbolSize(0.6*g.x(7)).update(runpause),
   ]
 
+  // Sliders
+  var def_susceptibility = 9/10 // TODO : HAVE THESE EFFECT CALCULATION
+  var def_recovery_rate  = 1/3
+  var def_infection_rate = 1/5
+
+  var susceptibility = {id:"slide_s", name: "susceptibility", range: [0,1], value: def_susceptibility};
+  var recovery_rate = {id:"slide_r", name: "recovery rate", range: [0,1], value: def_recovery_rate};
+  var infection_rate = {id:"slide_i", name: "infection rate", range: [0,1], value: def_infection_rate};
+
+  var sliders = [
+    widget.slider(infection_rate).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(recovery_rate).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(susceptibility).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+  ]
+
   controls.selectAll(".button .others").data(buttons).enter()
     .append(widget.buttonElement).attr("transform",function(d,i) {
       return "translate("+buttonblock.x(i)+","+buttonblock.y(0)+")"});  
@@ -48,6 +64,10 @@ import { network } from './network.js';
           .attr("transform", function(d,i){
      return "translate("+playblock.x(0)+","+playblock.y(i)+")"
    });
+
+  // controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
+    // .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
+
 
   var tm; // initialize timer
   function runpause(d){
@@ -61,50 +81,8 @@ import { network } from './network.js';
     ary.forEach(function(x) { if (bry.includes(x)) {total +=1} })
     return total
   }
-
-  // Generate vectors I, S with T = I + S and <I|S> = 0
-  function genNamedVectors(graph, den, inf=[], sus=[]) {
-    Object.keys(graph).forEach(function(name) {
-      biasedCoin(den) ? inf.push(name) : sus.push(name)
-    })
-
-    sirData = {'susceptible': sus, 'infected': inf, 
-               'recovered': [], 'transmission': []}
-  }
-
-  // Update those susceptible.
-  function contagionLoop(graph, bias) {
-    let [oldSus, oldInf, rec, transmission] = Object.values(sirData)
-    var inf = [], sus = [], bLinks = []
-
-    // Compute newly infected
-    oldInf.forEach(function(name) {
-      biasedCoin(bias) ? inf.push(name) : rec.push(name)
-    })
-
-    // once infected remove from susceptible
-    oldSus.forEach(function(name) {
-      let neighs = graph[name]
-      let infectedNeighs = intersect(neighs, oldInf)
-      let prob = probOR(bias, infectedNeighs.length)
-
-      if (biasedCoin(prob)) {
-        sus.push(name)
-      } else  {
-        oldSus.filter(a => a == !name)
-        infectedNeighs.forEach(n => bLinks.push(n+name))
-        inf.push(name)
-      }
-    })
-
-    sirData = {'susceptible': sus, 'infected': inf, 
-               'recovered': rec, 'transmission': bLinks}
-  }
-
-  function probOR(prob, n) {
-    // P(A)+P(B)+P(C)-P(AB)-P(BC)-P(CA)+P(ABC)
-    return binomial(n).reduce((a, m, i) =>
-      m * prob**(i+1) * (-1)**i + a, 0)
+  function probOR(prob, n) { // P(A)+P(B)+P(C)-P(AB)-P(BC)-P(CA)+P(ABC)
+    return binomial(n).reduce((a, m, i) => m * prob**(i+1) * (-1)**i + a, 0)
   }
 
   // Todo: make as lookup table instead?
@@ -123,9 +101,48 @@ import { network } from './network.js';
     return binomials[n].slice(1)
   }
 
+
+  // Generate vectors I, S with T = I + S and <I|S> = 0
+  function genNamedVectors(graph, den, inf=[], sus=[]) {
+    Object.keys(graph).forEach(function(name) {
+      biasedCoin(den) ? inf.push(name) : sus.push(name)
+    })
+
+    sirData = {'susceptible': sus, 'infected': inf, 
+               'recovered': [], 'transmission': []}
+  }
+
+  function contagionLoop(graph) {
+    let [oldSus, oldInf, rec, transmission] = Object.values(sirData)
+    var inf = [], sus = [], bLinks = []
+
+    // calculate infected
+    oldInf.forEach(function(name) {
+      biasedCoin(recovery_rate.value) ? inf.push(name) : rec.push(name)
+    })
+
+    // calculate susceptible
+    oldSus.forEach(function(name) {
+      let neighs = graph[name]
+      let infectedNeighs = intersect(neighs, oldInf)
+      let prob = probOR(infection_rate.value, infectedNeighs.length)
+
+      if (biasedCoin(prob)) {
+        sus.push(name)
+      } else  {
+        oldSus.filter(a => a == !name)
+        infectedNeighs.forEach(n => bLinks.push(n+name))
+        inf.push(name)
+      }
+    })
+
+    sirData = {'susceptible': sus, 'infected': inf, 
+               'recovered': rec, 'transmission': bLinks}
+  }
+
   function updateDisplay() {
     // reset links to grey
-    d3.selectAll("line")
+    d3.selectAll("line") // TODO: DISAMBIGUATE FROM SLIDERS
       .style('stroke-width', '0.9')
       .style('stroke', '#999')
 
@@ -133,13 +150,13 @@ import { network } from './network.js';
     sirData['transmission'].forEach(function(link) {
       d3.select('#'+link)
         .style('stroke-width', '1')
-        .style('stroke', 'red')
+        .style('stroke', '#fb8072')
     })
 
     sirData['infected'].forEach(function(name) {
       d3.select('#'+name)
         .style('stroke', 'black')
-        .attr('fill', 'red')
+        .attr('fill', '#fb8072')
     })
 
     sirData['susceptible'].forEach(function(name) {
@@ -154,13 +171,13 @@ import { network } from './network.js';
   }
 
   function runEpidemic() {
-    contagionLoop(graph, 1/3)
+    contagionLoop(graph)
     updateDisplay()
   }
 
   function resetNodes() {
     d3.select('svg').selectAll("*").remove();
-    genNamedVectors(graph, 90/100)
+    genNamedVectors(graph, susceptibility.value)
     network()
   }
 
