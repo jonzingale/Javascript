@@ -41,11 +41,11 @@ import { network } from './network.js';
   ]
 
   // Sliders
-  var def_susceptibility = 500/514 // TODO : HAVE THESE EFFECT CALCULATION
+  var def_susceptibility = 500/514
   var def_recovery_rate  = 1/3
   var def_infection_rate = 1/3
 
-  var susceptibility = {id:"slide_s", name: "susceptibility", range: [0,1], value: def_susceptibility};
+  var susceptibility = {id:"slide_s", name: "susceptibility", range: [95/100,1], value: def_susceptibility};
   var recovery_rate = {id:"slide_r", name: "recovery rate", range: [0,1], value: def_recovery_rate};
   var infection_rate = {id:"slide_i", name: "infection rate", range: [0,1], value: def_infection_rate};
 
@@ -65,8 +65,8 @@ import { network } from './network.js';
      return "translate("+playblock.x(0)+","+playblock.y(i)+")"
    });
 
-  // controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
-    // .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
+  controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
+    .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
 
 
   var tm; // initialize timer
