@@ -8,11 +8,10 @@ import { network } from './network.js';
       n_grid_x = 24,
       n_grid_y = 24
 
-  const regex = RegExp(/^\d/)
   const graph = dirksGraph()
 
-  var [infected, susceptible] = genNamedVectors(graph, 90/100)
-  var recovered = [], badLinks = []
+  var sirData = {'susceptible': [], 'infected': [],
+                 'recovered': [], 'transmission': []}
 
   //// Buttons and Blocks.
   var controls = d3.selectAll("#epidemics_controls").append("svg")
@@ -52,7 +51,7 @@ import { network } from './network.js';
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runEpidemic, 70) : clearInterval(tm)
+    d.value == 1 ? tm = setInterval(runEpidemic, 150) : clearInterval(tm)
   }
 
   function pp(a) { console.log(JSON.stringify(a)) }
@@ -67,11 +66,15 @@ import { network } from './network.js';
   function genNamedVectors(graph, den, inf=[], sus=[]) {
     Object.keys(graph).forEach(function(name) {
       biasedCoin(den) ? inf.push(name) : sus.push(name)
-    }) ; return([inf, sus])
+    })
+
+    sirData = {'susceptible': sus, 'infected': inf, 
+               'recovered': [], 'transmission': []}
   }
 
   // Update those susceptible.
-  function contagionLoop(graph, oldInf, oldSus, rec, bias) {
+  function contagionLoop(graph, bias) {
+    let [oldSus, oldInf, rec, transmission] = Object.values(sirData)
     var inf = [], sus = [], bLinks = []
 
     // Compute newly infected
@@ -94,10 +97,8 @@ import { network } from './network.js';
       }
     })
 
-    infected = inf
-    susceptible = sus
-    recovered = rec
-    badLinks = bLinks
+    sirData = {'susceptible': sus, 'infected': inf, 
+               'recovered': rec, 'transmission': bLinks}
   }
 
   function probOR(prob, n) {
@@ -123,57 +124,45 @@ import { network } from './network.js';
 
   // TODO: CLEAN DATA, escape leading digits.
   function updateDisplay() {
-
     // reset links to grey
     d3.selectAll("line")
-      .style('stroke-width', '0.5')
-      .style('stroke', 'grey')
+      .style('stroke-width', '0.9')
+      .style('stroke', '#999')
 
     // show transmission of infection along link
-    badLinks.forEach(function(link) {
-      if (regex.test(link)) { link = '\\'+ link }
+    sirData['transmission'].forEach(function(link) {
       d3.select('#'+link)
         .style('stroke-width', '1')
         .style('stroke', 'red')
     })
 
-    infected.forEach(function(name) {
-      if (regex.test(name)) { name = '\\'+ name }
-      let node = d3.select('#'+name)
-      node.style('stroke', 'black')
-          .attr('fill', 'red')
+    sirData['infected'].forEach(function(name) {
+      d3.select('#'+name)
+        .style('stroke', 'black')
+        .attr('fill', 'red')
     })
 
-    susceptible.forEach(function(name) {
-      if (regex.test(name)) { name = '\\'+ name }
-      let node = d3.select('#'+name)
-      node.style('stroke', 'transparent')
+    sirData['susceptible'].forEach(function(name) {
+      d3.select('#'+name).style('stroke', '#aaa')
     })
 
-    recovered.forEach(function(name) {
-      if (regex.test(name)) { name = '\\'+ name }
-      let node = d3.select('#'+name)
-      node.style('stroke', 'black')
-          .attr('fill', 'white')
+    sirData['recovered'].forEach(function(name) {
+      d3.select('#'+name)
+        .style('stroke', 'black')
+        .attr('fill', 'white')
     })
-
-    // test scope creep
-    // pp([infected.length, susceptible.length, recovered.length])
   }
-  network()
 
   function runEpidemic() {
-    contagionLoop(graph, infected, susceptible, recovered, 1/3)
+    contagionLoop(graph, 1/3)
     updateDisplay()
   }
 
-  // Todo: reset Data how????
   function resetNodes() {
     d3.select('svg').selectAll("*").remove();
+    genNamedVectors(graph, 90/100)
     network()
-
-    var [infected, susceptible] = genNamedVectors(graph, 90/100)
-    var recovered = [], badLinks = []
   }
 
+  resetNodes()
 })()
