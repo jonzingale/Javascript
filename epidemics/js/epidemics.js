@@ -45,7 +45,7 @@ import { network } from './network.js';
   var def_recovery_rate  = 1/3
   var def_infection_rate = 1/3
 
-  var contagion = {id:"slide_c", name: "contagion", range: [0.01,1/20], value: def_contagion};
+  var contagion = {id:"slide_c", name: "concentration of contagion", range: [0.01,1/20], value: def_contagion};
   var recovery_rate = {id:"slide_r", name: "recovery rate", range: [0,1], value: def_recovery_rate};
   var infection_rate = {id:"slide_i", name: "infection rate", range: [0,1], value: def_infection_rate};
 
@@ -68,7 +68,7 @@ import { network } from './network.js';
   controls.selectAll(".slider .block3").data(sliders).enter()
     .append(widget.sliderElement)
     .attr("transform", function(d,i) { 
-      return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i*2.5-3)+")"
+      return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i*2.5-4)+")"
     });
 
   var tm; // initialize timer
