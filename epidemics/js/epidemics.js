@@ -101,8 +101,6 @@ import { network } from './network.js';
     return binomials[n].slice(1)
   }
 
-
-  // Generate vectors I, S with T = I + S and <I|S> = 0
   function genNamedVectors(graph, den, inf=[], sus=[]) {
     Object.keys(graph).forEach(function(name) {
       biasedCoin(den) ? inf.push(name) : sus.push(name)
