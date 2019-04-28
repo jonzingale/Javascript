@@ -5,5 +5,5 @@ function dirksGraph() {
 
 export {dirksGraph}
 
-// adjacencyBuilder2.py builds dirksGraph()
+// adjacencyBuilder.py builds dirksGraph()
 // graphBuilder.py builds network()
