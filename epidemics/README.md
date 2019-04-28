@@ -11,3 +11,4 @@ python adjacencyBuilder.py builds dirksGraph() as adjacency.json
 python graphBuilder.py builds network()
 ```
 
+TODO: use proper javascript json parser.
