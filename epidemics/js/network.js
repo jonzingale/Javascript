@@ -36,13 +36,27 @@ function network() {
           .on("drag", dragged)
           .on("end", dragended));
 
-    // var text = svg.append("g")
-    //   .attr("class", "nodes")
-    //   .selectAll("text")
-    //   .data(graph.nodes)
-    //   .enter()
-    //   .append("text")
-    //   .text(function(d) { return d.id; });
+  var keyData = [
+    {'id': 'susceptible', 'color': d3.interpolateYlGnBu(2/3)},
+    {'id': 'infected', 'color': '#fb8072'},
+    {'id': 'recovered', 'color': 'white'}]
+
+    svg.append('g')
+      .attr("class", "keyNodes")
+      .selectAll("circle")
+      .data(keyData)
+      .enter().append("circle")
+        .attr('id', function(d) { return d.id })
+        .attr("r", 10).attr('fill', function(d) { return d.color })
+        .attr("cx", function(d, i) { return 10 })
+        .attr("cy", function(d, i) { return 380+30*i });
+
+    d3.select('.keyNodes')
+      .selectAll("text")
+      .data(keyData).enter()
+      .append("text").text(function(d) { return d.id; })
+      .attr("x", function(d, i) { return 8 })
+      .attr("y", function(d, i) { return 385+30*i });
 
     simulation
         .nodes(graph.nodes)
@@ -53,18 +67,14 @@ function network() {
 
     function ticked() {
       link
-          .attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
       node
-          .attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; });
-
-      // text.attr("transform", function(d) {
-      //   return "translate(" + d.x + "," + d.y + ")"; }
-      // );
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
     }
   });
 
