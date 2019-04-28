@@ -61,13 +61,16 @@ import { network } from './network.js';
 
   controls.selectAll(".button .playbutton").data(playbutton).enter()
           .append(widget.buttonElement)
-          .attr("transform", function(d,i){
+          .attr("transform", function(d,i) {
      return "translate("+playblock.x(0)+","+playblock.y(i)+")"
    });
 
-  controls.selectAll(".slider .block3").data(sliders).enter().append(widget.sliderElement)
-    .attr("transform",function(d,i){return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i)+")"});  
-
+  controls.selectAll(".slider .block3").data(sliders).enter()
+    .append(widget.sliderElement)
+    .attr("transform", function(d,i) { 
+      pp(i)
+      return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i*2.5-3)+")"
+    });
 
   var tm; // initialize timer
   function runpause(d){
