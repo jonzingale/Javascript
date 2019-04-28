@@ -13,4 +13,3 @@ python graphBuilder.py builds network()
 
 TODO: 
 * Use proper javascript json parser.
-* Embed model in README.md
