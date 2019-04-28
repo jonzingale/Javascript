@@ -5,28 +5,33 @@ import json
 import re
 
 class Graph:
-  def __init__(self, json):
-    self.graph = self.format_graph(json)
+  def __init__(self, file):
+    decoder = json.JSONDecoder()
+    data = decoder.decode(file)
+    self.graph = self.format_graph(data)
+
+  def prepareName(self, name):
+    return('x' + name.strip('/').lower())
 
   def format_graph(self, json):
     links, nodes, dictN = [], [], {}
 
     for src in json:
+      psrc = self.prepareName(src)
       for tar in json[src]:
-        src = src.strip('/').lower()
-        tar = tar.strip('/').lower()
+        tar = self.prepareName(tar)
 
         # build links
-        links.append({'source': src, 'target': tar})
+        links.append({'source': psrc, 'target': tar})
 
         # calculate node with degree
-        if src in dictN: dictN[src] += 1
-        else: dictN[src] = 2
+        if psrc in dictN: dictN[psrc] += 1
+        else: dictN[psrc] = 2
 
     # ensure target nodes exist in nodes
     for ns in json.values():
       for n in ns:
-        node = n.strip('/').lower()
+        node = self.prepareName(n)
         if not node in dictN: dictN[node] = 2
 
     # build nodes
@@ -46,10 +51,7 @@ class Graph:
 # file = open("./json/jonzingale.json", "r").read()
 file = open("./json/dirkbrockmann.json", "r").read()
 
-decoder = json.JSONDecoder()
-data = decoder.decode(file)
-
-gr = Graph(data)
+gr = Graph(file)
 gr.data_writer()
 # print(gr.graph)
 # st()

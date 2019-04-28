@@ -5,8 +5,6 @@ import json
 # be sparse and thus slow, I build a dictionary with
 # arrays for values: {'name': [names]}.
 
-# Todo be sure that the graphs are symmetric.
-
 class Graph:
   def __init__(self, dataFile):
     decoder = json.JSONDecoder()
@@ -14,13 +12,16 @@ class Graph:
     self.graph = self.build_graph(data)
     self.data_writer()
 
+  def prepareName(self, name):
+    return('x' + name.strip('/').lower())
+
   def clean_data(self, dirty_data, data={}):
     for name in dirty_data:
       names = {}
       for target in dirty_data[name]:
-        names[target.strip('/').lower()] = None
+        names[self.prepareName(target)] = None
 
-      data[name.strip('/').lower()] = names
+      data[self.prepareName(name)] = names
     return(data)
 
   def build_graph(self, dirty_data):
