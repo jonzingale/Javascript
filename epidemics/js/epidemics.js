@@ -140,14 +140,14 @@ import { network } from './network.js';
 
   function updateDisplay() {
     // reset links to grey
-    d3.selectAll("line") // TODO: DISAMBIGUATE FROM SLIDERS
+    d3.select('.links').selectAll("line")
       .style('stroke-width', '0.9')
       .style('stroke', '#999')
 
     // show transmission of infection along link
     sirData['transmission'].forEach(function(link) {
       d3.select('#'+link)
-        .style('stroke-width', '1')
+        .style('stroke-width', '1.5')
         .style('stroke', '#fb8072')
     })
 
