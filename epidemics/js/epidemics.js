@@ -51,7 +51,7 @@ import { network } from './network.js';
 
   var tm; // initialize timer
   function runpause(d){
-    d.value == 1 ? tm = setInterval(runEpidemic, 150) : clearInterval(tm)
+    d.value == 1 ? tm = setInterval(runEpidemic, 750) : clearInterval(tm)
   }
 
   function pp(a) { console.log(JSON.stringify(a)) }
