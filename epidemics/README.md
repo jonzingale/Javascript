@@ -12,3 +12,9 @@ python graphBuilder.py builds network()
 ```
 
 TODO: use proper javascript json parser.
+
+
+<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+<script>
+
+</script>
