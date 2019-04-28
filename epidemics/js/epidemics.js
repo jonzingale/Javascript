@@ -41,18 +41,18 @@ import { network } from './network.js';
   ]
 
   // Sliders
-  var def_susceptibility = 500/514
+  var def_contagion = 14/514
   var def_recovery_rate  = 1/3
   var def_infection_rate = 1/3
 
-  var susceptibility = {id:"slide_s", name: "susceptibility", range: [95/100,1], value: def_susceptibility};
+  var contagion = {id:"slide_c", name: "contagion", range: [0.01,1/20], value: def_contagion};
   var recovery_rate = {id:"slide_r", name: "recovery rate", range: [0,1], value: def_recovery_rate};
   var infection_rate = {id:"slide_i", name: "infection rate", range: [0,1], value: def_infection_rate};
 
   var sliders = [
     widget.slider(infection_rate).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
     widget.slider(recovery_rate).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
-    widget.slider(susceptibility).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
+    widget.slider(contagion).width(sliderwidth).trackSize(trackSize).handleSize(handleSize),
   ]
 
   controls.selectAll(".button .others").data(buttons).enter()
@@ -68,7 +68,6 @@ import { network } from './network.js';
   controls.selectAll(".slider .block3").data(sliders).enter()
     .append(widget.sliderElement)
     .attr("transform", function(d,i) { 
-      pp(i)
       return "translate("+sliderBlock.x(0)+","+sliderBlock.y(i*2.5-3)+")"
     });
 
@@ -106,7 +105,7 @@ import { network } from './network.js';
 
   function genNamedVectors(graph, den, inf=[], sus=[]) {
     Object.keys(graph).forEach(function(name) {
-      biasedCoin(den) ? inf.push(name) : sus.push(name)
+      biasedCoin(den) ? sus.push(name) : inf.push(name)
     })
 
     sirData = {'susceptible': sus, 'infected': inf, 
@@ -178,7 +177,7 @@ import { network } from './network.js';
 
   function resetNodes() {
     d3.select('svg').selectAll("*").remove();
-    genNamedVectors(graph, susceptibility.value)
+    genNamedVectors(graph, contagion.value)
     network()
   }
 
