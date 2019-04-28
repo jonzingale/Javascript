@@ -41,9 +41,9 @@ import { network } from './network.js';
   ]
 
   // Sliders
-  var def_susceptibility = 9/10 // TODO : HAVE THESE EFFECT CALCULATION
+  var def_susceptibility = 500/514 // TODO : HAVE THESE EFFECT CALCULATION
   var def_recovery_rate  = 1/3
-  var def_infection_rate = 1/5
+  var def_infection_rate = 1/3
 
   var susceptibility = {id:"slide_s", name: "susceptibility", range: [0,1], value: def_susceptibility};
   var recovery_rate = {id:"slide_r", name: "recovery rate", range: [0,1], value: def_recovery_rate};
