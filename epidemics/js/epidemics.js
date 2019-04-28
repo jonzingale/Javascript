@@ -107,6 +107,7 @@ import { network } from './network.js';
       m * prob**(i+1) * (-1)**i + a, 0)
   }
 
+  // Todo: make as lookup table instead?
   function binomial(n, binomials=[[1]]) {
     while(n >= binomials.length) {
       let s = binomials.length;
@@ -122,7 +123,6 @@ import { network } from './network.js';
     return binomials[n].slice(1)
   }
 
-  // TODO: CLEAN DATA, escape leading digits.
   function updateDisplay() {
     // reset links to grey
     d3.selectAll("line")
