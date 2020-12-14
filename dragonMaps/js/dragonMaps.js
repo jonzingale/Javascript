@@ -143,9 +143,15 @@
         context.fillStyle = `hsl(32,71%,${saturation}%)`
       }
       else { // landmass
+        // var greenTogrey = 36*normedSat + 120*(1-normedSat)
+        // var satDel = 19*normedSat + 100*(1-normedSat)
+        // var bright = (saturation/8)*Math.log(saturation*5000) - 40
+
         var greenTogrey = 36*normedSat + 120*(1-normedSat)
-        var satDel = 19*normedSat + 100*(1-normedSat)
-        var bright = (saturation/8)*Math.log(saturation*5000) - 40
+        var satDel = 10*normedSat + 100*(1-normedSat)
+        var bright = (saturation/10)*Math.log(saturation*5000) - 40
+        // var satDel = 100
+        // var bright = 50
         context.fillStyle = `hsl(${greenTogrey},${satDel}%,${bright}%)`
       }
       context.fillRect(x*scalar, y*scalar, scalar, scalar);
