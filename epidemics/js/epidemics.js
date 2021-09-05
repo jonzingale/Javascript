@@ -1,4 +1,4 @@
-// SERVER on 8000: python -m http.server
+// SERVER on 8000: python3 -m http.server 8000
 import { dirksGraph } from './adjacency.js';
 import { network } from './network.js';
 
