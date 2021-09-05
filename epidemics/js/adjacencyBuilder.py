@@ -54,6 +54,7 @@ class Graph:
     file.write(encoder.encode(self.graph))
 
 
+# dataFile = open("./json/jonzingale.json", "r").read()
 dataFile = open("./json/dirkbrockmann.json", "r").read()
 gr = Graph(dataFile)
 # st()

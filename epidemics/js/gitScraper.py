@@ -5,6 +5,7 @@ import json
 
 # CENTER_NODE = '/benmaier'
 CENTER_NODE = '/dirkbrockmann'
+# CENTER_NODE = '/jonzingale'
 
 URL_FORMAT = "https://github.com%s?tab=followers" 
 LINK_CLASS = "d-inline-block no-underline mb-1"
@@ -20,7 +21,8 @@ class Agent:
 
   def get_neighbors(self, user_stub):
     html = self.http.request('GET', URL_FORMAT % user_stub)
-    page = BeautifulSoup(html.data, features="lxml")
+    # page = BeautifulSoup(html.data, features="lxml")
+    page = BeautifulSoup(html.data, features="html.parser")
     ns = page.body.find_all('a', attrs={'class':LINK_CLASS})  
     return([href.get('href') for href in ns])
 
