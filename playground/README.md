@@ -1,5 +1,8 @@
 Playground is a development environment built on webpack and node.
 
+* npm run build
+* http://localhost:8080/
+
 TODO:
 - literally everything
 - build package.json
@@ -8,7 +11,7 @@ TODO:
 
 Projects:
 1. Alec Lights
-  - mathjs
-  - maps between hypergraphs
-  - solver
-  - solvable?
+    - maps between hypergraphs
+    - solver
+    - solvable?
+    - for all n
