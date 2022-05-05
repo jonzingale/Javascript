@@ -1,17 +1,5 @@
-Playground is a development environment built on webpack and node.
+basic setup of webpack and node.
 
+* npm install
 * npm run build
 * http://localhost:8080/
-
-TODO:
-- literally everything
-- build package.json
-- configure webpack
-- fire up a minimal server
-
-Projects:
-1. Alec Lights
-    - maps between hypergraphs
-    - solver
-    - solvable?
-    - for all n
