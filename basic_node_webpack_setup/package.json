@@ -1,7 +1,7 @@
 {
-  "name": "playground",
+  "name": "basic setup",
   "version": "1.0.0",
-  "description": "A test bed for code. Built on node with webpack.",
+  "description": "A basic node and webpack setup.",
   "main": "index.js",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "serve": "webpack serve"
   },
   "author": "Jon Zingale",
-  "license": "MIT",
+  "license": "CYA",
   "dependencies": {
     "mathjs": "^10.5.1"
   },
