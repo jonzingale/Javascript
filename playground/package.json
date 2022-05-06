@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack && npm run serve",
+    "build": "webpack && node build/build.js && npm run serve",
     "serve": "webpack serve"
   },
   "author": "Jon Zingale",
