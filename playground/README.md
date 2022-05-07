@@ -11,7 +11,7 @@ TODO:
 
 Projects:
 1. Alec Lights
-    - maps between hypergraphs
+    - maps between hypercubes
     - solver
     - solvable?
     - for all n
