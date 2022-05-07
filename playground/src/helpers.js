@@ -59,9 +59,9 @@ let xw_rot = math.matrix([
 // REDUCTION * yw_rot * xz_rot * xy_rot
 let rot = math.multiply(prj, yw_rot, xz_rot, xy_rot)
 // or equivalently
-const rot_simp = math.matrix([
+const bestRotation = math.matrix([
   [Math.cos(t)**2,Math.cos(t)*Math.sin(t),-Math.sin(t),0],
   [-Math.cos(t)*Math.sin(t),Math.cos(t)**2,0,-Math.sin(t)]
 ])
 
-export { zeros, range, rootsUnity, rot, rot_simp, toBinary };
+export { zeros, range, rootsUnity, rot, bestRotation, toBinary };
