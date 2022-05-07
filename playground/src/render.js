@@ -9,6 +9,7 @@ var svg = d3.select("body").append('svg')
   .attr('width', width)
   .attr('height', height)
 
+// Display hypercube
 d3.select("svg").selectAll("pts")
   .data(points).enter().append("circle")
   .attr("cx", function(d) { return (size * d[0] + width/2)  })
