@@ -1,15 +1,10 @@
-import { m1, m2, ls, i4 } from './linear.js';
-import { dot } from '/src/render.js';
+import { ls } from './linear.js';
+import '/src/render.js';
+import '/src/hypercube.js';
 import * as math from 'mathjs';
 
-function component1() {
-  const element = document.createElement('div');
-  element.innerHTML = m1._data.join('<br>') + '<p>';
-  return element;
-}
-
 // returns the basis factorization for the solution vector.
-function component2(vect = [1,1,1,1,1]) {
+function component(vect = [1,1,1,1,1]) {
   const element = document.createElement('div');
   element.innerHTML =
     math.multiply(ls, vect)
@@ -18,16 +13,4 @@ function component2(vect = [1,1,1,1,1]) {
   return element;
 }
 
-// bring rendering
-dot;
-
-// make functions global
-window.m1 = m1;
-window.inv = math.inv;
-window.m2 = m2;
-window.i4 = i4;
-window.pp = math.multiply;
-
-document.body.appendChild(component1());
-document.body.appendChild(component2([0,1,1,0,1]));
-d3.selectAll("div").style("color", "blue");
+document.body.appendChild(component([0,1,1,0,1]));
