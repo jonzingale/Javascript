@@ -1,6 +1,6 @@
 import { transpose, multiply, matrixFromColumns } from 'mathjs';
 import { range , toBin } from './helpers.js';
-import { bestRotation } from './linear.js';
+import { rotation } from './quaternions.js';
 
 const allPoints = range(2**4)
 const bases = range(4).map(i => 2**i)
@@ -21,12 +21,12 @@ allPoints.forEach(function(i) {
 
 // calculate line transformations
 let newLines = edges.map(function(v) {
-  let l1 = transpose(multiply(bestRotation, v))
+  let l1 = transpose(multiply(rotation, v))
   return(l1._data.flat())
 })
 
 // calculate point transformations
-let newPoints = transpose(multiply(bestRotation, points))._data
+let newPoints = transpose(multiply(rotation, points))._data
 
 const hypercube = { points: newPoints, lines: newLines };
 export { hypercube };
