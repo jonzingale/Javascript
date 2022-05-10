@@ -1,7 +1,12 @@
 import '/src/render.js';
 import '/src/hypercube.js';
+import '/src/components/lights_example.js';
 import { multiply } from 'mathjs';
 import { ls, solution, lightSolution } from './lights.js';
+import { colors } from '/src/constants.js';
+
+// background
+document.body.style.background = '#f8f9fa' // gray-100
 
 // returns the basis factorization for the solution vector.
 function component1(vect = [1,1,1,1,1]) {
