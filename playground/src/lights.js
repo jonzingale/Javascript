@@ -1,5 +1,18 @@
 import { multiply, mod, add, matrix, inv } from 'mathjs';
 
+const l8 = matrix(
+  [
+   [1, 1, 0, 0, 0, 0, 0, 0],
+   [1, 1, 1, 0, 0, 0, 0, 0],
+   [0, 1, 1, 1, 0, 0, 0, 0],
+   [0, 0, 1, 1, 1, 0, 0, 0],
+   [0, 0, 0, 1, 1, 1, 0, 0],
+   [0, 0, 0, 0, 1, 1, 1, 0],
+   [0, 0, 0, 0, 0, 1, 1, 1],
+   [0, 0, 0, 0, 0, 0, 1, 1],
+  ]
+)
+
 const l4 = matrix(
   [[1, 1, 0, 0], // 12
    [1, 1, 1, 0], // 14
@@ -42,4 +55,4 @@ function lightSolution(vect) {
   return(arr)
 }
 
-export { ls, solution, lightSolution } ;
+export { ls, solution, lightSolution, l8 } ;
