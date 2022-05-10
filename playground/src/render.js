@@ -10,13 +10,13 @@ var svg = d3.select("body").append('svg')
   .attr('height', height)
 
 // Display hypercube
-d3.select("svg").selectAll("pts")
+d3.select(".container").selectAll("pts")
   .data(points).enter().append("circle")
   .attr("cx", function(d) { return (size * d[0] + width/2)  })
   .attr("cy", function(d) { return (size * d[1] + height/2) })
-  .attr("r", 3);
+  .attr("r", 10);
 
-d3.select("svg").append("g").selectAll("line")
+d3.select(".container").append("g").selectAll("line")
   .data(lines).enter().append("line").attr("stroke", "black")
   .attr("x1", function(d) { return d[0] * size + width/2; })
   .attr("y1", function(d) { return d[1] * size + height/2; })
