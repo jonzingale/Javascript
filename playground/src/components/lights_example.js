@@ -1,6 +1,6 @@
 import { width, height, size, colors } from '/src/constants.js';
 import { multiply, mod, add, matrix, column } from 'mathjs';
-import { l8 } from '/src/lights.js';
+import { lightSolution, l8 } from '/src/eight_lights.js';
 
 var state = [0,0,0,0,0,0,0,0]
 const operations = l8._data
@@ -19,13 +19,13 @@ lights_container.append("g").selectAll("box")
   .attr("y", function(d) { return d[1] + width/3; })
   .attr("width", function(d) { return d[2] * width; })
   .attr("height", function(d) { return d[3] * height/4; })
-  .attr("stroke", colors[2])
+  // .attr("stroke", colors[2])
   .attr('fill', colors[6]);
 
 var lights = lights_container.append("g").selectAll("light")
   .data(state).enter().append("circle")
   .attr("id", function(d, i) { return i })
-  .attr("cx", function(d, i) { return (i * width/8 + 25)  })
+  .attr("cx", function(d, i) { return (i * width/8.2 + 30)  })
   .attr("cy", height/2)
   .attr("r", 18)
   .attr('stroke', colors[7])
@@ -35,17 +35,19 @@ var lights = lights_container.append("g").selectAll("light")
 lights_container.append("g").selectAll("text")
 .data(state).enter()
   .append('text')
-  .attr('x', function(d, i) { return (i * width/8 + 17)  })
+  .attr('x', function(d, i) { return (i * width/8.2 + 24)  })
   .attr('y', height/2.3)
-  .attr('stroke', colors[0])
-  .style("font-size", 21)
-  .text(function(d, i) { return `f${i+1}` })
+  .attr('fill', colors[0])
+  .style("font-size", 23)
+  .text(function(d, i) { return i+1 })
 
 // Do color logic
 d3.selectAll('circle')
   .on('click', function() {
     // lights logic
     state = mod(add(state, operations[this.id]), 2)
+    // solution
+    console.log(lightSolution(state))
     // modify lights
     lights.data(state).style('fill', function() {
         let color = state[this.id] == 0 ? colors[9] : colors[0]
