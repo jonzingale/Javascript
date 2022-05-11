@@ -3,6 +3,7 @@ import { lightSolution, l8 } from '/src/eight_lights.js';
 import { mod, add } from 'mathjs';
 
 var state = [0,0,0,0,0,0,0,0]
+state = state.map(x => Math.floor(Math.random() * 2))
 const operations = l8._data
 
 const svg = d3.select("body").append('svg')
@@ -12,7 +13,6 @@ const svg = d3.select("body").append('svg')
 
 const lights_container = d3.select(".lights_container")
 
-// Display box
 lights_container.append("g").selectAll("box")
   .data([[0,0,1,1]]).enter().append("rect")
   .attr("x", function(d) { return d[0] + 0; })
@@ -50,31 +50,38 @@ lights_container.append("g").selectAll("text")
   .style("font-size", 23)
   .text(function(d, i) { return i+1 })
 
-  // instantiate hints
-  var hintData = lightSolution(state);
+function displayHints() {
   hints.data(state).style('fill', function(d, i) {
-    let color = hintData.includes(i) ? 'yellow' : colors[6]
-    return color
+    let hs = lightSolution(state);
+    let color = hs.includes(i) ? 'gold' : colors[6];
+    return color;
   })
+}
 
-// Do color logic
+function displayLights() {
+  lights.data(state).style('fill', function(d) {
+    let color = d == 0 ? colors[9] : colors[0];
+    return color;
+  })
+}
+
+function updateState(id) {
+  state = mod(add(state, operations[id]), 2)
+}
+
+// instantiate hints
+displayHints()
+displayLights()
+
+// do logic on click
 d3.selectAll('circle')
   .on('click', function() {
     // lights logic
-    state = mod(add(state, operations[this.id]), 2)
-
-    // compute and modify hints
-    hintData = lightSolution(state);
-    hints.data(state).style('fill', function(d, i) {
-      let color = hintData.includes(i) ? 'yellow' : colors[6]
-      return color
-    })
-
+    updateState(this.id)
+    // modify hints
+    displayHints()
     // modify lights
-    lights.data(state).style('fill', function(d) {
-      let color = d == 0 ? colors[9] : colors[0]
-      return color
-    })
+    displayLights()
   });
 
 export { svg };

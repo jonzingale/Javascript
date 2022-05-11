@@ -1,5 +1,5 @@
-import { width, height, size } from './constants.js';
-import { hypercube } from './hypercube.js';
+import { width, height, size } from '/src/constants.js';
+import { hypercube } from '/src/hypercube.js';
 
 let points = hypercube.points
 let lines = hypercube.lines
