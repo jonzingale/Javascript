@@ -60,7 +60,7 @@ const solution8 = matrix(
 )
 
 const vSolution = [1,1,1,1,1,1,1,1]
-const basis = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7'];
+const basis = [0,1,2,3,4,5,6];
 
 function solution(vect) {
   let sol = multiply(solution8, add(vSolution, vect))
@@ -77,4 +77,4 @@ function lightSolution(vect) {
   return(arr)
 }
 
-export { solution, lightSolution, l8, solution8 } ;
+export { lightSolution, l8 } ;
