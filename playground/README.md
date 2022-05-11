@@ -4,14 +4,10 @@ Playground is a development environment built on webpack and node.
 * http://localhost:8080/
 
 TODO:
-- literally everything
-- build package.json
-- configure webpack
-- fire up a minimal server
+- Display "No Solution"
 
 Projects:
 1. Alec Lights
     - maps between hypercubes
-    - solver
     - solvable?
     - for all n

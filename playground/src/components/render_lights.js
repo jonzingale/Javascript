@@ -2,9 +2,11 @@ import { width, height, size, colors } from '/src/constants.js';
 import { lightSolution, l8 } from '/src/eight_lights.js';
 import { mod, add } from 'mathjs';
 
-var state = [0,0,0,0,0,0,0,0]
-state = state.map(x => Math.floor(Math.random() * 2))
 const operations = l8._data
+var state = [0,0,0,0,0,0,0,0]
+
+ // randomize initial state
+state = state.map(x => Math.floor(Math.random() * 2))
 
 const svg = d3.select("body").append('svg')
   .attr('class', 'lights_container')
