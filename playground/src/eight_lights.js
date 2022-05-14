@@ -1,4 +1,4 @@
-import { multiply, mod, add, matrix, inv, det } from 'mathjs';
+import { multiply, mod, add, matrix, inv, diag, resize, chain } from 'mathjs';
 
 // 7 + 5 + 4 + 2 + 1 = 8
 const l8 = matrix(
@@ -77,4 +77,14 @@ function lightSolution(vect) {
   return(arr)
 }
 
-export { lightSolution, l8 } ;
+function hasSolution(vect) {
+  let v7 = solution(vect); // solution in V7
+  let v8 = resize(v7, [8], 0) // resize solution to be in V8
+  let bs = multiply(diag(v8), l8) // select bases in V8
+  let summedBs = bs._data.reduce((i, a) => add(i, a), 0)
+  let hasSol = chain(vect).add(summedBs).mod(2).done().pop() == 1
+  return(hasSol)
+}
+
+
+export { lightSolution, hasSolution, l8 } ;

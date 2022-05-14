@@ -1,17 +1,25 @@
 import { multiply, mod, add, matrix, inv } from 'mathjs';
 
+const l5 = matrix(
+  [[1, 1, 0, 0, 0],
+   [1, 1, 1, 0, 0],
+   [0, 1, 1, 1, 0],
+   [0, 0, 1, 1, 1],
+   [0, 0, 0, 1, 1]]
+)
+
 const l4 = matrix(
-  [[1, 1, 0, 0], // 12
-   [1, 1, 1, 0], // 14
-   [0, 1, 1, 1], // 7
-   [0, 0, 1, 1]] // 3
+  [[1, 1, 0, 0],
+   [1, 1, 1, 0],
+   [0, 1, 1, 1],
+   [0, 0, 1, 1]]
 )
 
 const l54 = matrix(
-  [[1, 0, 0, 0, 0], // 16
-   [0, 1, 0, 0, 0], // 8
-   [0, 0, 1, 0, 0], // 4
-   [0, 0, 0, 1, 0]] // 2
+  [[1, 0, 0, 0, 0],
+   [0, 1, 0, 0, 0],
+   [0, 0, 1, 0, 0],
+   [0, 0, 0, 1, 0]]
 )
 
 // inv(l4)*l54
@@ -33,7 +41,7 @@ function solution(vect) {
   return(sol)
 };
 
-function lightSolution(vect) {
+function lightSolution5(vect) {
   let sol = solution(vect);
   let arr = [];
   sol.forEach(function(x, i) {
@@ -42,4 +50,4 @@ function lightSolution(vect) {
   return(arr)
 }
 
-export { ls, solution, lightSolution } ;
+export { ls, solution, lightSolution5, l5 } ;

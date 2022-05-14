@@ -1,7 +1,9 @@
 import { width, height, size, colors } from '/src/constants.js';
-import { lightSolution, l8 } from '/src/eight_lights.js';
+import { lightSolution, hasSolution, l8 } from '/src/eight_lights.js';
+import { lightSolution5, l5 } from '/src/four_lights.js';
 import { mod, add } from 'mathjs';
 
+// TODO: make this file a component with operations, state as props
 const operations = l8._data
 var state = [0,0,0,0,0,0,0,0]
 
@@ -27,7 +29,7 @@ lights_container.append("g").selectAll("box")
 var hints = lights_container.append("g").selectAll("hint")
   .data(state).enter().append("ellipse")
   .attr("id", function(d, i) { return i })
-  .attr("cx", function(d, i) { return (i * width/8.2 + 30)  })
+  .attr("cx", function(d, i) { return (i * width/8.2 + 34)  })
   .attr("cy", height/2)
   .attr("rx", 22)
   .attr("ry", 35)
@@ -36,21 +38,12 @@ var hints = lights_container.append("g").selectAll("hint")
 var lights = lights_container.append("g").selectAll("light")
   .data(state).enter().append("circle")
   .attr("id", function(d, i) { return i })
-  .attr("cx", function(d, i) { return (i * width/8.2 + 30)  })
+  .attr("cx", function(d, i) { return (i * width/8.2 + 34)  })
   .attr("cy", height/2)
   .attr("r", 18)
   .attr('stroke', colors[7])
   .attr('stroke-width', 3)
   .attr('fill', colors[9]);
-
-lights_container.append("g").selectAll("text")
-.data(state).enter()
-  .append('text')
-  .attr('x', function(d, i) { return (i * width/8.2 + 24)  })
-  .attr('y', height/2.5)
-  .attr('fill', colors[0])
-  .style("font-size", 23)
-  .text(function(d, i) { return i+1 })
 
 function displayHints() {
   hints.data(state).style('fill', function(d, i) {
@@ -71,9 +64,29 @@ function updateState(id) {
   state = mod(add(state, operations[id]), 2)
 }
 
-// instantiate hints
-displayHints()
-displayLights()
+function main() {
+  displayLights()
+  if (hasSolution(state)) {
+    lights_container.append("g").selectAll("text")
+    .data(state).enter()
+      .append('text')
+      .attr('x', function(d, i) { return (i * width/8.2 + 28)  })
+      .attr('y', height/2.45)
+      .attr('fill', colors[0])
+      .style("font-size", 23)
+      .text(function(d, i) { return i+1 })
+
+    displayHints()
+  } else {
+    lights_container.append("g")
+      .append('text')
+      .attr('x', width/3)
+      .attr('y', height/2.45)
+      .attr('fill', colors[2])
+      .style("font-size", 30)
+      .text("No Solution")
+  }
+}
 
 // do logic on click
 d3.selectAll('circle')
@@ -85,5 +98,8 @@ d3.selectAll('circle')
     // modify lights
     displayLights()
   });
+
+// main happens here
+main()
 
 export { svg };
