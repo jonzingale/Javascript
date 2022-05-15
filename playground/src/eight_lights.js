@@ -88,5 +88,4 @@ function hasSolution(vect) {
   return(hasSol)
 }
 
-
 export { lightSolution, hasSolution, l8 } ;
