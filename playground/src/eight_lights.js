@@ -1,4 +1,5 @@
-import { multiply, mod, add, matrix, inv, diag, resize, chain } from 'mathjs';
+import { multiply, mod, add, matrix, inv, diag, resize,
+  chain, ones } from 'mathjs';
 
 // 7 + 5 + 4 + 2 + 1 = 8
 const l8 = matrix(
@@ -27,13 +28,15 @@ const l7 = matrix(
 )
 
 const invL7 = matrix(
-[[1, 0, 1, 1, 0, 1, 1],
- [0, 0, 1, 1, 0, 1, 1],
- [1, 1, 0, 0, 0, 0, 0],
- [1, 1, 0, 1, 0, 1, 1],
- [0, 0, 0, 0, 0, 1, 1],
- [1, 1, 0, 1, 1, 0, 0],
- [1, 1, 0, 1, 1, 0, 1]]
+  [
+   [1, 0, 1, 1, 0, 1, 1],
+   [0, 0, 1, 1, 0, 1, 1],
+   [1, 1, 0, 0, 0, 0, 0],
+   [1, 1, 0, 1, 0, 1, 1],
+   [0, 0, 0, 0, 0, 1, 1],
+   [1, 1, 0, 1, 1, 0, 0],
+   [1, 1, 0, 1, 1, 0, 1]
+  ]
 )
 
 const l87 = matrix(
@@ -50,30 +53,29 @@ const l87 = matrix(
 
 // inv(l7)*l87
 const solution8 = matrix(
-[[1, 0, 1, 1, 0, 1, 1, 0],
- [0, 0, 1, 1, 0, 1, 1, 0],
- [1, 1, 0, 0, 0, 0, 0, 0],
- [1, 1, 0, 1, 0, 1, 1, 0],
- [0, 0, 0, 0, 0, 1, 1, 0],
- [1, 1, 0, 1, 1, 0, 0, 0],
- [1, 1, 0, 1, 1, 0, 1, 0]]
+[
+  [1, 0, 1, 1, 0, 1, 1, 0],
+  [0, 0, 1, 1, 0, 1, 1, 0],
+  [1, 1, 0, 0, 0, 0, 0, 0],
+  [1, 1, 0, 1, 0, 1, 1, 0],
+  [0, 0, 0, 0, 0, 1, 1, 0],
+  [1, 1, 0, 1, 1, 0, 0, 0],
+  [1, 1, 0, 1, 1, 0, 1, 0]
+ ]
 )
 
-const vSolution = [1,1,1,1,1,1,1,1]
+const vSolution = ones(8)
 const basis = [0,1,2,3,4,5,6];
 
 function solution(vect) {
-  let sol = multiply(solution8, add(vSolution, vect))
-  sol = mod(sol, 2)
+  let sol = mod(multiply(solution8, add(vSolution, vect)), 2)
   return(sol)
 };
 
 function lightSolution(vect) {
   let sol = solution(vect);
-  let arr = [];
-  sol.forEach(function(x, i) {
-    if (x == 1) arr.push(basis[i])
-  });
+  let arr = []
+  sol.forEach((x, i) => (x == 1) ? arr.push(basis[i]) : null )
   return(arr)
 }
 

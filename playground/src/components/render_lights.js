@@ -64,30 +64,6 @@ function updateState(id) {
   state = mod(add(state, operations[id]), 2)
 }
 
-function main() {
-  displayLights()
-  if (hasSolution(state)) {
-    lights_container.append("g").selectAll("text")
-    .data(state).enter()
-      .append('text')
-      .attr('x', function(d, i) { return (i * width/8.2 + 28)  })
-      .attr('y', height/2.45)
-      .attr('fill', colors[0])
-      .style("font-size", 23)
-      .text(function(d, i) { return i+1 })
-
-    displayHints()
-  } else {
-    lights_container.append("g")
-      .append('text')
-      .attr('x', width/3)
-      .attr('y', height/2.45)
-      .attr('fill', colors[2])
-      .style("font-size", 30)
-      .text("No Solution")
-  }
-}
-
 // do logic on click
 d3.selectAll('circle')
   .on('click', function() {
@@ -99,7 +75,4 @@ d3.selectAll('circle')
     displayLights()
   });
 
-// main happens here
-main()
-
-export { svg };
+export { svg, displayLights, hasSolution, state, lights_container, displayHints };
