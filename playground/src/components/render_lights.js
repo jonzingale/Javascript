@@ -1,11 +1,13 @@
 import { width, height, size, colors } from '/src/constants.js';
-import { lightSolution, hasSolution, l8 } from '/src/eight_lights.js';
+import { lightSolution, l8 } from '/src/eight_lights.js';
 import { lightSolution5, l5 } from '/src/four_lights.js';
+import { range, zeros } from '/src/helpers.js';
 import { mod, add } from 'mathjs';
 
 // TODO: make this file a component with operations, state as props
 const operations = l8._data
-var state = [0,0,0,0,0,0,0,0]
+var state = zeros(8)
+var range8 = range(8)
 
  // randomize initial state
 state = state.map(x => Math.floor(Math.random() * 2))
@@ -19,26 +21,26 @@ const lights_container = d3.select(".lights_container")
 
 lights_container.append("g").selectAll("box")
   .data([[0,0,1,1]]).enter().append("rect")
-  .attr("x", function(d) { return d[0] + 0; })
-  .attr("y", function(d) { return d[1] + width/3; })
-  .attr("width", function(d) { return d[2] * width; })
-  .attr("height", function(d) { return d[3] * height/4; })
+  .attr("x", d => d[0] + 0)
+  .attr("y", d => d[1] + width/3)
+  .attr("width", d => d[2] * width)
+  .attr("height", d => d[3] * height/4)
   // .attr("stroke", colors[2])
   .attr('fill', colors[6]);
 
 var hints = lights_container.append("g").selectAll("hint")
-  .data(state).enter().append("ellipse")
-  .attr("id", function(d, i) { return i })
-  .attr("cx", function(d, i) { return (i * width/8.2 + 34)  })
+  .data(range8).enter().append("ellipse")
+  .attr("id", (d, i) => i)
+  .attr("cx", (d, i) => (i * width/8.2 + 34) )
   .attr("cy", height/2)
   .attr("rx", 22)
   .attr("ry", 35)
   .attr('fill', colors[6]);
 
 var lights = lights_container.append("g").selectAll("light")
-  .data(state).enter().append("circle")
-  .attr("id", function(d, i) { return i })
-  .attr("cx", function(d, i) { return (i * width/8.2 + 34)  })
+  .data(range8).enter().append("circle")
+  .attr("id", (d, i) => i)
+  .attr("cx", (d, i) => i * width/8.2 + 34)
   .attr("cy", height/2)
   .attr("r", 18)
   .attr('stroke', colors[7])
@@ -46,8 +48,8 @@ var lights = lights_container.append("g").selectAll("light")
   .attr('fill', colors[9]);
 
 function displayHints() {
-  hints.data(state).style('fill', function(d, i) {
-    let hs = lightSolution(state);
+  let hs = lightSolution(state);
+  hints.data(range8).style('fill', function(d, i) {
     let color = hs.includes(i) ? 'gold' : colors[6];
     return color;
   })
@@ -75,4 +77,4 @@ d3.selectAll('circle')
     displayLights()
   });
 
-export { svg, displayLights, hasSolution, state, lights_container, displayHints };
+export { svg, displayLights, state, displayHints };
