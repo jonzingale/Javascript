@@ -20,6 +20,10 @@ let LightBox = class {
     this.state = this.state.map(x => Math.floor(Math.random() * 2))
   }
 
+  setLight(id) {
+    this.state[id] = (this.state[id] + 1) % 2
+  }
+
   updateState(id) {
     this.state = mod(add(this.state, this.operations[id]), 2)
   }
@@ -41,17 +45,21 @@ let LightBox = class {
       // .attr("stroke", colors[2])
       .attr('fill', colors[6]);
 
-    return(container)
+    return container;
   }
 
   getLabels() {
     var labels = this.container.append('g').selectAll('labels')
-    return(labels)
+    return labels;
+  }
+
+  hideLabels() {
+    this.container.selectAll('text').remove()
   }
 
   displayLabels() {
     // clear any labels before render
-    this.container.selectAll('text').remove()
+    this.hideLabels()
 
     if (hasSolution(this.state)) {
       this.labels
@@ -77,23 +85,26 @@ let LightBox = class {
   getHints() {
     var hints = this.container.append("g").selectAll("hint")
       .data(this.range).enter().append("ellipse")
-      .attr("cx", d => d * width/8.2 + 34 )
+      .attr("cx", d => d * width/8.2 + 34)
       .attr("cy", height/2)
       .attr("rx", 22)
       .attr("ry", 35)
       .attr('fill', colors[6]);
 
-    return(hints)
+    return hints;
   }
 
   displayHints() {
     let solution = lightSolution(this.state);
     let hasSol = hasSolution(this.state)
 
-    this.hints.style('fill', function(d, i) {
-      let color = (solution.includes(i) && hasSol) ? 'gold' : colors[6];
-      return color;
-    })
+    this.hints.style('fill', (d, i) =>
+      (solution.includes(i) && hasSol) ? 'gold' : colors[6]
+    )
+  }
+
+  hideHints() {
+    this.hints.style('fill', colors[6])
   }
 
   getLights() {
@@ -107,14 +118,12 @@ let LightBox = class {
       .attr('stroke-width', 3)
       .attr('fill', colors[9]);
 
-    return(lights)
+    return lights;
   }
 
   displayLights() {
-    this.lights.data(this.state).style('fill', function(d) {
-      let color = d == 0 ? colors[9] : colors[0];
-      return color;
-    })
+    this.lights.data(this.state)
+      .style('fill', d => d == 0 ? colors[9] : colors[0])
   }
 }
 

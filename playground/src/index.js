@@ -1,7 +1,5 @@
 import '/src/components/render_cube.js';
 import { LightBox } from '/src/components/render_lights.js';
-import { width, height, colors } from '/src/constants.js';
-import { hasSolution } from '/src/eight_lights.js'
 import { Button } from '/src/components/render_buttons.js';
 
 // background
@@ -11,30 +9,43 @@ document.body.style.background = '#f8f9fa' // gray-100
 var lights = new LightBox()
 var buttons = new Button()
 
-function main() {
+function initialize() {
+  buttons.initializeSetter()
   lights.randomizeState()
   lights.displayLabels()
   lights.displayLights()
   lights.displayHints()
 }
 
-main()
+initialize()
 
 // render interactive lights
 lights.container.selectAll('circle')
   .on('click', function() {
-    // lights logic
-    lights.updateState(this.id)
-    // modify hints
-    lights.displayHints()
-    // modify lights
-    lights.displayLights()
+    if (buttons.setterState.set) {
+      lights.updateState(this.id)
+      lights.displayHints()
+      lights.displayLights()
+    } else {
+      lights.setLight(this.id)
+      lights.displayLights()
+    }
   });
 
 // render random button
 buttons.container.selectAll('.random_button')
-  .on('click', () => main());
+  .on('click', () => initialize());
 
 // render setter button
 buttons.container.selectAll('.setter_button')
-  .on('click', () => buttons.setState());
+  .on('click', function() {
+    buttons.setState()
+    if (buttons.setterState.set) {
+      lights.displayHints()
+      lights.displayLabels()
+    } else {
+      lights.hideHints()
+      lights.hideLabels()
+    }
+  }
+);

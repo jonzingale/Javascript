@@ -77,20 +77,19 @@ let Button = class {
       .attr('fill', colors[9])
       .style('font-size', 25)
 
-    setter_text.text('Set Lights')
-
     return(setter_text)
+  }
+
+  initializeSetter() {
+    this.setterText.text('Set Lights')
+    this.setterState.set = true
   }
 
   // toggles between setter and solver
   setState() {
-    if (this.setterState) {
-      this.setterText.text('Solve Lights')
-      this.setterState = false
-    } else {
-      this.setterText.text('Set Lights')
-      this.setterState = true
-    }
+    this.setterState.set ^= true;
+    var str = this.setterState.set ? 'Solve Lights' : 'Set Lights'
+    this.setterText.text(str)
   }
 
 }
