@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack && node build/build.js && npm run serve",
-    "serve": "webpack serve"
+    "serve": "webpack serve",
+    "heroku-postbuild": "webpack -p" 
   },
   "author": "Jon Zingale",
   "license": "MIT",
