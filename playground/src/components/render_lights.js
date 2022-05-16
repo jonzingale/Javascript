@@ -20,8 +20,8 @@ let LightBox = class {
     this.state = this.state.map(x => Math.floor(Math.random() * 2))
   }
 
-  setLight(id) {
-    this.state[id] = (this.state[id] + 1) % 2
+  updateLight(id) {
+    this.state[id] ^= true
   }
 
   updateState(id) {

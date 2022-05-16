@@ -8,6 +8,7 @@ document.body.style.background = '#f8f9fa' // gray-100
 // initialize light box and buttons
 var lights = new LightBox()
 var buttons = new Button()
+initialize()
 
 function initialize() {
   buttons.initializeSetter()
@@ -17,8 +18,6 @@ function initialize() {
   lights.displayHints()
 }
 
-initialize()
-
 // render interactive lights
 lights.container.selectAll('circle')
   .on('click', function() {
@@ -27,7 +26,7 @@ lights.container.selectAll('circle')
       lights.displayHints()
       lights.displayLights()
     } else {
-      lights.setLight(this.id)
+      lights.updateLight(this.id)
       lights.displayLights()
     }
   });

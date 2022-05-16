@@ -88,7 +88,7 @@ let Button = class {
   // toggles between setter and solver
   setState() {
     this.setterState.set ^= true;
-    var str = this.setterState.set ? 'Solve Lights' : 'Set Lights'
+    var str = this.setterState.set ? 'Set Lights' : 'Solve Lights'
     this.setterText.text(str)
   }
 
