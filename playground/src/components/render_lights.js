@@ -5,7 +5,7 @@ import { range, zeros } from '/src/helpers.js';
 import { mod, add } from 'mathjs';
 
 let LightBox = class {
-  constructor(state) {
+  constructor() {
     this.state = zeros(8)
     this.range = range(8)
     this.operations = l8._data
