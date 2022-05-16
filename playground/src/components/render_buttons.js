@@ -83,6 +83,7 @@ let Button = class {
     return(setter_text)
   }
 
+  // toggles between setter and solver
   setState() {
     if (this.setterState) {
       this.setterText.text('Solve Lights')
