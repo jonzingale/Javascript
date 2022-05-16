@@ -22,7 +22,6 @@ let Button = class {
       .attr("y", d => d[1] + height/3)
       .attr("width", d => d[2] * width)
       .attr("height", d => d[3] * height/3.5)
-      // .attr("stroke", colors[2])
       .attr('fill', colors[6]);
 
     return(container)
@@ -35,7 +34,7 @@ let Button = class {
       .append("circle")
       .attr('class', 'random_button')
       .attr("cx", 30)
-      .attr("cy", 255)
+      .attr("cy", 270)
       .attr("r", 18)
       .attr('stroke', colors[7])
       .attr('stroke-width', 3)
@@ -47,7 +46,7 @@ let Button = class {
       .data([0]).enter()
       .append('text')
       .attr('x', 60)
-      .attr('y', 267)
+      .attr('y', 277)
       .attr('fill', colors[9])
       .style('font-size', 25)
       .text('Randomize')
@@ -62,7 +61,7 @@ let Button = class {
       .append("circle")
       .attr('class', 'setter_button')
       .attr("cx", 30)
-      .attr("cy", 200)
+      .attr("cy", 210)
       .attr("r", 18)
       .attr('stroke', colors[7])
       .attr('stroke-width', 3)
@@ -74,7 +73,7 @@ let Button = class {
       .data([0]).enter()
       .append('text')
       .attr('x', 60)
-      .attr('y', 210)
+      .attr('y', 220)
       .attr('fill', colors[9])
       .style('font-size', 25)
 
