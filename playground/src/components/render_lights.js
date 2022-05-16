@@ -86,6 +86,9 @@ let LightBox = class {
   }
 
   displayLabels() {
+    // clear any labels before render
+    this.container.selectAll('text').remove()
+
     if (hasSolution(this.state)) {
       this.labels
         .data(this.state).enter()

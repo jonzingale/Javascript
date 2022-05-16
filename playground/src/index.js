@@ -16,28 +16,25 @@ function main() {
   lights.displayLabels()
   lights.displayLights()
   lights.displayHints()
-
-  // render interactive lights
-  lights.container.selectAll('circle')
-    .on('click', function() {
-      // lights logic
-      lights.updateState(this.id)
-      // modify hints
-      lights.displayHints()
-      // modify lights
-      lights.displayLights()
-    });
-
-  // render random button
-  buttons.container.selectAll('.random_button')
-    .on('click', function() {
-      lights.container.selectAll('text').remove()
-      main()
-    });
-
-  // render setter button
-  buttons.container.selectAll('.setter_button')
-    .on('click', function() { buttons.setState() });
 }
 
 main()
+
+// render interactive lights
+lights.container.selectAll('circle')
+  .on('click', function() {
+    // lights logic
+    lights.updateState(this.id)
+    // modify hints
+    lights.displayHints()
+    // modify lights
+    lights.displayLights()
+  });
+
+// render random button
+buttons.container.selectAll('.random_button')
+  .on('click', () => main());
+
+// render setter button
+buttons.container.selectAll('.setter_button')
+  .on('click', () => buttons.setState());
