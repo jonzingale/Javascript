@@ -49,6 +49,31 @@ let LightBox = class {
     return(labels)
   }
 
+  displayLabels() {
+    // clear any labels before render
+    this.container.selectAll('text').remove()
+
+    if (hasSolution(this.state)) {
+      this.labels
+        .data(this.state).enter()
+        .append('text')
+        .attr('x', (d, i) => i * width/8.2 + 28)
+        .attr('y', height/2.45)
+        .attr('fill', colors[0])
+        .style('font-size', 23)
+        .text((d, i) => i+1)
+    } else {
+      this.labels
+        .data([0]).enter()
+        .append('text')
+        .attr('x', width/3)
+        .attr('y', height/2.45)
+        .attr('fill', colors[9])
+        .style('font-size', 30)
+        .text('No Solutions')
+    }
+  }
+
   getHints() {
     var hints = this.container.append("g").selectAll("hint")
       .data(this.range).enter().append("ellipse")
@@ -83,31 +108,6 @@ let LightBox = class {
       .attr('fill', colors[9]);
 
     return(lights)
-  }
-
-  displayLabels() {
-    // clear any labels before render
-    this.container.selectAll('text').remove()
-
-    if (hasSolution(this.state)) {
-      this.labels
-        .data(this.state).enter()
-        .append('text')
-        .attr('x', (d, i) => i * width/8.2 + 28)
-        .attr('y', height/2.45)
-        .attr('fill', colors[0])
-        .style('font-size', 23)
-        .text((d, i) => i+1)
-    } else {
-      this.labels
-        .data([0]).enter()
-        .append('text')
-        .attr('x', width/3)
-        .attr('y', height/2.45)
-        .attr('fill', colors[9])
-        .style('font-size', 30)
-        .text('No Solutions')
-    }
   }
 
   displayLights() {
