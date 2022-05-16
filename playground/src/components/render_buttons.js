@@ -9,21 +9,23 @@ let Button = class {
   };
 
   getContainer() {
-    const svg = d3.select("body").append('svg')
+    d3.select("body").append('svg')
       .attr('class', 'buttons_container')
       .attr('width', 200)
       .attr('height', 500)
 
-    svg.append("g").selectAll("box")
+    var container = d3.select(".buttons_container")
+
+    container.append("g").selectAll("box")
       .data([[0,0,1,1]]).enter().append("rect")
       .attr("x", d => d[0] + 0)
       .attr("y", d => d[1] + height/3)
       .attr("width", d => d[2] * width)
-      .attr("height", d => d[3] * height/4)
+      .attr("height", d => d[3] * height/3.5)
       // .attr("stroke", colors[2])
       .attr('fill', colors[6]);
 
-    return(d3.select(".buttons_container"))
+    return(container)
   }
 
   getRandomizeButton() {

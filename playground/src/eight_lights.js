@@ -84,7 +84,7 @@ function hasSolution(vect) {
   let v8 = resize(v7, [8], 0) // resize solution to be in V8
   let bs = multiply(diag(v8), l8) // select bases in V8
   let summedBs = bs._data.reduce((i, a) => add(i, a), 0)
-  let hasSol = chain(vect).add(summedBs).mod(2).done().pop() == 1
+  let hasSol = chain(vect).add(summedBs).mod(2).done().pop() === 1
   return(hasSol)
 }
 
