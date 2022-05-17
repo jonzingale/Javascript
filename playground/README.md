@@ -4,10 +4,10 @@ Playground is a development environment built on webpack and node.
 * http://localhost:8080/
 
 TODO:
-- Display "No Solution"
+- Write post
+- hypercube states, 5 lights
 
 Projects:
 1. Alec Lights
     - maps between hypercubes
-    - solvable?
     - for all n
