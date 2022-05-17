@@ -1,9 +1,18 @@
-import '/src/components/render_cube.js';
+import { Cube} from '/src/components/render_cube.js';
 import { LightBox } from '/src/components/render_lights.js';
 import { Button } from '/src/components/render_buttons.js';
 
 // background
 document.body.style.background = '#f8f9fa' // gray-100
+
+// pad top
+d3.select("body").append('svg')
+  .attr('class', 'top-pad')
+  .attr('width', 1000)
+  .attr('height', 100)
+
+// initialize cube
+new Cube()
 
 // initialize light box and buttons
 var lights = new LightBox()

@@ -12,16 +12,16 @@ let Button = class {
     d3.select("body").append('svg')
       .attr('class', 'buttons_container')
       .attr('width', 200)
-      .attr('height', 500)
+      .attr('height', height)
 
     var container = d3.select(".buttons_container")
 
     container.append("g").selectAll("box")
       .data([[0,0,1,1]]).enter().append("rect")
       .attr("x", 0)
-      .attr("y", 166) // h/3
-      .attr("width", 500)
-      .attr("height", 142) // h/3.5
+      .attr("y", 0)
+      .attr("width", width)
+      .attr("height", height)
       .attr('fill', colors[6]);
 
     return(container)
@@ -34,7 +34,7 @@ let Button = class {
       .append("circle")
       .attr('class', 'random_button')
       .attr("cx", 30)
-      .attr("cy", 270)
+      .attr("cy", 104)
       .attr("r", 18)
       .attr('stroke', colors[7])
       .attr('stroke-width', 3)
@@ -46,7 +46,7 @@ let Button = class {
       .data([0]).enter()
       .append('text')
       .attr('x', 60)
-      .attr('y', 277)
+      .attr('y', 111)
       .attr('fill', colors[9])
       .style('font-size', 25)
       .text('Randomize')
@@ -61,7 +61,7 @@ let Button = class {
       .append("circle")
       .attr('class', 'setter_button')
       .attr("cx", 30)
-      .attr("cy", 210)
+      .attr("cy", 44)
       .attr("r", 18)
       .attr('stroke', colors[7])
       .attr('stroke-width', 3)
@@ -73,7 +73,7 @@ let Button = class {
       .data([0]).enter()
       .append('text')
       .attr('x', 60)
-      .attr('y', 220)
+      .attr('y', 54)
       .attr('fill', colors[9])
       .style('font-size', 25)
 

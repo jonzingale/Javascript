@@ -1,5 +1,5 @@
 const width = 500;
-const height = 500;
+const height = 150;
 const size = 100;
 
 const colors = [
