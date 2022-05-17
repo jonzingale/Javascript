@@ -18,10 +18,10 @@ let Button = class {
 
     container.append("g").selectAll("box")
       .data([[0,0,1,1]]).enter().append("rect")
-      .attr("x", d => d[0] + 0)
-      .attr("y", d => d[1] + height/3)
-      .attr("width", d => d[2] * width)
-      .attr("height", d => d[3] * height/3.5)
+      .attr("x", 0)
+      .attr("y", 166) // h/3
+      .attr("width", 500)
+      .attr("height", 142) // h/3.5
       .attr('fill', colors[6]);
 
     return(container)

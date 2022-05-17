@@ -38,10 +38,10 @@ let LightBox = class {
 
     container.append("g").selectAll("box")
       .data([[0,0,1,1]]).enter().append("rect")
-      .attr("x", d => d[0] + 0)
-      .attr("y", d => d[1] + width/3)
-      .attr("width", d => d[2] * width)
-      .attr("height", d => d[3] * height/3.5)
+      .attr("x", 0)
+      .attr("y", 166) // h/3
+      .attr("width", 500)
+      .attr("height", 142) // h/3.5
       // .attr("stroke", colors[2])
       .attr('fill', colors[6]);
 
@@ -65,8 +65,8 @@ let LightBox = class {
       this.labels
         .data(this.state).enter()
         .append('text')
-        .attr('x', (d, i) => i * width/8.2 + 28)
-        .attr('y', height/2.45)
+        .attr('x', (d, i) => i * 61 + 28)
+        .attr('y', 204)
         .attr('fill', colors[0])
         .style('font-size', 23)
         .text((d, i) => i+1)
@@ -74,8 +74,8 @@ let LightBox = class {
       this.labels
         .data([0]).enter()
         .append('text')
-        .attr('x', width/3)
-        .attr('y', height/2.45)
+        .attr('x', 166)
+        .attr('y', 204)
         .attr('fill', colors[9])
         .style('font-size', 30)
         .text('No Solutions')
@@ -85,8 +85,8 @@ let LightBox = class {
   getHints() {
     var hints = this.container.append("g").selectAll("hint")
       .data(this.range).enter().append("ellipse")
-      .attr("cx", d => d * width/8.2 + 34)
-      .attr("cy", height/2)
+      .attr("cx", d => d * 61 + 34)
+      .attr("cy", 250)
       .attr("rx", 22)
       .attr("ry", 35)
       .attr('fill', colors[6]);
@@ -111,8 +111,8 @@ let LightBox = class {
     var lights = this.container.append("g").selectAll("light")
       .data(this.range).enter().append("circle")
       .attr("id", d => d)
-      .attr("cx", d => d * width/8.2 + 34)
-      .attr("cy", height/2)
+      .attr("cx", d => d * 61 + 34)
+      .attr("cy", 250)
       .attr("r", 18)
       .attr('stroke', colors[7])
       .attr('stroke-width', 3)
