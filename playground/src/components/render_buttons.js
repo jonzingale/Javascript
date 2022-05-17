@@ -17,7 +17,7 @@ let Button = class {
     var container = d3.select(".buttons_container")
 
     container.append("g").selectAll("box")
-      .data([[0,0,1,1]]).enter().append("rect")
+      .data([0,0,0,0]).enter().append("rect")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", width)
