@@ -1,6 +1,9 @@
 import { width, height, size } from '/src/constants.js';
 import { hypercube } from '/src/hypercube.js';
 
+let cube_height = 80
+let cube_width = width/1.8
+
 let Cube = class {
   constructor() {
     this.points = hypercube.points
@@ -10,23 +13,22 @@ let Cube = class {
 
   displayCube() {
     var svg = d3.select("body").append('svg')
-      .attr('class', 'container')
-      .attr('width', width + 30)
-      .attr('height', 250)
+      .attr('class', 'cube_container')
+      .attr('width', width)
+      .attr('height', 190)
 
-    // Display hypercube
-    d3.select(".container").selectAll("pts")
+    svg.selectAll("pts")
       .data(this.points).enter().append("circle")
-      .attr("cx", function(d) { return (size * d[0] + width/2)  })
-      .attr("cy", function(d) { return (size * d[1] + 100) })
+      .attr("cx", function(d) { return (size * d[0] + cube_width)  })
+      .attr("cy", function(d) { return (size * d[1] + cube_height) })
       .attr("r", 5);
 
-    d3.select(".container").append("g").selectAll("line")
+    svg.append("g").selectAll("line")
       .data(this.lines).enter().append("line").attr("stroke", "black")
-      .attr("x1", function(d) { return d[0] * size + width/2; })
-      .attr("y1", function(d) { return d[1] * size + 100; })
-      .attr("x2", function(d) { return d[2] * size + width/2; })
-      .attr("y2", function(d) { return d[3] * size + 100; });
+      .attr("x1", function(d) { return d[0] * size + cube_width; })
+      .attr("y1", function(d) { return d[1] * size + cube_height; })
+      .attr("x2", function(d) { return d[2] * size + cube_width; })
+      .attr("y2", function(d) { return d[3] * size + cube_height; });
   }
 }
 

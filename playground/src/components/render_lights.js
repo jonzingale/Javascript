@@ -4,8 +4,6 @@ import { lightSolution5, l5 } from '/src/four_lights.js';
 import { range, zeros } from '/src/helpers.js';
 import { mod, add } from 'mathjs';
 
-// let hh = 166
-
 let LightBox = class {
   constructor() {
     this.state = zeros(8)
