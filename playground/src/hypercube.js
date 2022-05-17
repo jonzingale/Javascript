@@ -1,10 +1,16 @@
-import { transpose, multiply, matrixFromColumns } from 'mathjs';
+import { transpose, multiply, matrixFromColumns, matrix } from 'mathjs';
 import { range , toBin } from './helpers.js';
-import { rotation } from './quaternions.js';
 
 const allPoints = range(2**4)
 const bases = range(4).map(i => 2**i)
 const points = matrixFromColumns(...allPoints.map(x => toBin(4, x)));
+const t = Math.PI * 3 / 4
+
+// quaternion rotation
+const rotation = matrix([
+  [Math.cos(t)**2,Math.cos(t)*Math.sin(t),-Math.sin(t),0],
+  [-Math.cos(t)*Math.sin(t),Math.cos(t)**2,0,-Math.sin(t)]
+])
 
 // trianglar matrix, to avoid duplicates
 // test for xor giving a basis vector and

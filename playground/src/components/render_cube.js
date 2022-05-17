@@ -19,16 +19,16 @@ let Cube = class {
 
     svg.selectAll("pts")
       .data(this.points).enter().append("circle")
-      .attr("cx", function(d) { return (size * d[0] + cube_width)  })
-      .attr("cy", function(d) { return (size * d[1] + cube_height) })
+      .attr("cx", d => size * d[0] + cube_width)
+      .attr("cy", d => size * d[1] + cube_height)
       .attr("r", 5);
 
     svg.append("g").selectAll("line")
       .data(this.lines).enter().append("line").attr("stroke", "black")
-      .attr("x1", function(d) { return d[0] * size + cube_width; })
-      .attr("y1", function(d) { return d[1] * size + cube_height; })
-      .attr("x2", function(d) { return d[2] * size + cube_width; })
-      .attr("y2", function(d) { return d[3] * size + cube_height; });
+      .attr("x1", d => d[0] * size + cube_width)
+      .attr("y1", d => d[1] * size + cube_height)
+      .attr("x2", d => d[2] * size + cube_width)
+      .attr("y2", d => d[3] * size + cube_height);
   }
 }
 
