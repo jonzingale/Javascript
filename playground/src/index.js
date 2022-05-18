@@ -1,4 +1,4 @@
-import { pad_top } from '/src/components/style_elements.js'
+// import { pad_top } from '/src/components/style_elements.js'
 // import { Cube } from '/src/components/render_cube.js';
 import { Cube } from '/src/components/cube_view.js';
 import { LightBox } from '/src/components/render_lights.js';
@@ -10,16 +10,15 @@ import { Layout } from '/src/components/layout_view.js'
 // background
 document.body.style.background = '#f8f9fa' // gray-100
 
-// pad top
-// pad_top()
-
+// define page layout
 const layout = new Layout()
 var leftPage = layout.left_page_svg()
 var rightPage = layout.right_page_svg()
 
-layout.addText('Something very ipsum lorum here.', '.left_svg', 100, 300)
+// some text
+layout.addText('Something very lorem ipsum here.', '.left_svg', 100, 300)
 
-// // initialize cube
+// initialize cube
 const cube1 = new Cube()
 layout.addComponent(cube1, '.left_svg', 0, 50)
 cube1.displayCube()
