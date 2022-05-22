@@ -1,11 +1,14 @@
 import { width, height, size } from '/src/constants.js';
 import { hypercube } from '/src/hypercube.js';
+import { Layable } from '/src/components/layable.js'
 
 let cube_height = 80
 let cube_width = width/1.8
 
-let Cube = class {
+// lift Cube to be Layable
+let Cube = class extends Layable {
   constructor(elem, xPos, yPos) {
+    super()
     this.elem = elem
     this.xPos = xPos
     this.yPos = yPos
@@ -16,7 +19,7 @@ let Cube = class {
   displayCube() {
     var svg = d3.select(this.elem)
 
-    svg.selectAll("pts")
+    svg.append("g").selectAll("pts")
       .data(this.points).enter().append("circle")
       .attr("cx", d => size * d[0] + cube_width + this.xPos)
       .attr("cy", d => size * d[1] + cube_height + this.yPos)

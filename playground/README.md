@@ -4,6 +4,8 @@ Playground is a development environment built on webpack and node.
 * http://localhost:8080/
 
 TODO:
+- extend components to Layable (see cube_view)
+- reconcile addComponent with Layable
 - Write post
 - hypercube states, 5 lights
 
