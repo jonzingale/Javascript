@@ -30,7 +30,6 @@ lights.initializeLights()
 
 var buttons = new Button()
 layout.addComponent(buttons, '.left_svg', 560, 300)
-// layout.addComponent(buttons, '.right_svg', 0, 300)
 buttons.initializeButtons()
 initialize()
 

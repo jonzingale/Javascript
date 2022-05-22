@@ -1,4 +1,4 @@
-import { width, height, size, colors } from '/src/constants.js';
+import { colors } from '/src/constants.js';
 import { lightSolution, l8, hasSolution } from '/src/eight_lights.js';
 import { lightSolution5, l5 } from '/src/four_lights.js';
 import { range, zeros } from '/src/helpers.js';
@@ -6,10 +6,6 @@ import { mod, add } from 'mathjs';
 
 let LightBox = class {
   constructor(elem, xPos, yPos) {
-    this.elem = elem
-    this.xPos = xPos
-    this.yPos = yPos
-
     this.state = zeros(8)
     this.range = range(8)
     this.operations = l8._data
@@ -42,8 +38,8 @@ let LightBox = class {
       .data([0,0,0,0]).enter().append("rect")
       .attr("x", this.xPos)
       .attr("y", this.yPos)
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", 500)
+      .attr("height", 150)
       .attr('fill', colors[6]);
 
     return svg;

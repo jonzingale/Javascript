@@ -1,11 +1,7 @@
-import { width, height, colors } from '/src/constants.js';
+import { colors } from '/src/constants.js';
 
 let Button = class {
-  constructor(elem, xPos, yPos) {
-    this.elem = elem
-    this.xPos = xPos
-    this.yPos = yPos
-  };
+  constructor(elem, xPos, yPos) {};
 
   initializeButtons() {
     this.container = this.getContainer()
@@ -22,7 +18,7 @@ let Button = class {
       .attr('x', this.xPos)
       .attr('y', this.yPos)
       .attr('width', 300)
-      .attr('height', height)
+      .attr('height', 150)
       .attr('fill', colors[6]);
 
     return svg

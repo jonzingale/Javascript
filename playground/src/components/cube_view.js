@@ -1,17 +1,12 @@
 import { width, height, size } from '/src/constants.js';
 import { hypercube } from '/src/hypercube.js';
-import { Layable } from '/src/components/layable.js'
 
 let cube_height = 80
 let cube_width = width/1.8
 
 // lift Cube to be Layable
-let Cube = class extends Layable {
+let Cube = class {
   constructor(elem, xPos, yPos) {
-    super()
-    this.elem = elem
-    this.xPos = xPos
-    this.yPos = yPos
     this.points = hypercube.points
     this.lines = hypercube.lines
   }
