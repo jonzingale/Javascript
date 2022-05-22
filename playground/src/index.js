@@ -4,9 +4,6 @@ import { Button } from '/src/components/buttons_view.js';
 import { Layout } from '/src/components/layout_view.js'
 import { TextField } from '/src/components/text_view.js';
 
-// background
-document.body.style.background = '#f8f9fa' // gray-100
-
 // define page layout and text field
 const layout = new Layout()
 const textField = new TextField()
