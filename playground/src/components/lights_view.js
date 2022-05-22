@@ -6,9 +6,14 @@ import { mod, add } from 'mathjs';
 
 let LightBox = class {
   constructor(elem, xPos, yPos) {
+    this.elem = elem
+    this.xPos = xPos
+    this.yPos = yPos
     this.state = zeros(8)
     this.range = range(8)
     this.operations = l8._data
+
+    this.initializeLights()
   }
 
   initializeLights() {

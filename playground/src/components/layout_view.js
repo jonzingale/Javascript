@@ -4,7 +4,10 @@ const phi = 0.6180339887498949
 const error = 31
 
 let Layout = class {
-  constructor() {}
+  constructor() {
+    this.left_page_svg()
+    this.right_page_svg()
+  }
 
   vertical_pad = () => {
     d3.select("body").append('svg')
@@ -27,23 +30,6 @@ let Layout = class {
       .attr('width', window.screen.width * (1 - phi) - error)
       .attr('height', window.screen.height - 155)
       .style('background-color', colors[3])
-  }
-
-  addText(str, pageClass, xPos=0, yPos=0, color=colors[2]) {
-    d3.select(pageClass)
-    .append('text')
-    .attr('x', xPos)
-    .attr('y', yPos)
-    .attr('fill', colors[7])
-    .style('font-size', 45)
-    .text(str)
-  }
-
-  // Todo: work this out somehow.
-  addComponent(comp, pageClass, xPos=0, yPos=0) {
-    comp.elem = pageClass
-    comp.xPos = xPos
-    comp.yPos = yPos
   }
 }
 

@@ -1,13 +1,14 @@
 import { width, height, size } from '/src/constants.js';
-import { hypercube } from '/src/hypercube.js';
+import { HyperCube } from '/src/hypercube.js';
 
 let cube_height = 80
 let cube_width = width/1.8
 
 let Cube = class {
   constructor() {
-    this.points = hypercube.points
-    this.lines = hypercube.lines
+    let hypercube = new HyperCube()
+    this.nodes = hypercube.nodes
+    this.edges = hypercube.edges
     this.displayCube()
   }
 
@@ -18,13 +19,13 @@ let Cube = class {
       .attr('height', 190)
 
     svg.selectAll("pts")
-      .data(this.points).enter().append("circle")
+      .data(this.nodes).enter().append("circle")
       .attr("cx", d => size * d[0] + cube_width)
       .attr("cy", d => size * d[1] + cube_height)
       .attr("r", 5);
 
     svg.append("g").selectAll("line")
-      .data(this.lines).enter().append("line").attr("stroke", "black")
+      .data(this.edges).enter().append("line").attr("stroke", "black")
       .attr("x1", d => d[0] * size + cube_width)
       .attr("y1", d => d[1] * size + cube_height)
       .attr("x2", d => d[2] * size + cube_width)

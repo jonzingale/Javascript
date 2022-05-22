@@ -2,35 +2,28 @@ import { Cube } from '/src/components/cube_view.js';
 import { LightBox } from '/src/components/lights_view.js';
 import { Button } from '/src/components/buttons_view.js';
 import { Layout } from '/src/components/layout_view.js'
+import { TextField } from '/src/components/text_view.js';
 
 // background
 document.body.style.background = '#f8f9fa' // gray-100
 
-// define page layout
+// define page layout and text field
 const layout = new Layout()
-var leftPage = layout.left_page_svg()
-var rightPage = layout.right_page_svg()
+const textField = new TextField()
 
 // some text
-layout.addText('Something very lorem ipsum here.', '.left_svg', 100, 550)
+textField.addText(
+  'Something very lorem ipsum here.',
+  '.left_svg', 100, 100, 45
+)
 
 // initialize cube, attach to layout, display
-const cube1 = new Cube()
-layout.addComponent(cube1, '.left_svg', 0, 50)
-cube1.displayCube()
-
-const cube2 = new Cube()
-layout.addComponent(cube2, '.left_svg', 300, 50)
-cube2.displayCube()
+const cube1 = new Cube('.left_svg', 0, 150)
+const cube2 = new Cube('.left_svg', 300, 150)
 
 // // initialize light box and buttons
-const lights = new LightBox()
-layout.addComponent(lights, '.left_svg', 50, 300)
-lights.initializeLights()
-
-var buttons = new Button()
-layout.addComponent(buttons, '.left_svg', 560, 300)
-buttons.initializeButtons()
+const lights = new LightBox('.left_svg', 50, 400)
+const buttons = new Button('.left_svg', 560, 400)
 initialize()
 
 function initialize() {

@@ -1,7 +1,13 @@
 import { colors } from '/src/constants.js';
 
 let Button = class {
-  constructor(elem, xPos, yPos) {};
+  constructor(elem, xPos, yPos) {
+    this.elem = elem
+    this.xPos = xPos
+    this.yPos = yPos
+
+    this.initializeButtons()
+  };
 
   initializeButtons() {
     this.container = this.getContainer()
