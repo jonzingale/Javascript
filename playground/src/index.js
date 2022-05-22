@@ -10,8 +10,8 @@ const textField = new TextField()
 
 // some text
 textField.addText(
-  'Something very lorem ipsum here.',
-  '.left_svg', 100, 100, 45
+  `Some kind of lorem ipsum here. But then again and on the other hand...`,
+  '.left_svg', 100, 50, 45
 )
 
 // initialize cube, attach to layout, display
