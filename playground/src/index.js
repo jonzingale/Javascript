@@ -12,7 +12,7 @@ var leftPage = layout.left_page_svg()
 var rightPage = layout.right_page_svg()
 
 // some text
-layout.addText('Something very lorem ipsum here.', '.right_svg', 100, 50)
+layout.addText('Something very lorem ipsum here.', '.left_svg', 100, 550)
 
 // initialize cube, attach to layout, display
 const cube1 = new Cube()
@@ -25,11 +25,12 @@ cube2.displayCube()
 
 // // initialize light box and buttons
 const lights = new LightBox()
-layout.addComponent(lights, '.left_svg', 150, 300)
+layout.addComponent(lights, '.left_svg', 50, 300)
 lights.initializeLights()
 
 var buttons = new Button()
-layout.addComponent(buttons, '.right_svg', 0, 300)
+layout.addComponent(buttons, '.left_svg', 560, 300)
+// layout.addComponent(buttons, '.right_svg', 0, 300)
 buttons.initializeButtons()
 initialize()
 

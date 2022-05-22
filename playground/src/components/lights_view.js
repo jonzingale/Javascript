@@ -50,12 +50,13 @@ let LightBox = class {
   }
 
   getLabels() {
-    var labels = this.container.append('g').selectAll('labels')
+    var labels = this.container.append('g')
+      .selectAll('labels')
     return labels;
   }
 
   hideLabels() {
-    this.container.selectAll('text').remove()
+    this.container.selectAll('.labels').remove()
   }
 
   displayLabels() {
@@ -66,6 +67,7 @@ let LightBox = class {
       this.labels
         .data(this.state).enter()
         .append('text')
+        .attr('class', 'labels')
         .attr('x', (d, i) => i * 61 + 28 + this.xPos)
         .attr('y', 38 + this.yPos)
         .attr('fill', colors[0])
@@ -75,6 +77,7 @@ let LightBox = class {
       this.labels
         .data([0]).enter()
         .append('text')
+        .attr('class', 'labels')
         .attr('x', 166 + this.xPos)
         .attr('y', 38 + this.yPos)
         .attr('fill', colors[9])
