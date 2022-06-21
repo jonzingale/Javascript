@@ -10,7 +10,7 @@ const textField = new TextField()
 
 // some text
 textField.addText(
-  `Some kind of lorem ipsum here. But then again and on the other hand...`,
+  'Some kind of lorem ipsum here. But then again and on the other hand...',
   '.left_svg', 100, 50, 45
 )
 
